@@ -23,6 +23,7 @@ import {
   PhoneCallIcon,
   PhoneIcon,
   SettingsIcon,
+  ShieldIcon,
   UsersIcon,
   WrenchIcon,
 } from '@/components/atoms/icons'
@@ -58,6 +59,7 @@ const allNav: NavItem[] = [
   { to: '/extensiones', label: 'Extensiones', icon: <PhoneIcon /> },
   { to: '/directorio', label: 'Directorio', icon: <BookIcon /> },
   { to: '/usuarios', label: 'Usuarios', icon: <UsersIcon />, admin: true },
+  { to: '/auditoria', label: 'Auditoría', icon: <ShieldIcon />, admin: true },
   { to: '/configuracion', label: 'Configuración', icon: <SettingsIcon />, admin: true },
   { to: '/ayuda', label: 'Ayuda', icon: <HelpIcon /> },
 ]
