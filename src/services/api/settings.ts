@@ -68,3 +68,48 @@ export function usePublicUrl() {
   const { data } = useSiteSettings()
   return data?.effectiveUrl ?? window.location.origin
 }
+
+export type VoiceProvider = 'ElevenLabs' | 'OpenAiRealtime' | 'Deepgram'
+
+/** Proveedor de voz y sus opciones; las API keys solo se informan como cargadas o no. */
+export interface VoiceSettings {
+  provider: VoiceProvider
+  hasApiKey: boolean
+  agentId: string | null
+  hasOpenAiApiKey: boolean
+  openAiModel: string | null
+  openAiVoice: string | null
+  openAiTranscriptionModel: string | null
+  hasDeepgramApiKey: boolean
+  deepgramLanguage: string | null
+  deepgramListenModel: string | null
+  deepgramSpeakModel: string | null
+  greeting: string | null
+}
+
+/** Cada API key vacía conserva la guardada. */
+export interface SaveVoiceSettings {
+  provider: VoiceProvider
+  apiKey: string | null
+  agentId: string | null
+  openAiApiKey: string | null
+  openAiModel: string | null
+  openAiVoice: string | null
+  openAiTranscriptionModel: string | null
+  deepgramApiKey: string | null
+  deepgramLanguage: string | null
+  deepgramListenModel: string | null
+  deepgramSpeakModel: string | null
+  greeting: string | null
+}
+
+export const useVoiceSettings = () => useQuery({ queryKey: keys.voiceSettings, queryFn: () => api<VoiceSettings>('/settings/voice') })
+
+export function useSaveVoiceSettings() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    meta: { success: 'Voz guardada' },
+    mutationFn: (input: SaveVoiceSettings) => api<VoiceSettings>('/settings/voice', { method: 'PUT', body: input }),
+    onSuccess: (settings) => queryClient.setQueryData(keys.voiceSettings, settings),
+  })
+}
