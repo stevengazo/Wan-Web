@@ -138,6 +138,7 @@ src/
 | Rutas | React Router 8 |
 | Tiempo real | SignalR (`@microsoft/signalr`) |
 | Alertas | react-hot-toast |
+| Íconos | [Lucide](https://lucide.dev) (`lucide-react`) |
 | Servidor | nginx (imagen Docker) |
 
 ## 📖 Documentación

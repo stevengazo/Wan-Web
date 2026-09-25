@@ -24,6 +24,10 @@ Vite + React 19 + TypeScript. Estilos con Tailwind CSS v4 y animaciones con Moti
 - Botones: mayúsculas con `tracking-[0.2em]` y `text-xs font-semibold`; principal `bg-brand-600`, secundario con borde fino.
 - Títulos con `font-display` (Cormorant Garamond ligera); etiquetas de sección con `eyebrow` y una línea violeta delante.
 
+## Íconos
+
+- Lucide (`lucide-react`), siempre a través de `src/components/atoms/icons.tsx`, que fija tamaño y trazo. No importar `lucide-react` directo en otros componentes ni dibujar SVG a mano.
+
 ## Motion
 
 - Importar desde `motion/react`.

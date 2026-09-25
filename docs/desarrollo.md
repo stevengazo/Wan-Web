@@ -61,4 +61,8 @@ Ejemplo: una lista de "Campañas".
 
 ## Íconos
 
-Los íconos son SVG inline en `atoms/icons.tsx`, con trazo de 2 y `currentColor`, así heredan el color del texto y el tema. No hay librería de íconos: agrega uno nuevo con el componente `Icon` base.
+Se usa [Lucide](https://lucide.dev/icons) (`lucide-react`), a través del átomo `atoms/icons.tsx`: ahí cada ícono recibe el tamaño (`size-5`) y el trazo (1.75) del panel, y hereda el color del texto.
+
+- Importa siempre desde `@/components/atoms/icons`, no desde `lucide-react`.
+- Para agregar uno, búscalo en lucide.dev e impórtalo en `icons.tsx` con un nombre del panel: `export const CalendarIcon = (props: LucideProps) => <Calendar {...base} {...props} />`.
+- Tamaño o trazo puntual: `<PlusIcon className="size-4" strokeWidth={2} />`.

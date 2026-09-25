@@ -6,7 +6,7 @@ La UI se arma de piezas chicas a grandes. Cada nivel solo usa los niveles de aba
 
 ```mermaid
 flowchart BT
-    A["⚛️ Átomos<br/>Button · Switch · Avatar · Logo · icons · Toaster"]
+    A["⚛️ Átomos<br/>Button · Switch · Avatar · Logo · icons (Lucide) · Toaster"]
     M["🔗 Moléculas<br/>TextField · SelectField · PasswordField · CopyField<br/>ConfirmSheet · HeadersEditor · ThemeToggle · RealtimeIndicator"]
     O["🧬 Organismos<br/>PageHeader · FormSection · McpPermissionsPicker<br/>UserList · CreateUserForm · FormActionsPanel..."]
     T["🧱 Plantillas<br/>AppTemplate · AuthTemplate"]

@@ -1,187 +1,60 @@
-import type { SVGProps } from 'react'
+import {
+  AudioLines,
+  BookUser,
+  ChevronLeft,
+  ChevronRight,
+  ClipboardList,
+  Copy,
+  Database,
+  Ellipsis,
+  Eye,
+  EyeOff,
+  House,
+  Inbox,
+  LogOut,
+  Mic,
+  Monitor,
+  Moon,
+  PanelLeft,
+  Phone,
+  Plus,
+  Search,
+  SlidersHorizontal,
+  Sparkles,
+  Sun,
+  Users,
+  Wrench,
+  type LucideProps,
+} from 'lucide-react'
 
-// Íconos de trazo 24×24 (estilo Lucide) inline para no sumar dependencias.
-function Icon({ children, ...props }: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      className="size-5"
-      {...props}
-    >
-      {children}
-    </svg>
-  )
-}
+/**
+ * Íconos de Lucide con el tamaño y trazo del panel. Los componentes importan desde aquí y no desde
+ * lucide-react: cambiar un ícono o el trazo de todos se hace en un solo lugar.
+ */
+const base = { className: 'size-5', strokeWidth: 1.75, 'aria-hidden': true } satisfies LucideProps
 
-export const HomeIcon = () => (
-  <Icon>
-    <path d="M3 10.5 12 3l9 7.5" />
-    <path d="M5 9.5V21h14V9.5" />
-  </Icon>
-)
-
-export const PhoneIcon = () => (
-  <Icon>
-    <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z" />
-  </Icon>
-)
-
-export const PlusIcon = () => (
-  <Icon>
-    <path d="M12 5v14M5 12h14" />
-  </Icon>
-)
-
-export const LogOutIcon = () => (
-  <Icon>
-    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-    <path d="m16 17 5-5-5-5M21 12H9" />
-  </Icon>
-)
-
-export const SunIcon = () => (
-  <Icon>
-    <circle cx="12" cy="12" r="4" />
-    <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
-  </Icon>
-)
-
-export const MonitorIcon = () => (
-  <Icon>
-    <rect x="2" y="3" width="20" height="14" rx="2" />
-    <path d="M8 21h8M12 17v4" />
-  </Icon>
-)
-
-export const MoonIcon = () => (
-  <Icon>
-    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-  </Icon>
-)
-
-export const ChevronLeftIcon = () => (
-  <Icon>
-    <path d="m15 18-6-6 6-6" />
-  </Icon>
-)
-
-export const ChevronRightIcon = () => (
-  <Icon>
-    <path d="m9 18 6-6-6-6" />
-  </Icon>
-)
-
-export const EyeIcon = () => (
-  <Icon>
-    <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
-    <circle cx="12" cy="12" r="3" />
-  </Icon>
-)
-
-export const EyeOffIcon = () => (
-  <Icon>
-    <path d="M10.6 5.1A9.8 9.8 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-2.2 3.2M6.6 6.6A17 17 0 0 0 2 12s3.5 7 10 7a9.7 9.7 0 0 0 5.4-1.6" />
-    <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" />
-    <path d="m2 2 20 20" />
-  </Icon>
-)
-
-
-export const PanelLeftIcon = () => (
-  <Icon>
-    <rect x="3" y="4" width="18" height="16" rx="2" />
-    <path d="M9 4v16" />
-  </Icon>
-)
-
-export const SettingsIcon = () => (
-  <Icon>
-    <path d="M4 7h10M18 7h2M4 17h4M12 17h8" />
-    <circle cx="16" cy="7" r="2" />
-    <circle cx="10" cy="17" r="2" />
-  </Icon>
-)
-
-export const CopyIcon = () => (
-  <Icon>
-    <rect x="9" y="9" width="12" height="12" rx="2" />
-    <path d="M5 15V5a2 2 0 0 1 2-2h10" />
-  </Icon>
-)
-
-export const BookIcon = () => (
-  <Icon>
-    <path d="M4 19V5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2Z" />
-    <path d="M4 19a2 2 0 0 0 2 2h13" />
-    <path d="M9 7h6" />
-  </Icon>
-)
-
-export const SearchIcon = () => (
-  <Icon>
-    <circle cx="11" cy="11" r="7" />
-    <path d="m20 20-3.5-3.5" />
-  </Icon>
-)
-
-export const InboxIcon = () => (
-  <Icon>
-    <path d="M22 12h-6l-2 3h-4l-2-3H2" />
-    <path d="M5.5 5.1 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.5-6.9A2 2 0 0 0 16.8 4H7.2a2 2 0 0 0-1.7 1.1Z" />
-  </Icon>
-)
-
-export const ClipboardIcon = () => (
-  <Icon>
-    <rect x="5" y="4" width="14" height="17" rx="2" />
-    <path d="M9 4V3h6v1M9 11h6M9 15h4" />
-  </Icon>
-)
-
-export const MicIcon = () => (
-  <Icon>
-    <rect x="9" y="2" width="6" height="12" rx="3" />
-    <path d="M5 10a7 7 0 0 0 14 0M12 17v4" />
-  </Icon>
-)
-
-export const MoreIcon = () => (
-  <Icon>
-    <circle cx="5" cy="12" r="1" />
-    <circle cx="12" cy="12" r="1" />
-    <circle cx="19" cy="12" r="1" />
-  </Icon>
-)
-
-export const SparklesIcon = () => (
-  <Icon>
-    <path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8Z" />
-    <path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8Z" />
-  </Icon>
-)
-
-export const DatabaseIcon = () => (
-  <Icon>
-    <ellipse cx="12" cy="5" rx="8" ry="3" />
-    <path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6" />
-  </Icon>
-)
-
-export const WrenchIcon = () => (
-  <Icon>
-    <path d="M14.7 6.3a4 4 0 0 0 5 5L21 13l-8 8-3-3 8-8-1.3-1.3a4 4 0 0 1-5-5L13 2l3 3Z" />
-  </Icon>
-)
-
-export const UsersIcon = () => (
-  <Icon>
-    <circle cx="9" cy="8" r="3.5" />
-    <path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6" />
-  </Icon>
-)
+export const HomeIcon = (props: LucideProps) => <House {...base} {...props} />
+export const PhoneIcon = (props: LucideProps) => <Phone {...base} {...props} />
+export const PlusIcon = (props: LucideProps) => <Plus {...base} {...props} />
+export const LogOutIcon = (props: LucideProps) => <LogOut {...base} {...props} />
+export const SunIcon = (props: LucideProps) => <Sun {...base} {...props} />
+export const MonitorIcon = (props: LucideProps) => <Monitor {...base} {...props} />
+export const MoonIcon = (props: LucideProps) => <Moon {...base} {...props} />
+export const ChevronLeftIcon = (props: LucideProps) => <ChevronLeft {...base} {...props} />
+export const ChevronRightIcon = (props: LucideProps) => <ChevronRight {...base} {...props} />
+export const EyeIcon = (props: LucideProps) => <Eye {...base} {...props} />
+export const EyeOffIcon = (props: LucideProps) => <EyeOff {...base} {...props} />
+export const PanelLeftIcon = (props: LucideProps) => <PanelLeft {...base} {...props} />
+export const SettingsIcon = (props: LucideProps) => <SlidersHorizontal {...base} {...props} />
+export const CopyIcon = (props: LucideProps) => <Copy {...base} {...props} />
+export const BookIcon = (props: LucideProps) => <BookUser {...base} {...props} />
+export const SearchIcon = (props: LucideProps) => <Search {...base} {...props} />
+export const InboxIcon = (props: LucideProps) => <Inbox {...base} {...props} />
+export const ClipboardIcon = (props: LucideProps) => <ClipboardList {...base} {...props} />
+export const MicIcon = (props: LucideProps) => <Mic {...base} {...props} />
+export const MoreIcon = (props: LucideProps) => <Ellipsis {...base} {...props} />
+export const SparklesIcon = (props: LucideProps) => <Sparkles {...base} {...props} />
+export const DatabaseIcon = (props: LucideProps) => <Database {...base} {...props} />
+export const WrenchIcon = (props: LucideProps) => <Wrench {...base} {...props} />
+export const UsersIcon = (props: LucideProps) => <Users {...base} {...props} />
+export const WaveIcon = (props: LucideProps) => <AudioLines {...base} {...props} />
