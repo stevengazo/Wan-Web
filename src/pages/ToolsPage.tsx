@@ -1,6 +1,6 @@
-import { PageHeader } from '../ui/PageHeader'
-import { HttpToolsSection } from './HttpToolsSection'
-import { McpServersSection } from './McpServersSection'
+import { PageHeader } from '@/components/organisms/PageHeader'
+import { HttpToolsSection } from '@/components/organisms/tools/HttpToolsSection'
+import { McpServersSection } from '@/components/organisms/tools/McpServersSection'
 
 export function ToolsPage() {
   return (

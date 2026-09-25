@@ -1,14 +1,14 @@
 import { motion } from 'motion/react'
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router'
-import { ApiError } from '../api/client'
-import { useKnowledgeBases, useSaveKnowledgeBase } from '../api/queries'
-import { useAuth } from '../auth/useAuth'
-import { Button } from '../ui/Button'
-import { TextField } from '../ui/Field'
-import { ChevronRightIcon, PlusIcon } from '../ui/icons'
-import { EmptyState, PageHeader } from '../ui/PageHeader'
-import { KnowledgeSearchBox } from './KnowledgeSearchBox'
+import { ApiError } from '@/services/api/client'
+import { useKnowledgeBases, useSaveKnowledgeBase } from '@/services/api/queries'
+import { useAuth } from '@/hooks/useAuth'
+import { Button } from '@/components/atoms/Button'
+import { TextField } from '@/components/molecules/Field'
+import { ChevronRightIcon, PlusIcon } from '@/components/atoms/icons'
+import { EmptyState, PageHeader } from '@/components/organisms/PageHeader'
+import { KnowledgeSearchBox } from '@/components/organisms/knowledge/KnowledgeSearchBox'
 
 export function KnowledgePage() {
   const { isAdmin } = useAuth()

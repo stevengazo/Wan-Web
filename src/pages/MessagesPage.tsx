@@ -1,10 +1,10 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useState } from 'react'
-import { useDeleteMessage, useMessages, useUpdateMessage } from '../api/queries'
-import type { CallMessage, CallMessageStatus } from '../api/types'
-import { useAuth } from '../auth/useAuth'
-import { formatDateTime, formatWhen } from '../ui/format'
-import { EmptyState, PageHeader } from '../ui/PageHeader'
+import { useDeleteMessage, useMessages, useUpdateMessage } from '@/services/api/queries'
+import type { CallMessage, CallMessageStatus } from '@/services/api/types'
+import { useAuth } from '@/hooks/useAuth'
+import { formatDateTime, formatWhen } from '@/lib/format'
+import { EmptyState, PageHeader } from '@/components/organisms/PageHeader'
 
 type Filter = 'Pending' | 'Done' | 'All'
 

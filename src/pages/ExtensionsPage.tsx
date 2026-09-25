@@ -1,9 +1,9 @@
 import { motion } from 'motion/react'
 import { createPortal } from 'react-dom'
 import { Link } from 'react-router'
-import { useExtensions } from '../api/queries'
-import { useAuth } from '../auth/useAuth'
-import { ChevronRightIcon, PlusIcon } from '../ui/icons'
+import { useExtensions } from '@/services/api/queries'
+import { useAuth } from '@/hooks/useAuth'
+import { ChevronRightIcon, PlusIcon } from '@/components/atoms/icons'
 
 export function ExtensionsPage() {
   const { isAdmin } = useAuth()

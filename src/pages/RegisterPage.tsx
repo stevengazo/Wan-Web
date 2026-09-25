@@ -1,10 +1,10 @@
 import { useState, type FormEvent } from 'react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router'
-import { ApiError } from '../api/client'
-import { AuthLayout, FormAlert, SubmitButton } from '../auth/AuthLayout'
-import { PasswordField } from '../auth/PasswordField'
-import { useAuth } from '../auth/useAuth'
-import { TextField } from '../ui/Field'
+import { ApiError } from '@/services/api/client'
+import { AuthTemplate, FormAlert, SubmitButton } from '@/components/templates/AuthTemplate'
+import { PasswordField } from '@/components/molecules/PasswordField'
+import { useAuth } from '@/hooks/useAuth'
+import { TextField } from '@/components/molecules/Field'
 
 const minPasswordLength = 8
 
@@ -53,7 +53,7 @@ export function RegisterPage() {
   }
 
   return (
-    <AuthLayout
+    <AuthTemplate
       title="Crea tu cuenta"
       subtitle="Empieza a atender llamadas con IA en minutos."
       footer={
@@ -104,6 +104,6 @@ export function RegisterPage() {
         </SubmitButton>
 
       </form>
-    </AuthLayout>
+    </AuthTemplate>
   )
 }

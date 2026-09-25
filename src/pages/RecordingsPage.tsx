@@ -1,12 +1,12 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
-import { authStore } from '../auth/authStore'
-import { useCallSettings, useDeleteRecording, useRecordings } from '../api/queries'
-import type { Recording } from '../api/types'
-import { useAuth } from '../auth/useAuth'
-import { formatBytes, formatDateTime, formatWhen } from '../ui/format'
-import { EmptyState, PageHeader } from '../ui/PageHeader'
+import { authStore } from '@/stores/authStore'
+import { useCallSettings, useDeleteRecording, useRecordings } from '@/services/api/queries'
+import type { Recording } from '@/services/api/types'
+import { useAuth } from '@/hooks/useAuth'
+import { formatBytes, formatDateTime, formatWhen } from '@/lib/format'
+import { EmptyState, PageHeader } from '@/components/organisms/PageHeader'
 
 export function RecordingsPage() {
   const { isAdmin } = useAuth()

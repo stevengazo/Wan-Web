@@ -1,9 +1,9 @@
 import { motion } from 'motion/react'
 import { Link } from 'react-router'
-import { useForms } from '../api/queries'
-import { useAuth } from '../auth/useAuth'
-import { ChevronRightIcon, SparklesIcon } from '../ui/icons'
-import { CreateButton, EmptyState, PageHeader } from '../ui/PageHeader'
+import { useForms } from '@/services/api/queries'
+import { useAuth } from '@/hooks/useAuth'
+import { ChevronRightIcon, SparklesIcon } from '@/components/atoms/icons'
+import { CreateButton, EmptyState, PageHeader } from '@/components/organisms/PageHeader'
 
 export function FormsPage() {
   const { isAdmin } = useAuth()

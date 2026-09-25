@@ -2,10 +2,10 @@ import { motion } from 'motion/react'
 import { useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Link } from 'react-router'
-import { useDirectory } from '../api/queries'
-import type { DirectoryEntry } from '../api/types'
-import { useAuth } from '../auth/useAuth'
-import { ChevronRightIcon, PlusIcon, SearchIcon } from '../ui/icons'
+import { useDirectory } from '@/services/api/queries'
+import type { DirectoryEntry } from '@/services/api/types'
+import { useAuth } from '@/hooks/useAuth'
+import { ChevronRightIcon, PlusIcon, SearchIcon } from '@/components/atoms/icons'
 
 export function DirectoryPage() {
   const { isAdmin } = useAuth()

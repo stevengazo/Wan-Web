@@ -1,10 +1,10 @@
 import { useState, type FormEvent } from 'react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router'
-import { ApiError } from '../api/client'
-import { AuthLayout, FormAlert, SubmitButton } from '../auth/AuthLayout'
-import { PasswordField } from '../auth/PasswordField'
-import { useAuth } from '../auth/useAuth'
-import { TextField } from '../ui/Field'
+import { ApiError } from '@/services/api/client'
+import { AuthTemplate, FormAlert, SubmitButton } from '@/components/templates/AuthTemplate'
+import { PasswordField } from '@/components/molecules/PasswordField'
+import { useAuth } from '@/hooks/useAuth'
+import { TextField } from '@/components/molecules/Field'
 
 export function LoginPage() {
   const { user, login } = useAuth()
@@ -40,7 +40,7 @@ export function LoginPage() {
   }
 
   return (
-    <AuthLayout
+    <AuthTemplate
       title="Hola de nuevo"
       subtitle="Inicia sesión para administrar tu central."
       footer={
@@ -77,6 +77,6 @@ export function LoginPage() {
           Entrar
         </SubmitButton>
       </form>
-    </AuthLayout>
+    </AuthTemplate>
   )
 }

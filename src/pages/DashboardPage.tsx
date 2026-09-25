@@ -1,6 +1,6 @@
 import { Link } from 'react-router'
-import { useExtensions } from '../api/queries'
-import { useAuth } from '../auth/useAuth'
+import { useExtensions } from '@/services/api/queries'
+import { useAuth } from '@/hooks/useAuth'
 
 export function DashboardPage() {
   const { user } = useAuth()

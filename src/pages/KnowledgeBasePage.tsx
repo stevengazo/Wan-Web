@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { useRef, useState, type DragEvent, type FormEvent } from 'react'
 import { createPortal } from 'react-dom'
 import { useNavigate, useParams } from 'react-router'
-import { ApiError } from '../api/client'
+import { ApiError } from '@/services/api/client'
 import {
   useDeleteDocument,
   useDeleteKnowledgeBase,
@@ -10,16 +10,16 @@ import {
   useKnowledgeDocuments,
   useSaveKnowledgeBase,
   useUploadDocuments,
-} from '../api/queries'
-import type { KnowledgeBase } from '../api/types'
-import { useAuth } from '../auth/useAuth'
-import { Button } from '../ui/Button'
-import { ConfirmSheet } from '../ui/ConfirmSheet'
-import { TextField } from '../ui/Field'
-import { formatBytes, formatWhen } from '../ui/format'
-import { EmptyState, PageHeader } from '../ui/PageHeader'
-import { Switch } from '../ui/Switch'
-import { KnowledgeSearchBox } from './KnowledgeSearchBox'
+} from '@/services/api/queries'
+import type { KnowledgeBase } from '@/services/api/types'
+import { useAuth } from '@/hooks/useAuth'
+import { Button } from '@/components/atoms/Button'
+import { ConfirmSheet } from '@/components/molecules/ConfirmSheet'
+import { TextField } from '@/components/molecules/Field'
+import { formatBytes, formatWhen } from '@/lib/format'
+import { EmptyState, PageHeader } from '@/components/organisms/PageHeader'
+import { Switch } from '@/components/atoms/Switch'
+import { KnowledgeSearchBox } from '@/components/organisms/knowledge/KnowledgeSearchBox'
 
 const accept = '.pdf,.docx,.txt,.md,.csv,.html,.htm'
 

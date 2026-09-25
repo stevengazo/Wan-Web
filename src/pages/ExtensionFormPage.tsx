@@ -2,8 +2,8 @@ import { AnimatePresence } from 'motion/react'
 import { useState, type FormEvent } from 'react'
 import { createPortal } from 'react-dom'
 import { Link, useNavigate, useParams } from 'react-router'
-import { ApiError } from '../api/client'
-import { useDeleteExtension, useExtension, useSaveExtension } from '../api/queries'
+import { ApiError } from '@/services/api/client'
+import { useDeleteExtension, useExtension, useSaveExtension } from '@/services/api/queries'
 import {
   supportedCodecs,
   type AnswerMode,
@@ -12,13 +12,13 @@ import {
   type ExtensionInput,
   type MediaEncryption,
   type SipTransport,
-} from '../api/types'
-import { Button } from '../ui/Button'
-import { ConfirmSheet } from '../ui/ConfirmSheet'
-import { SelectField, TextField } from '../ui/Field'
-import { FormSection, FormSections } from '../ui/FormSection'
-import { ChevronLeftIcon } from '../ui/icons'
-import { Switch } from '../ui/Switch'
+} from '@/services/api/types'
+import { Button } from '@/components/atoms/Button'
+import { ConfirmSheet } from '@/components/molecules/ConfirmSheet'
+import { SelectField, TextField } from '@/components/molecules/Field'
+import { FormSection, FormSections } from '@/components/organisms/FormSection'
+import { ChevronLeftIcon } from '@/components/atoms/icons'
+import { Switch } from '@/components/atoms/Switch'
 
 export function ExtensionFormPage() {
   const { id } = useParams()
