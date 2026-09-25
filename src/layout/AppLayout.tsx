@@ -5,7 +5,7 @@ import { Link, NavLink, useLocation, useOutlet } from 'react-router'
 import { useAuth } from '../auth/useAuth'
 import { RealtimeIndicator } from '../realtime/RealtimeIndicator'
 import { useRealtime } from '../realtime/useRealtime'
-import { HomeIcon, LogOutIcon, PanelLeftIcon, PhoneIcon, SettingsIcon } from '../ui/icons'
+import { BookIcon, HomeIcon, LogOutIcon, PanelLeftIcon, PhoneIcon, SettingsIcon } from '../ui/icons'
 import { Avatar } from '../ui/Avatar'
 import { Logo } from '../ui/Logo'
 import { useSidebarCollapsed } from './useSidebarCollapsed'
@@ -13,6 +13,7 @@ import { useSidebarCollapsed } from './useSidebarCollapsed'
 const allNav: { to: string; label: string; icon: ReactNode; end?: boolean; admin?: boolean }[] = [
   { to: '/', label: 'Inicio', icon: <HomeIcon />, end: true },
   { to: '/extensiones', label: 'Extensiones', icon: <PhoneIcon /> },
+  { to: '/directorio', label: 'Directorio', icon: <BookIcon /> },
   { to: '/configuracion', label: 'Configuración', icon: <SettingsIcon />, admin: true },
 ]
 

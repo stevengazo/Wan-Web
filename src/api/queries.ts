@@ -1,11 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from './client'
-import type { Extension, ExtensionInput, LlmSettings, SaveLlmSettings } from './types'
+import type { DirectoryEntry, DirectoryEntryInput, Extension, ExtensionInput, LlmSettings, SaveLlmSettings } from './types'
 
 const keys = {
   extensions: ['extensions'] as const,
   extension: (id: string) => ['extensions', id] as const,
   llmSettings: ['llm-settings'] as const,
+  directory: ['directory'] as const,
+  directoryEntry: (id: string) => ['directory', id] as const,
 }
 
 export const useExtensions = () =>
@@ -51,6 +53,38 @@ export function useDeleteExtension() {
       // Solo la lista: invalidar por prefijo volvería a pedir el detalle ya borrado (404).
       queryClient.removeQueries({ queryKey: keys.extension(id), exact: true })
       return queryClient.invalidateQueries({ queryKey: keys.extensions, exact: true })
+    },
+  })
+}
+
+export const useDirectory = () =>
+  useQuery({ queryKey: keys.directory, queryFn: () => api<DirectoryEntry[]>('/directory') })
+
+export const useDirectoryEntry = (id: string | undefined) =>
+  useQuery({
+    queryKey: keys.directoryEntry(id ?? ''),
+    queryFn: () => api<DirectoryEntry>(`/directory/${id}`),
+    enabled: !!id,
+  })
+
+export function useSaveDirectoryEntry(id: string | undefined) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (input: DirectoryEntryInput) =>
+      id
+        ? api<DirectoryEntry>(`/directory/${id}`, { method: 'PUT', body: input })
+        : api<DirectoryEntry>('/directory', { method: 'POST', body: input }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.directory }),
+  })
+}
+
+export function useDeleteDirectoryEntry() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => api<void>(`/directory/${id}`, { method: 'DELETE' }),
+    onSuccess: (_, id) => {
+      queryClient.removeQueries({ queryKey: keys.directoryEntry(id), exact: true })
+      return queryClient.invalidateQueries({ queryKey: keys.directory, exact: true })
     },
   })
 }

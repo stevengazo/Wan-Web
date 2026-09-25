@@ -114,3 +114,18 @@ export const CopyIcon = () => (
     <path d="M5 15V5a2 2 0 0 1 2-2h10" />
   </Icon>
 )
+
+export const BookIcon = () => (
+  <Icon>
+    <path d="M4 19V5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2Z" />
+    <path d="M4 19a2 2 0 0 0 2 2h13" />
+    <path d="M9 7h6" />
+  </Icon>
+)
+
+export const SearchIcon = () => (
+  <Icon>
+    <circle cx="11" cy="11" r="7" />
+    <path d="m20 20-3.5-3.5" />
+  </Icon>
+)

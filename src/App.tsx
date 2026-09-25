@@ -13,6 +13,8 @@ const ExtensionsPage = lazy(() => import('./pages/ExtensionsPage').then((m) => (
 const ExtensionFormPage = lazy(() => import('./pages/ExtensionFormPage').then((m) => ({ default: m.ExtensionFormPage })))
 const SettingsPage = lazy(() => import('./pages/SettingsPage').then((m) => ({ default: m.SettingsPage })))
 const ProfilePage = lazy(() => import('./pages/ProfilePage').then((m) => ({ default: m.ProfilePage })))
+const DirectoryPage = lazy(() => import('./pages/DirectoryPage').then((m) => ({ default: m.DirectoryPage })))
+const DirectoryFormPage = lazy(() => import('./pages/DirectoryFormPage').then((m) => ({ default: m.DirectoryFormPage })))
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -51,6 +53,23 @@ const router = createBrowserRouter([
         element: (
           <RequireAuth admin>
             <ExtensionFormPage />
+          </RequireAuth>
+        ),
+      },
+      { path: 'directorio', element: <DirectoryPage /> },
+      {
+        path: 'directorio/nueva',
+        element: (
+          <RequireAuth admin>
+            <DirectoryFormPage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: 'directorio/:id',
+        element: (
+          <RequireAuth admin>
+            <DirectoryFormPage />
           </RequireAuth>
         ),
       },

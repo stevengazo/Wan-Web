@@ -98,3 +98,20 @@ export interface SaveLlmSettings {
   /** apiKey vacía conserva la guardada; clearApiKey la borra. */
   providers: { provider: LlmProvider; model: string | null; apiKey: string | null; clearApiKey: boolean }[]
 }
+
+/** Destino al que el bot puede transferir una llamada. */
+export interface DirectoryEntryInput {
+  name: string
+  department: string | null
+  /** Extensión, número telefónico o URI SIP. */
+  target: string
+  /** Cuándo transferir aquí; le da contexto al bot. */
+  description: string | null
+  enabled: boolean
+}
+
+export interface DirectoryEntry extends DirectoryEntryInput {
+  id: string
+  createdAt: string
+  updatedAt: string
+}
