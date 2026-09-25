@@ -3,11 +3,11 @@ import { useState, type FormEvent } from 'react'
 import { createPortal } from 'react-dom'
 import { Link, useNavigate, useParams } from 'react-router'
 import { ApiError } from '../api/client'
-import { useDeleteExtension, useExtension, useProviders, useSaveExtension } from '../api/queries'
-import type { Extension, ExtensionInput } from '../api/types'
+import { useDeleteExtension, useExtension, useSaveExtension } from '../api/queries'
+import type { AnswerMode, Extension, ExtensionInput, SipTransport } from '../api/types'
 import { Button } from '../ui/Button'
 import { SelectField, TextField } from '../ui/Field'
-import { ChevronLeftIcon } from '../ui/icons'
+import { ChevronLeftIcon, ChevronRightIcon } from '../ui/icons'
 import { Switch } from '../ui/Switch'
 
 export function ExtensionFormPage() {
@@ -36,21 +36,14 @@ export function ExtensionFormPage() {
 
 function ExtensionForm({ extension }: { extension?: Extension }) {
   const navigate = useNavigate()
-  const providers = useProviders()
   const save = useSaveExtension(extension?.id)
   const remove = useDeleteExtension()
   const [confirmingDelete, setConfirmingDelete] = useState(false)
-  const [form, setForm] = useState<ExtensionInput>({
-    name: extension?.name ?? '',
-    providerId: extension?.providerId ?? '',
-    sipUsername: extension?.sipUsername ?? '',
-    sipPassword: '',
-    enabled: extension?.enabled ?? true,
-  })
+  const [form, setForm] = useState<ExtensionInput>(() => toInput(extension))
+  const [showAdvanced, setShowAdvanced] = useState(() => hasAdvancedValues(extension))
 
-  // Con un solo proveedor no tiene sentido obligar a elegirlo.
-  const providerId = form.providerId || (providers.data?.length === 1 ? providers.data[0].id : '')
   const fieldErrors = save.error instanceof ApiError ? save.error.fieldErrors : {}
+  const advancedOpen = showAdvanced || advancedFields.some((field) => fieldErrors[field])
   const generalError = save.error && Object.keys(fieldErrors).length === 0 ? save.error.message : null
 
   const set = <K extends keyof ExtensionInput>(key: K, value: ExtensionInput[K]) =>
@@ -58,7 +51,7 @@ function ExtensionForm({ extension }: { extension?: Extension }) {
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
-    save.mutate({ ...form, providerId }, { onSuccess: () => navigate('/extensiones') })
+    save.mutate(form, { onSuccess: () => navigate('/extensiones') })
   }
 
   const handleDelete = () => {
@@ -77,26 +70,22 @@ function ExtensionForm({ extension }: { extension?: Extension }) {
         error={fieldErrors.name?.[0]}
       />
 
-      <SelectField
-        label="Proveedor"
+      <TextField
+        label="Servidor SIP"
+        placeholder="sip.ejemplo.com"
+        autoComplete="off"
+        autoCapitalize="off"
+        spellCheck={false}
         required
-        value={providerId}
-        onChange={(e) => set('providerId', e.target.value)}
-        error={fieldErrors.providerId?.[0]}
-      >
-        <option value="" disabled>
-          {providers.isPending ? 'Cargando…' : 'Elegir proveedor'}
-        </option>
-        {providers.data?.map((provider) => (
-          <option key={provider.id} value={provider.id}>
-            {provider.name} ({provider.sipServer})
-          </option>
-        ))}
-      </SelectField>
+        value={form.sipServer}
+        onChange={(e) => set('sipServer', e.target.value)}
+        hint="Dominio o IP del registrar. Admite puerto: sip.ejemplo.com:5080"
+        error={fieldErrors.sipServer?.[0]}
+      />
 
       <TextField
-        label="Usuario SIP"
-        placeholder="123456-100"
+        label="Usuario"
+        placeholder="100"
         autoComplete="off"
         autoCapitalize="off"
         spellCheck={false}
@@ -107,7 +96,7 @@ function ExtensionForm({ extension }: { extension?: Extension }) {
       />
 
       <TextField
-        label="Contraseña SIP"
+        label="Contraseña"
         type="password"
         autoComplete="new-password"
         required={!extension}
@@ -117,9 +106,138 @@ function ExtensionForm({ extension }: { extension?: Extension }) {
         error={fieldErrors.sipPassword?.[0]}
       />
 
+      <TextField
+        label="Nombre para mostrar"
+        placeholder="Mapache"
+        value={form.displayName ?? ''}
+        onChange={(e) => set('displayName', e.target.value)}
+        hint="Lo que ve el otro extremo en las llamadas salientes."
+        error={fieldErrors.displayName?.[0]}
+      />
+
+      <SelectField
+        label="Quién contesta"
+        value={form.answerMode}
+        onChange={(e) => set('answerMode', e.target.value as AnswerMode)}
+        error={fieldErrors.answerMode?.[0]}
+      >
+        {Object.entries(answerModeLabels).map(([value, label]) => (
+          <option key={value} value={value}>
+            {label}
+          </option>
+        ))}
+      </SelectField>
+
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800">
+        <button
+          type="button"
+          aria-expanded={advancedOpen}
+          onClick={() => setShowAdvanced(!advancedOpen)}
+          className="flex min-h-12 w-full items-center justify-between gap-3 px-4 text-left text-sm font-medium text-slate-700 dark:text-slate-300"
+        >
+          Avanzado
+          <motion.span animate={{ rotate: advancedOpen ? 90 : 0 }} transition={{ duration: 0.2 }} className="text-slate-400">
+            <ChevronRightIcon />
+          </motion.span>
+        </button>
+        <AnimatePresence initial={false}>
+          {advancedOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.15 }}
+              className="space-y-5 border-t border-slate-200 p-4 dark:border-slate-800"
+            >
+              <TextField
+                label="Dominio"
+                placeholder="Igual que el servidor"
+                autoCapitalize="off"
+                spellCheck={false}
+                value={form.sipDomain ?? ''}
+                onChange={(e) => set('sipDomain', e.target.value)}
+                error={fieldErrors.sipDomain?.[0]}
+              />
+              <TextField
+                label="Login"
+                placeholder="Igual que el usuario"
+                autoComplete="off"
+                autoCapitalize="off"
+                spellCheck={false}
+                value={form.authUsername ?? ''}
+                onChange={(e) => set('authUsername', e.target.value)}
+                hint="Usuario de autenticación, si el servidor pide uno distinto."
+                error={fieldErrors.authUsername?.[0]}
+              />
+              <TextField
+                label="Proxy SIP"
+                placeholder="Sin proxy"
+                autoCapitalize="off"
+                spellCheck={false}
+                value={form.sipProxy ?? ''}
+                onChange={(e) => set('sipProxy', e.target.value)}
+                error={fieldErrors.sipProxy?.[0]}
+              />
+              <SelectField
+                label="Transporte"
+                value={form.transport}
+                onChange={(e) => set('transport', e.target.value as SipTransport)}
+                error={fieldErrors.transport?.[0]}
+              >
+                <option value="Udp">UDP</option>
+                <option value="Tcp">TCP</option>
+                <option value="Tls">TLS</option>
+              </SelectField>
+              <TextField
+                label="IP pública"
+                placeholder="Automática"
+                inputMode="decimal"
+                spellCheck={false}
+                value={form.publicAddress ?? ''}
+                onChange={(e) => set('publicAddress', e.target.value)}
+                hint="Solo si el servidor está detrás de NAT y no se usa STUN."
+                error={fieldErrors.publicAddress?.[0]}
+              />
+              <TextField
+                label="Servidor STUN"
+                placeholder="stun.l.google.com:19302"
+                autoCapitalize="off"
+                spellCheck={false}
+                value={form.stunServer ?? ''}
+                onChange={(e) => set('stunServer', e.target.value)}
+                error={fieldErrors.stunServer?.[0]}
+              />
+              <div className="grid grid-cols-2 gap-4">
+                <TextField
+                  label="Registro (s)"
+                  type="number"
+                  inputMode="numeric"
+                  min={60}
+                  max={3600}
+                  value={form.registerExpirySeconds}
+                  onChange={(e) => set('registerExpirySeconds', e.target.valueAsNumber || 0)}
+                  error={fieldErrors.registerExpirySeconds?.[0]}
+                />
+                <TextField
+                  label="Keepalive (s)"
+                  type="number"
+                  inputMode="numeric"
+                  min={0}
+                  max={300}
+                  value={form.keepAliveSeconds}
+                  onChange={(e) => set('keepAliveSeconds', e.target.valueAsNumber || 0)}
+                  hint="0 lo desactiva."
+                  error={fieldErrors.keepAliveSeconds?.[0]}
+                />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
       <Switch
         label="Habilitada"
-        description="El bot registra la extensión y atiende sus llamadas."
+        description="Mapache registra la cuenta en el servidor SIP."
         checked={form.enabled}
         onChange={(value) => set('enabled', value)}
       />
@@ -149,7 +267,7 @@ function ExtensionForm({ extension }: { extension?: Extension }) {
         {confirmingDelete && extension && (
           <ConfirmSheet
             title={`¿Eliminar "${extension.name}"?`}
-            description="El bot dejará de registrar esta extensión. Esta acción no se puede deshacer."
+            description="Mapache dejará de registrar esta cuenta. Esta acción no se puede deshacer."
             error={remove.error?.message}
             loading={remove.isPending}
             onConfirm={handleDelete}
@@ -164,6 +282,50 @@ function ExtensionForm({ extension }: { extension?: Extension }) {
       )}
     </form>
   )
+}
+
+const answerModeLabels: Record<AnswerMode, string> = {
+  Bot: 'El bot',
+  Human: 'Una persona desde el panel',
+  BotWithHandoff: 'El bot, con paso a una persona',
+}
+
+const advancedFields = [
+  'sipDomain',
+  'authUsername',
+  'sipProxy',
+  'transport',
+  'publicAddress',
+  'stunServer',
+  'registerExpirySeconds',
+  'keepAliveSeconds',
+] as const
+
+function toInput(extension?: Extension): ExtensionInput {
+  return {
+    name: extension?.name ?? '',
+    sipServer: extension?.sipServer ?? '',
+    sipProxy: extension?.sipProxy ?? null,
+    sipUsername: extension?.sipUsername ?? '',
+    sipDomain: extension?.sipDomain ?? null,
+    authUsername: extension?.authUsername ?? null,
+    sipPassword: '',
+    displayName: extension?.displayName ?? null,
+    transport: extension?.transport ?? 'Udp',
+    publicAddress: extension?.publicAddress ?? null,
+    stunServer: extension?.stunServer ?? null,
+    registerExpirySeconds: extension?.registerExpirySeconds ?? 300,
+    keepAliveSeconds: extension?.keepAliveSeconds ?? 15,
+    answerMode: extension?.answerMode ?? 'Bot',
+    enabled: extension?.enabled ?? true,
+  }
+}
+
+/** Abre "Avanzado" al editar una cuenta que ya se sale de los valores por defecto. */
+function hasAdvancedValues(extension?: Extension) {
+  if (!extension) return false
+  const defaults = toInput()
+  return advancedFields.some((field) => extension[field] !== defaults[field])
 }
 
 /** Hoja inferior en móvil, diálogo centrado desde sm:. */

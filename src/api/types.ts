@@ -15,31 +15,36 @@ export interface LoginResponse {
   user: User
 }
 
-export type ProviderType = 'Zadarma' | 'Twilio' | 'Calmyway'
+export type SipTransport = 'Udp' | 'Tcp' | 'Tls'
 
-export interface Provider {
-  id: string
+/** Quién contesta las llamadas entrantes de la cuenta. */
+export type AnswerMode = 'Bot' | 'Human' | 'BotWithHandoff'
+
+/** Cuenta SIP genérica, con los mismos datos que una cuenta de MicroSIP. */
+export interface ExtensionSettings {
   name: string
-  type: ProviderType
   sipServer: string
+  sipProxy: string | null
+  sipUsername: string
+  sipDomain: string | null
+  authUsername: string | null
+  displayName: string | null
+  transport: SipTransport
+  publicAddress: string | null
+  stunServer: string | null
+  registerExpirySeconds: number
+  keepAliveSeconds: number
+  answerMode: AnswerMode
+  enabled: boolean
 }
 
-export interface Extension {
+export interface Extension extends ExtensionSettings {
   id: string
-  name: string
-  providerId: string
-  providerName: string
-  sipUsername: string
-  enabled: boolean
   createdAt: string
   updatedAt: string
 }
 
-export interface ExtensionInput {
-  name: string
-  providerId: string
-  sipUsername: string
+export interface ExtensionInput extends ExtensionSettings {
   /** En edición, vacío conserva la contraseña actual. */
   sipPassword: string
-  enabled: boolean
 }

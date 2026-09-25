@@ -1,11 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from './client'
-import type { Extension, ExtensionInput, Provider } from './types'
+import type { Extension, ExtensionInput } from './types'
 
 const keys = {
   extensions: ['extensions'] as const,
   extension: (id: string) => ['extensions', id] as const,
-  providers: ['providers'] as const,
 }
 
 export const useExtensions = () =>
@@ -16,13 +15,6 @@ export const useExtension = (id: string | undefined) =>
     queryKey: keys.extension(id ?? ''),
     queryFn: () => api<Extension>(`/extensions/${id}`),
     enabled: !!id,
-  })
-
-export const useProviders = () =>
-  useQuery({
-    queryKey: keys.providers,
-    queryFn: () => api<Provider[]>('/providers'),
-    staleTime: 5 * 60_000,
   })
 
 export function useSaveExtension(id: string | undefined) {

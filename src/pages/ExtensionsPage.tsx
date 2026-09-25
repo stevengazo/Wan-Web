@@ -56,7 +56,7 @@ export function ExtensionsPage() {
                 <span className="min-w-0 flex-1">
                   <span className="block truncate font-medium">{extension.name}</span>
                   <span className="block truncate text-sm text-slate-500 dark:text-slate-400">
-                    {extension.sipUsername} · {extension.providerName}
+                    {extension.sipUsername}@{extension.sipDomain ?? extension.sipServer}
                   </span>
                 </span>
                 <span className="hidden text-sm text-slate-500 sm:block dark:text-slate-400">
