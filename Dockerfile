@@ -1,4 +1,5 @@
-FROM node:24-alpine AS build
+# El build genera archivos estáticos iguales para toda arquitectura: se compila una vez, sin emular.
+FROM --platform=$BUILDPLATFORM node:24-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
