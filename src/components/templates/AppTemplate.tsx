@@ -16,6 +16,7 @@ import {
   MicIcon,
   MoreIcon,
   PanelLeftIcon,
+  PhoneCallIcon,
   PhoneIcon,
   SettingsIcon,
   UsersIcon,
@@ -24,6 +25,9 @@ import {
 import { Avatar } from '@/components/atoms/Avatar'
 import { Logo } from '@/components/atoms/Logo'
 import { useSidebarCollapsed } from '@/hooks/useSidebarCollapsed'
+import { useWebPhone } from '@/hooks/useWebPhone'
+import { PhoneContext } from '@/hooks/usePhone'
+import { ActiveCallBar } from '@/components/organisms/phone/ActiveCallBar'
 
 interface NavItem {
   to: string
@@ -59,6 +63,10 @@ export function AppTemplate() {
   const realtime = useRealtime()
   const { collapsed, toggle } = useSidebarCollapsed()
   const [moreOpen, setMoreOpen] = useState(false)
+  // El teléfono vive en la plantilla: la llamada sigue al cambiar de página.
+  const phone = useWebPhone()
+  const inCall = phone.state !== 'idle' && phone.state !== 'ended'
+  const showCallBar = inCall && !location.pathname.startsWith('/telefono')
   const { data: messages } = useMessages()
   const unreadMessages = messages?.filter((m) => m.status === 'New').length ?? 0
   const badgeFor = (item: NavItem) => (item.to === '/recados' ? unreadMessages : 0)
@@ -75,6 +83,7 @@ export function AppTemplate() {
   const section = location.pathname.split('/')[1] ?? ''
 
   return (
+    <PhoneContext value={phone}>
     <div className="flex min-h-dvh bg-white dark:bg-zinc-950">
       {/* Sidebar desde md:. El ancho se anima con CSS: es un solo elemento y el contenido solo se reacomoda. */}
       <aside
@@ -100,7 +109,7 @@ export function AppTemplate() {
           </button>
         </div>
 
-        <nav className="flex flex-1 flex-col gap-1 px-3 pt-2">
+        <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-3 pt-2">
           {nav.map((item) => (
             <NavLink
               key={item.to}
@@ -133,6 +142,13 @@ export function AppTemplate() {
           ))}
         </nav>
 
+        {/* Llamada en curso anclada abajo, visible desde cualquier página. */}
+        {showCallBar && (
+          <div className={`border-t border-zinc-200 p-3 dark:border-white/10 ${collapsed ? 'flex justify-center' : ''}`}>
+            <ActiveCallBar phone={phone} compact={collapsed} />
+          </div>
+        )}
+
         <div className="border-t border-zinc-200 p-3 dark:border-white/10">
           <div className={`mb-2 ${collapsed ? 'flex justify-center' : 'px-3'}`}>
             <RealtimeIndicator status={realtime} compact={collapsed} />
@@ -156,6 +172,7 @@ export function AppTemplate() {
                 </span>
               )}
             </NavLink>
+            <PhoneLink inCall={inCall} size="size-10" />
             <button
               type="button"
               onClick={handleLogout}
@@ -174,6 +191,7 @@ export function AppTemplate() {
           <Logo />
           <div className="flex items-center gap-2">
             <RealtimeIndicator status={realtime} />
+            <PhoneLink inCall={inCall} size="size-11" />
             <Link to="/perfil" aria-label="Mi perfil" className="flex size-11 items-center justify-center rounded-full">
               <Avatar name={user?.displayName ?? ''} />
             </Link>
@@ -245,6 +263,12 @@ export function AppTemplate() {
         </button>
       </nav>
 
+      {showCallBar && (
+        <div className="fixed inset-x-3 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] z-10 md:hidden">
+          <ActiveCallBar phone={phone} compact={false} />
+        </div>
+      )}
+
       <AnimatePresence>
         {moreOpen && (
           <motion.div
@@ -286,6 +310,30 @@ export function AppTemplate() {
         )}
       </AnimatePresence>
     </div>
+    </PhoneContext>
+  )
+}
+
+/** Acceso al teléfono junto al perfil; en violeta y con punto verde mientras hay una llamada. */
+function PhoneLink({ inCall, size }: { inCall: boolean; size: string }) {
+  return (
+    <NavLink
+      to="/telefono"
+      aria-label={inCall ? 'Teléfono: llamada en curso' : 'Teléfono'}
+      title="Teléfono"
+      className={({ isActive }) =>
+        `relative flex ${size} shrink-0 items-center justify-center transition-colors ${
+          inCall
+            ? 'bg-brand-600 text-white'
+            : isActive
+              ? 'bg-zinc-200/60 text-zinc-900 dark:bg-white/10 dark:text-white'
+              : 'text-zinc-500 hover:bg-zinc-200/60 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-white/10 dark:hover:text-white'
+        }`
+      }
+    >
+      <PhoneCallIcon />
+      {inCall && <span className="absolute -right-0.5 -top-0.5 size-2 animate-pulse rounded-full bg-emerald-400" />}
+    </NavLink>
   )
 }
 

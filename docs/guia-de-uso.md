@@ -49,6 +49,17 @@ flowchart LR
     E --> F["📞 Llamada de prueba"]
 ```
 
+## 📞 Teléfono
+
+El botón del teléfono está abajo del sidebar, junto a tu perfil (en el celular, arriba junto al avatar).
+
+- **Marcador:** escribe el número o usa el teclado (mantén el **0** para escribir `+`) y elige abajo la extensión desde la que sale la llamada; el punto indica si está registrada.
+- **Recientes y Contactos:** un clic en una llamada o en una persona del directorio pone el número en el marcador.
+- **En llamada:** cronómetro, silenciar, teclado para tonos (menús de la central) y colgar.
+- La llamada **sigue al cambiar de página**: abajo del sidebar aparece la barra "En llamada" con el número y el botón para colgar.
+
+El navegador pide permiso para el micrófono la primera vez. Fuera de `localhost` el panel debe servirse por HTTPS.
+
 ## ⚙️ Configuración 🔒
 
 <img src="img/configuracion.png" alt="Pantalla de configuración" width="720" />

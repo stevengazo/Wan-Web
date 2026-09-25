@@ -18,3 +18,9 @@ export function formatBytes(bytes: number) {
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`
   return `${(bytes / 1024 / 1024).toFixed(1)} MB`
 }
+
+/** Duración de una llamada: "2m 05s". */
+export function formatDuration(seconds: number) {
+  const s = Math.max(0, Math.round(seconds))
+  return `${Math.floor(s / 60)}m ${String(s % 60).padStart(2, '0')}s`
+}

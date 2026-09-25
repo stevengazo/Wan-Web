@@ -2,6 +2,7 @@
 // Los tipos reflejan los DTOs de backend/src/Mapache.Api/Controllers: mantenerlos sincronizados.
 export * from '@/services/api/auth'
 export * from '@/services/api/extensions'
+export * from '@/services/api/calls'
 export * from '@/services/api/ai'
 export * from '@/services/api/directory'
 export * from '@/services/api/forms'

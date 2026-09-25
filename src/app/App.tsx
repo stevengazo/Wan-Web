@@ -23,6 +23,7 @@ const MessagesPage = lazy(() => import('@/pages/MessagesPage').then((m) => ({ de
 const KnowledgePage = lazy(() => import('@/pages/KnowledgePage').then((m) => ({ default: m.KnowledgePage })))
 const KnowledgeBasePage = lazy(() => import('@/pages/KnowledgeBasePage').then((m) => ({ default: m.KnowledgeBasePage })))
 const ToolsPage = lazy(() => import('@/pages/ToolsPage').then((m) => ({ default: m.ToolsPage })))
+const PhonePage = lazy(() => import('@/pages/PhonePage').then((m) => ({ default: m.PhonePage })))
 const UsersPage = lazy(() => import('@/pages/UsersPage').then((m) => ({ default: m.UsersPage })))
 const RecordingsPage = lazy(() => import('@/pages/RecordingsPage').then((m) => ({ default: m.RecordingsPage })))
 
@@ -73,6 +74,7 @@ const router = createBrowserRouter([
           </RequireAuth>
         ),
       },
+      { path: 'telefono', element: <PhonePage /> },
       { path: 'recados', element: <MessagesPage /> },
       { path: 'grabaciones', element: <RecordingsPage /> },
       { path: 'conocimiento', element: <KnowledgePage /> },

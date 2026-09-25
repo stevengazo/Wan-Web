@@ -1,6 +1,7 @@
 import { HubConnectionBuilder, HubConnectionState, LogLevel } from '@microsoft/signalr'
 import { useQueryClient } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
+import { keys } from '@/services/api/keys'
 import { authStore } from '@/stores/authStore'
 
 export type RealtimeStatus = 'connecting' | 'connected' | 'reconnecting' | 'disconnected'
@@ -25,6 +26,12 @@ export function useRealtime() {
       // Los detalles solo se marcan como viejos: refetchearlos pediría uno recién borrado (404) y
       // el formulario abierto no debe cambiar mientras se edita.
       queryClient.invalidateQueries({ queryKey: ['extensions'], refetchType: 'none' })
+    })
+
+    connection.on('ExtensionStatusChanged', () => queryClient.invalidateQueries({ queryKey: keys.extensionStatuses }))
+    connection.on('CallsChanged', () => {
+      queryClient.invalidateQueries({ queryKey: keys.extensionStatuses })
+      queryClient.invalidateQueries({ queryKey: keys.calls })
     })
 
     // Recados, respuestas y grabaciones llegan desde las llamadas: se refrescan solos.

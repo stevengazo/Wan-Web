@@ -64,6 +64,22 @@ export interface ExtensionInput extends ExtensionSettings {
 export const useExtensions = () =>
   useQuery({ queryKey: keys.extensions, queryFn: () => api<Extension[]>('/extensions') })
 
+export type SipRegistrationState = 'Registering' | 'Registered' | 'Failed'
+
+/** Estado del registro SIP de una extensión activa, según el motor. */
+export interface ExtensionStatus {
+  extensionId: string
+  state: SipRegistrationState
+  server: string
+  error: string | null
+  activeCalls: number
+  since: string
+}
+
+/** Se refresca solo: el motor avisa cada cambio por SignalR (ExtensionStatusChanged). */
+export const useExtensionStatuses = () =>
+  useQuery({ queryKey: keys.extensionStatuses, queryFn: () => api<ExtensionStatus[]>('/extensions/status') })
+
 export const useExtension = (id: string | undefined) =>
   useQuery({
     queryKey: keys.extension(id ?? ''),

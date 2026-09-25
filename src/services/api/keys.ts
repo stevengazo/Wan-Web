@@ -2,6 +2,8 @@
 export const keys = {
   extensions: ['extensions'] as const,
   extension: (id: string) => ['extensions', id] as const,
+  extensionStatuses: ['extension-status'] as const,
+  calls: ['calls'] as const,
   llmSettings: ['llm-settings'] as const,
   directory: ['directory'] as const,
   forms: ['forms'] as const,

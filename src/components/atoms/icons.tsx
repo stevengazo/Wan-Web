@@ -12,11 +12,15 @@ import {
   House,
   Inbox,
   LogOut,
+  Grid3x3,
   Mic,
+  MicOff,
   Monitor,
   Moon,
   PanelLeft,
   Phone,
+  PhoneCall,
+  PhoneOff,
   Plus,
   Search,
   SlidersHorizontal,
@@ -24,6 +28,14 @@ import {
   Sun,
   Users,
   Wrench,
+  Bell,
+  BellOff,
+  Delete,
+  History,
+  PhoneIncoming,
+  PhoneMissed,
+  PhoneOutgoing,
+  User,
   type LucideProps,
 } from 'lucide-react'
 
@@ -58,3 +70,15 @@ export const DatabaseIcon = (props: LucideProps) => <Database {...base} {...prop
 export const WrenchIcon = (props: LucideProps) => <Wrench {...base} {...props} />
 export const UsersIcon = (props: LucideProps) => <Users {...base} {...props} />
 export const WaveIcon = (props: LucideProps) => <AudioLines {...base} {...props} />
+export const PhoneOffIcon = (props: LucideProps) => <PhoneOff {...base} {...props} />
+export const MicOffIcon = (props: LucideProps) => <MicOff {...base} {...props} />
+export const KeypadIcon = (props: LucideProps) => <Grid3x3 {...base} {...props} />
+export const BellIcon = (props: LucideProps) => <Bell {...base} {...props} />
+export const BellOffIcon = (props: LucideProps) => <BellOff {...base} {...props} />
+export const BackspaceIcon = (props: LucideProps) => <Delete {...base} {...props} />
+export const HistoryIcon = (props: LucideProps) => <History {...base} {...props} />
+export const PhoneIncomingIcon = (props: LucideProps) => <PhoneIncoming {...base} {...props} />
+export const PhoneMissedIcon = (props: LucideProps) => <PhoneMissed {...base} {...props} />
+export const PhoneOutgoingIcon = (props: LucideProps) => <PhoneOutgoing {...base} {...props} />
+export const UserIcon = (props: LucideProps) => <User {...base} {...props} />
+export const PhoneCallIcon = (props: LucideProps) => <PhoneCall {...base} {...props} />
