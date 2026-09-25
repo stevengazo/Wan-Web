@@ -10,6 +10,7 @@ import { CopyIcon } from '../ui/icons'
 import { Saved } from '../ui/Saved'
 import { useFlash } from '../ui/useFlash'
 import { CallSettingsForm } from './CallSettingsForm'
+import { McpAccessSection } from './McpAccessSection'
 import { SmtpSettingsForm } from './SmtpSettingsForm'
 
 export function SettingsPage() {
@@ -26,6 +27,11 @@ export function SettingsPage() {
       <div className="mt-2">
         {callSettings.error && <p className="text-red-600 dark:text-red-400">{callSettings.error.message}</p>}
         {callSettings.data && <CallSettingsForm settings={callSettings.data} />}
+      </div>
+
+      <h2 className="mt-16 text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">Acceso por MCP</h2>
+      <div className="mt-2">
+        <McpAccessSection />
       </div>
 
       <h2 className="mt-16 text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">Correo saliente</h2>

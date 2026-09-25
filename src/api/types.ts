@@ -283,3 +283,76 @@ export interface KnowledgeHit {
   baseName: string
   rank: number
 }
+
+export type HttpToolParameterType = 'String' | 'Number' | 'Boolean'
+
+export interface HttpToolParameter {
+  name: string
+  type: HttpToolParameterType
+  description: string | null
+  required: boolean
+}
+
+/** Petición a un sistema externo que el bot puede hacer durante la llamada. */
+export interface HttpTool {
+  id: string
+  name: string
+  description: string
+  method: string
+  urlTemplate: string
+  bodyTemplate: string | null
+  /** Solo los nombres: los valores quedan cifrados en el servidor. */
+  headerNames: string[]
+  parameters: HttpToolParameter[]
+  timeoutSeconds: number
+  enabled: boolean
+}
+
+export interface SaveHttpTool {
+  name: string
+  description: string
+  method: string
+  urlTemplate: string
+  bodyTemplate: string | null
+  /** Nulo conserva los guardados; un objeto los reemplaza. */
+  headers: Record<string, string> | null
+  parameters: HttpToolParameter[]
+  timeoutSeconds: number
+  enabled: boolean
+}
+
+export interface McpTool {
+  name: string
+  /** Nombre con el que lo ve el modelo. */
+  exposedName: string
+  description: string | null
+  enabled: boolean
+}
+
+/** Servidor MCP externo cuyas herramientas usa el bot. */
+export interface McpServer {
+  id: string
+  name: string
+  url: string
+  headerNames: string[]
+  enabled: boolean
+  tools: McpTool[]
+  lastError: string | null
+  lastSyncedAt: string | null
+}
+
+export interface SaveMcpServer {
+  name: string
+  url: string
+  headers: Record<string, string> | null
+  disabledTools: string[] | null
+  enabled: boolean
+}
+
+export interface McpAccessToken {
+  id: string
+  name: string
+  prefix: string
+  createdAt: string
+  lastUsedAt: string | null
+}

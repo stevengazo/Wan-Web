@@ -18,6 +18,7 @@ import {
   PanelLeftIcon,
   PhoneIcon,
   SettingsIcon,
+  WrenchIcon,
 } from '../ui/icons'
 import { Avatar } from '../ui/Avatar'
 import { Logo } from '../ui/Logo'
@@ -39,6 +40,7 @@ const allNav: NavItem[] = [
   { to: '/formularios', label: 'Formularios', icon: <ClipboardIcon />, primary: true },
   { to: '/grabaciones', label: 'Grabaciones', icon: <MicIcon /> },
   { to: '/conocimiento', label: 'Conocimiento', icon: <DatabaseIcon /> },
+  { to: '/herramientas', label: 'Herramientas', icon: <WrenchIcon />, admin: true },
   { to: '/extensiones', label: 'Extensiones', icon: <PhoneIcon /> },
   { to: '/directorio', label: 'Directorio', icon: <BookIcon /> },
   { to: '/configuracion', label: 'Configuración', icon: <SettingsIcon />, admin: true },

@@ -15,13 +15,18 @@ import type {
   FormSubmission,
   FormTemplate,
   FormTemplateInput,
+  HttpTool,
   KnowledgeBase,
   KnowledgeBaseInput,
   KnowledgeDocument,
   KnowledgeHit,
   LlmSettings,
+  McpAccessToken,
+  McpServer,
   Recording,
+  SaveHttpTool,
   SaveLlmSettings,
+  SaveMcpServer,
   SaveSmtpSettings,
   SmtpSettings,
   SubmissionStatus,
@@ -41,6 +46,9 @@ const keys = {
   formActions: (formId: string) => ['forms', formId, 'actions'] as const,
   smtp: ['smtp'] as const,
   knowledge: ['knowledge'] as const,
+  httpTools: ['http-tools'] as const,
+  mcpServers: ['mcp-servers'] as const,
+  mcpTokens: ['mcp-tokens'] as const,
   knowledgeBase: (id: string) => ['knowledge', id] as const,
   knowledgeDocuments: (id: string) => ['knowledge', id, 'documents'] as const,
   directoryEntry: (id: string) => ['directory', id] as const,
@@ -308,3 +316,79 @@ export const useSearchKnowledge = () =>
     mutationFn: (input: { query: string; knowledgeBaseId?: string }) =>
       api<KnowledgeHit[]>('/knowledge/search', { method: 'POST', body: input }),
   })
+
+export const useHttpTools = () => useQuery({ queryKey: keys.httpTools, queryFn: () => api<HttpTool[]>('/http-tools') })
+
+export function useSaveHttpTool(id: string | undefined) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (input: SaveHttpTool) =>
+      id ? api<HttpTool>(`/http-tools/${id}`, { method: 'PUT', body: input }) : api<HttpTool>('/http-tools', { method: 'POST', body: input }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.httpTools }),
+  })
+}
+
+export function useDeleteHttpTool() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => api<void>(`/http-tools/${id}`, { method: 'DELETE' }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.httpTools }),
+  })
+}
+
+export const useTestHttpTool = () =>
+  useMutation({
+    mutationFn: ({ id, args }: { id: string; args: Record<string, unknown> }) =>
+      api<{ url: string; result: string }>(`/http-tools/${id}/test`, { method: 'POST', body: { arguments: args } }),
+  })
+
+export const useMcpServers = () => useQuery({ queryKey: keys.mcpServers, queryFn: () => api<McpServer[]>('/mcp-servers') })
+
+export function useSaveMcpServer(id: string | undefined) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (input: SaveMcpServer) =>
+      id ? api<McpServer>(`/mcp-servers/${id}`, { method: 'PUT', body: input }) : api<McpServer>('/mcp-servers', { method: 'POST', body: input }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.mcpServers }),
+  })
+}
+
+export function useSyncMcpServer() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => api<McpServer>(`/mcp-servers/${id}/sync`, { method: 'POST' }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.mcpServers }),
+  })
+}
+
+export function useDeleteMcpServer() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => api<void>(`/mcp-servers/${id}`, { method: 'DELETE' }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.mcpServers }),
+  })
+}
+
+export const useTestMcpTool = () =>
+  useMutation({
+    mutationFn: ({ id, tool, args }: { id: string; tool: string; args: Record<string, unknown> }) =>
+      api<{ result: string }>(`/mcp-servers/${id}/tools/${encodeURIComponent(tool)}/test`, { method: 'POST', body: { arguments: args } }),
+  })
+
+export const useMcpTokens = () => useQuery({ queryKey: keys.mcpTokens, queryFn: () => api<McpAccessToken[]>('/mcp-tokens') })
+
+export function useCreateMcpToken() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (name: string) => api<{ token: McpAccessToken; value: string }>('/mcp-tokens', { method: 'POST', body: { name } }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.mcpTokens }),
+  })
+}
+
+export function useRevokeMcpToken() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => api<void>(`/mcp-tokens/${id}`, { method: 'DELETE' }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.mcpTokens }),
+  })
+}
