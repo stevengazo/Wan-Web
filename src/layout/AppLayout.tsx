@@ -1,16 +1,19 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { AnimatePresence, motion } from 'motion/react'
 import { Suspense, type ReactNode } from 'react'
-import { NavLink, useLocation, useOutlet } from 'react-router'
+import { Link, NavLink, useLocation, useOutlet } from 'react-router'
 import { useAuth } from '../auth/useAuth'
 import { RealtimeIndicator } from '../realtime/RealtimeIndicator'
 import { useRealtime } from '../realtime/useRealtime'
-import { ThemeToggle } from '../theme/ThemeToggle'
-import { HomeIcon, LogOutIcon, PhoneIcon } from '../ui/icons'
+import { HomeIcon, LogOutIcon, PanelLeftIcon, PhoneIcon, SettingsIcon } from '../ui/icons'
+import { Avatar } from '../ui/Avatar'
+import { Logo } from '../ui/Logo'
+import { useSidebarCollapsed } from './useSidebarCollapsed'
 
 const nav: { to: string; label: string; icon: ReactNode; end?: boolean }[] = [
   { to: '/', label: 'Inicio', icon: <HomeIcon />, end: true },
   { to: '/extensiones', label: 'Extensiones', icon: <PhoneIcon /> },
+  { to: '/configuracion', label: 'Configuración', icon: <SettingsIcon /> },
 ]
 
 export function AppLayout() {
@@ -21,6 +24,7 @@ export function AppLayout() {
   // no muestra el contenido nuevo.
   const outlet = useOutlet()
   const realtime = useRealtime()
+  const { collapsed, toggle } = useSidebarCollapsed()
 
   const handleLogout = () => {
     logout()
@@ -32,41 +36,72 @@ export function AppLayout() {
   const section = location.pathname.split('/')[1] ?? ''
 
   return (
-    <div className="flex min-h-dvh">
-      {/* Sidebar solo en pantallas medianas en adelante. */}
-      <aside className="sticky top-0 hidden h-dvh w-60 shrink-0 flex-col border-r border-slate-200 p-4 md:flex dark:border-slate-800">
-        <div className="flex flex-col px-3 py-2">
-          <span className="text-lg font-semibold tracking-tight">Mapache</span>
-          <RealtimeIndicator status={realtime} />
+    <div className="flex min-h-dvh bg-white dark:bg-slate-950">
+      {/* Sidebar desde md:. El ancho se anima con CSS: es un solo elemento y el contenido solo se reacomoda. */}
+      <aside
+        className={`sticky top-0 hidden h-dvh shrink-0 flex-col border-r border-slate-200 bg-slate-50/60 transition-[width] duration-200 ease-out md:flex dark:border-white/10 dark:bg-white/2 ${
+          collapsed ? 'w-18' : 'w-64'
+        }`}
+      >
+        <div className={`flex h-16 items-center ${collapsed ? 'justify-center' : 'justify-between px-4'}`}>
+          {!collapsed && (
+            <Link to="/" className="rounded-lg">
+              <Logo />
+            </Link>
+          )}
+          <button
+            type="button"
+            onClick={toggle}
+            aria-label={collapsed ? 'Expandir menú' : 'Colapsar menú'}
+            aria-expanded={!collapsed}
+            title={`${collapsed ? 'Expandir' : 'Colapsar'} (Ctrl+B)`}
+            className="flex size-10 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-200/60 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white"
+          >
+            <PanelLeftIcon />
+          </button>
         </div>
-        <nav className="mt-4 flex flex-1 flex-col gap-1">
+
+        <nav className="flex flex-1 flex-col gap-1 px-3 pt-2">
           {nav.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
               end={item.end}
+              aria-label={collapsed ? item.label : undefined}
               className={({ isActive }) =>
-                `flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-medium transition-colors ${
+                `group relative flex min-h-11 items-center gap-3 rounded-lg text-sm font-medium transition-colors ${
+                  collapsed ? 'justify-center' : 'px-3'
+                } ${
                   isActive
-                    ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-300'
-                    : 'text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800'
+                    ? 'bg-white text-slate-900 shadow-sm ring-1 ring-slate-200 dark:bg-white/10 dark:text-white dark:shadow-none dark:ring-white/10'
+                    : 'text-slate-500 hover:bg-slate-200/50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-white'
                 }`
               }
             >
               {item.icon}
-              {item.label}
+              {collapsed ? <Tooltip>{item.label}</Tooltip> : item.label}
             </NavLink>
           ))}
         </nav>
-        <div className="space-y-3 border-t border-slate-200 pt-4 dark:border-slate-800">
-          <ThemeToggle />
-          <div className="flex items-center justify-between gap-2 px-1">
-            <span className="truncate text-sm text-slate-600 dark:text-slate-400">{user?.email}</span>
+
+        <div className="border-t border-slate-200 p-3 dark:border-white/10">
+          <div className={`mb-2 ${collapsed ? 'flex justify-center' : 'px-3'}`}>
+            <RealtimeIndicator status={realtime} compact={collapsed} />
+          </div>
+          <div className={`flex items-center gap-3 ${collapsed ? 'flex-col' : 'px-1'}`}>
+            <Avatar name={user?.displayName ?? ''} />
+            {!collapsed && (
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-medium">{user?.displayName}</p>
+                <p className="truncate text-xs text-slate-500 dark:text-slate-400">{user?.email}</p>
+              </div>
+            )}
             <button
               type="button"
               onClick={handleLogout}
               aria-label="Cerrar sesión"
-              className="flex size-11 items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+              title="Cerrar sesión"
+              className="flex size-10 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-200/60 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white"
             >
               <LogOutIcon />
             </button>
@@ -75,13 +110,10 @@ export function AppLayout() {
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white/80 px-4 pb-2 pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur md:hidden dark:border-slate-800 dark:bg-slate-950/80">
-          <div className="flex flex-col">
-            <span className="text-lg font-semibold leading-tight tracking-tight">Mapache</span>
+        <header className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white/80 px-4 pb-2 pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur md:hidden dark:border-white/10 dark:bg-slate-950/80">
+          <Logo />
+          <div className="flex items-center gap-2">
             <RealtimeIndicator status={realtime} />
-          </div>
-          <div className="flex items-center gap-1">
-            <ThemeToggle />
             <button
               type="button"
               onClick={handleLogout}
@@ -94,7 +126,7 @@ export function AppLayout() {
         </header>
 
         {/* pb extra en móvil para que la barra inferior no tape el contenido. */}
-        <main className="mx-auto w-full max-w-5xl flex-1 px-4 pb-28 pt-6 md:px-8 md:pb-10 md:pt-10">
+        <main className="mx-auto w-full max-w-5xl flex-1 px-4 pb-28 pt-6 md:px-10 md:pb-12 md:pt-12">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={section}
@@ -110,7 +142,7 @@ export function AppLayout() {
       </div>
 
       {/* Barra de navegación inferior en móvil, al alcance del pulgar. */}
-      <nav className="fixed inset-x-0 bottom-0 z-10 flex border-t border-slate-200 bg-white/90 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden dark:border-slate-800 dark:bg-slate-950/90">
+      <nav className="fixed inset-x-0 bottom-0 z-10 flex border-t border-slate-200 bg-white/90 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden dark:border-white/10 dark:bg-slate-950/90">
         {nav.map((item) => (
           <NavLink
             key={item.to}
@@ -118,7 +150,7 @@ export function AppLayout() {
             end={item.end}
             className={({ isActive }) =>
               `relative flex min-h-16 flex-1 flex-col items-center justify-center gap-1 text-xs font-medium ${
-                isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-500 dark:text-slate-400'
+                isActive ? 'text-slate-900 dark:text-white' : 'text-slate-400 dark:text-slate-500'
               }`
             }
           >
@@ -127,7 +159,7 @@ export function AppLayout() {
                 {isActive && (
                   <motion.span
                     layoutId="bottom-nav-indicator"
-                    className="absolute inset-x-6 top-0 h-0.5 rounded-full bg-indigo-600 dark:bg-indigo-400"
+                    className="absolute inset-x-8 top-0 h-0.5 rounded-full bg-slate-900 dark:bg-white"
                   />
                 )}
                 {item.icon}
@@ -138,5 +170,14 @@ export function AppLayout() {
         ))}
       </nav>
     </div>
+  )
+}
+
+/** Etiqueta que aparece a la derecha del ícono cuando el sidebar está colapsado. */
+function Tooltip({ children }: { children: ReactNode }) {
+  return (
+    <span className="pointer-events-none absolute left-full z-20 ml-3 whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 dark:bg-white dark:text-slate-900">
+      {children}
+    </span>
   )
 }

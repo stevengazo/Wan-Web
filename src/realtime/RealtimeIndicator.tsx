@@ -15,16 +15,17 @@ const colors: Record<RealtimeStatus, string> = {
   disconnected: 'bg-red-500',
 }
 
-export function RealtimeIndicator({ status }: { status: RealtimeStatus }) {
+/** `compact` muestra solo el punto (sidebar colapsado); el texto queda para lectores de pantalla. */
+export function RealtimeIndicator({ status, compact = false }: { status: RealtimeStatus; compact?: boolean }) {
   const pending = status === 'connecting' || status === 'reconnecting'
   return (
-    <span role="status" className="inline-flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+    <span role="status" title={labels[status]} className="inline-flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
       <motion.span
         className={`size-2 rounded-full ${colors[status]}`}
         animate={pending ? { opacity: [1, 0.3, 1] } : { opacity: 1 }}
         transition={pending ? { duration: 1.2, repeat: Infinity } : undefined}
       />
-      {labels[status]}
+      <span className={compact ? 'sr-only' : undefined}>{labels[status]}</span>
     </span>
   )
 }

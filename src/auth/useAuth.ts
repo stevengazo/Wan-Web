@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react'
 import { api } from '../api/client'
-import type { LoginResponse } from '../api/types'
+import type { LoginResponse, User } from '../api/types'
 import { authStore } from './authStore'
 
 export function useAuth() {
@@ -20,6 +20,13 @@ export function useAuth() {
       })
       authStore.set(response)
     },
+    async updateProfile(displayName: string) {
+      const user = await api<User>('/auth/me', { method: 'PUT', body: { displayName } })
+      const current = authStore.get()
+      if (current) authStore.set({ ...current, user })
+    },
+    changePassword: (currentPassword: string, newPassword: string) =>
+      api<void>('/auth/password', { method: 'POST', body: { currentPassword, newPassword } }),
     logout: () => authStore.set(null),
   }
 }

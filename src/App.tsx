@@ -11,6 +11,7 @@ const AppLayout = lazy(() => import('./layout/AppLayout').then((m) => ({ default
 const DashboardPage = lazy(() => import('./pages/DashboardPage').then((m) => ({ default: m.DashboardPage })))
 const ExtensionsPage = lazy(() => import('./pages/ExtensionsPage').then((m) => ({ default: m.ExtensionsPage })))
 const ExtensionFormPage = lazy(() => import('./pages/ExtensionFormPage').then((m) => ({ default: m.ExtensionFormPage })))
+const SettingsPage = lazy(() => import('./pages/SettingsPage').then((m) => ({ default: m.SettingsPage })))
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -52,6 +53,7 @@ const router = createBrowserRouter([
           </RequireAuth>
         ),
       },
+      { path: 'configuracion', element: <SettingsPage /> },
       { path: '*', element: <NotFound /> },
     ],
   },

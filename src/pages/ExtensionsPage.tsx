@@ -12,11 +12,11 @@ export function ExtensionsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold md:text-3xl">Extensiones</h1>
+        <h1 className="font-display text-4xl md:text-5xl">Extensiones</h1>
         {isAdmin && (
           <Link
             to="/extensiones/nueva"
-            className="hidden min-h-11 items-center gap-2 rounded-xl bg-indigo-600 px-4 text-sm font-medium text-white hover:bg-indigo-500 md:inline-flex dark:bg-indigo-500 dark:hover:bg-indigo-400"
+            className="hidden min-h-11 items-center gap-2 rounded-lg bg-slate-900 px-4 text-sm font-medium text-white hover:bg-slate-700 md:inline-flex dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
           >
             <PlusIcon />
             Nueva extensión
@@ -29,7 +29,7 @@ export function ExtensionsPage() {
       {error && (
         <div className="rounded-2xl border border-red-200 p-4 text-sm dark:border-red-500/30">
           <p className="text-red-700 dark:text-red-300">{error.message}</p>
-          <button type="button" onClick={() => refetch()} className="mt-2 min-h-11 font-medium text-indigo-600 dark:text-indigo-400">
+          <button type="button" onClick={() => refetch()} className="mt-2 min-h-11 font-medium underline underline-offset-4">
             Reintentar
           </button>
         </div>
@@ -100,7 +100,7 @@ export function ExtensionsPage() {
           <Link
             to="/extensiones/nueva"
             aria-label="Nueva extensión"
-            className="flex size-14 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 dark:bg-indigo-500"
+            className="flex size-14 items-center justify-center rounded-2xl bg-slate-900 text-white shadow-lg shadow-slate-900/30 dark:bg-white dark:text-slate-900"
           >
             <PlusIcon />
           </Link>

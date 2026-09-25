@@ -24,7 +24,7 @@ export function ExtensionFormPage() {
         >
           <ChevronLeftIcon />
         </Link>
-        <h1 className="text-2xl font-semibold md:text-3xl">{id ? 'Editar extensión' : 'Nueva extensión'}</h1>
+        <h1 className="font-display text-4xl md:text-5xl">{id ? 'Editar extensión' : 'Nueva extensión'}</h1>
       </div>
 
       {id && isPending && <p className="text-slate-500">Cargando…</p>}

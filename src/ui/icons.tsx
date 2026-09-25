@@ -92,3 +92,25 @@ export const EyeOffIcon = () => (
   </Icon>
 )
 
+
+export const PanelLeftIcon = () => (
+  <Icon>
+    <rect x="3" y="4" width="18" height="16" rx="2" />
+    <path d="M9 4v16" />
+  </Icon>
+)
+
+export const SettingsIcon = () => (
+  <Icon>
+    <path d="M4 7h10M18 7h2M4 17h4M12 17h8" />
+    <circle cx="16" cy="7" r="2" />
+    <circle cx="10" cy="17" r="2" />
+  </Icon>
+)
+
+export const CopyIcon = () => (
+  <Icon>
+    <rect x="9" y="9" width="12" height="12" rx="2" />
+    <path d="M5 15V5a2 2 0 0 1 2-2h10" />
+  </Icon>
+)

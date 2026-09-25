@@ -10,8 +10,8 @@ export function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold md:text-3xl">Hola, {user?.displayName}</h1>
-        <p className="mt-1 text-slate-600 dark:text-slate-400">
+        <h1 className="font-display text-4xl md:text-5xl">Hola, {user?.displayName}</h1>
+        <p className="mt-2 text-slate-500 dark:text-slate-400">
           Las llamadas en vivo aparecerán aquí cuando el motor SIP esté conectado.
         </p>
       </div>
@@ -19,7 +19,7 @@ export function DashboardPage() {
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         <Link
           to="/extensiones"
-          className="rounded-2xl border border-slate-200 p-4 transition-colors hover:border-indigo-300 dark:border-slate-800 dark:hover:border-indigo-500/50"
+          className="rounded-xl border border-slate-200 p-5 transition-colors hover:border-slate-400 dark:border-white/10 dark:hover:border-white/30"
         >
           <p className="text-sm text-slate-500 dark:text-slate-400">Extensiones activas</p>
           <p className="mt-1 text-3xl font-semibold tabular-nums">
