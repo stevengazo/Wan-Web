@@ -15,6 +15,28 @@ export type AnswerMode = 'Bot' | 'Human' | 'BotWithHandoff'
 /** Códecs que acepta el backend, en su orden de preferencia sugerido. */
 export const supportedCodecs = ['PCMU', 'PCMA', 'G722', 'G729', 'opus'] as const
 
+export type DayOfWeek = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday'
+
+/** Horario de un día; las horas en "HH:mm:ss" (TimeOnly de .NET). */
+export interface BusinessDay {
+  day: DayOfWeek
+  opens: string
+  closes: string
+  breakStarts: string | null
+  breakEnds: string | null
+}
+
+/** Horario de atención: fuera de él o en el descanso el bot no transfiere y dice el mensaje. */
+export interface BusinessHours {
+  enabled: boolean
+  /** Zona IANA, p. ej. America/Costa_Rica. */
+  timeZone: string
+  /** Solo los días que se atiende. */
+  days: BusinessDay[]
+  closedMessage: string | null
+  breakMessage: string | null
+}
+
 /** Cuenta SIP genérica, con los datos de una cuenta de softphone como MicroSIP. */
 export interface ExtensionSettings {
   name: string
@@ -48,6 +70,7 @@ export interface ExtensionSettings {
   hideCallerId: boolean
   answerMode: AnswerMode
   enabled: boolean
+  businessHours: BusinessHours
 }
 
 export interface Extension extends ExtensionSettings {

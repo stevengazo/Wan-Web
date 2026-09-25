@@ -105,6 +105,8 @@ El estado del registro (registrada, registrando o falló, con el motivo, por eje
 
 Al guardar, el motor SIP registra la cuenta en segundos, sin reiniciar nada.
 
+**Horario de atención** (en la misma pantalla): activa el horario y marca los días, la hora de apertura y cierre y, si hay, el descanso (por ejemplo, el almuerzo). **Copiar a todos** repite un día en los demás. Fuera de horario o en el descanso, el bot no transfiere llamadas: dice el **mensaje de fuera de horario** (o el del descanso) y ofrece tomar un recado.
+
 ## 📒 Directorio
 
 Personas y áreas a las que el bot puede transferir: nombre, área, destino (extensión, número o URI SIP) y **cuándo transferir** ("consultas de facturación", "reclamos"). El bot lo recibe en cada llamada.

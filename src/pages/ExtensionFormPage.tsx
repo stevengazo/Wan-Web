@@ -17,6 +17,8 @@ import { Button } from '@/components/atoms/Button'
 import { ConfirmSheet } from '@/components/molecules/ConfirmSheet'
 import { SelectField, TextField } from '@/components/molecules/Field'
 import { FormSection, FormSections } from '@/components/organisms/FormSection'
+import { BusinessHoursEditor } from '@/components/organisms/extensions/BusinessHoursEditor'
+import { defaultBusinessHours } from '@/components/organisms/extensions/businessHoursDefaults'
 import { ChevronLeftIcon } from '@/components/atoms/icons'
 import { Switch } from '@/components/atoms/Switch'
 
@@ -110,6 +112,13 @@ function ExtensionForm({ extension }: { extension?: Extension }) {
             checked={form.enabled}
             onChange={(value) => set('enabled', value)}
           />
+        </FormSection>
+
+        <FormSection
+          title="Horario de atención"
+          description="Fuera de horario o en el descanso no se transfieren llamadas: el bot dice el mensaje y ofrece tomar un recado."
+        >
+          <BusinessHoursEditor value={form.businessHours} onChange={(value) => set('businessHours', value)} error={error('businessHours')} />
         </FormSection>
 
         <FormSection title="Servidor" description="Dónde se registra la cuenta. El secundario se usa si el principal no responde.">
@@ -350,5 +359,6 @@ function toInput(extension?: Extension): ExtensionInput {
     hideCallerId: extension?.hideCallerId ?? false,
     answerMode: extension?.answerMode ?? 'Bot',
     enabled: extension?.enabled ?? true,
+    businessHours: extension?.businessHours ?? defaultBusinessHours(),
   }
 }
