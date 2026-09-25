@@ -1,7 +1,8 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { AnimatePresence, motion } from 'motion/react'
 import { Suspense, useState, type ReactNode } from 'react'
-import { Link, NavLink, useLocation, useOutlet } from 'react-router'
+import toast from 'react-hot-toast'
+import { Link, NavLink, useLocation, useNavigate, useOutlet } from 'react-router'
 import { useMessages } from '@/services/api'
 import { useAuth } from '@/hooks/useAuth'
 import { RealtimeIndicator } from '@/components/molecules/RealtimeIndicator'
@@ -28,6 +29,9 @@ import { useSidebarCollapsed } from '@/hooks/useSidebarCollapsed'
 import { useWebPhone } from '@/hooks/useWebPhone'
 import { PhoneContext } from '@/hooks/usePhone'
 import { ActiveCallBar } from '@/components/organisms/phone/ActiveCallBar'
+import { IncomingCallModal } from '@/components/organisms/phone/IncomingCallModal'
+import { useDeviceNotifications } from '@/hooks/useDeviceNotifications'
+import { useIncomingCall } from '@/hooks/useIncomingCall'
 
 interface NavItem {
   to: string
@@ -60,13 +64,29 @@ export function AppTemplate() {
   // useOutlet y no <Outlet />: el elemento queda fijo en la página que sale y la animación de salida
   // no muestra el contenido nuevo.
   const outlet = useOutlet()
-  const realtime = useRealtime()
   const { collapsed, toggle } = useSidebarCollapsed()
   const [moreOpen, setMoreOpen] = useState(false)
   // El teléfono vive en la plantilla: la llamada sigue al cambiar de página.
   const phone = useWebPhone()
   const inCall = phone.state !== 'idle' && phone.state !== 'ended'
   const showCallBar = inCall && !location.pathname.startsWith('/telefono')
+  const navigate = useNavigate()
+  const incoming = useIncomingCall()
+  const [takenCallId, setTakenCallId] = useState<string | null>(null)
+  const { notify } = useDeviceNotifications()
+  const realtime = useRealtime({
+    onNotify: (n) => {
+      // Con la pestaña a la vista alcanza con un toast; el aviso del sistema es para cuando no se está mirando.
+      if (document.hidden) notify(n.title, { body: n.body, tag: n.url, onClick: () => navigate(n.url) })
+      else toast(`${n.title}${n.body ? ` · ${n.body}` : ''}`, { icon: '🔔' })
+    },
+    onLiveCall: (call) => {
+      if (incoming.onLiveCall(call) && document.hidden) {
+        notify(`Llamada entrante de ${call.callerNumber}`, { body: `${call.extensionName} · la atiende el bot`, tag: call.callId, requireInteraction: true })
+      }
+    },
+    onTranscript: incoming.onTranscript,
+  })
   const { data: messages } = useMessages()
   const unreadMessages = messages?.filter((m) => m.status === 'New').length ?? 0
   const badgeFor = (item: NavItem) => (item.to === '/recados' ? unreadMessages : 0)
@@ -268,6 +288,25 @@ export function AppTemplate() {
           <ActiveCallBar phone={phone} compact={false} />
         </div>
       )}
+
+      <AnimatePresence>
+        {incoming.current && (
+          <IncomingCallModal
+            incoming={incoming.current}
+            phone={phone}
+            taken={takenCallId === incoming.current.call.callId}
+            onTake={() => {
+              const { callId, callerNumber } = incoming.current!.call
+              setTakenCallId(callId)
+              void phone.take(callId, callerNumber)
+            }}
+            onClose={() => {
+              incoming.dismiss()
+              setTakenCallId(null)
+            }}
+          />
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {moreOpen && (

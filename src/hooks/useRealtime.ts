@@ -1,17 +1,51 @@
 import { HubConnectionBuilder, HubConnectionState, LogLevel } from '@microsoft/signalr'
 import { useQueryClient } from '@tanstack/react-query'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { keys } from '@/services/api/keys'
 import { authStore } from '@/stores/authStore'
 
 export type RealtimeStatus = 'connecting' | 'connected' | 'reconnecting' | 'disconnected'
 
+export type TranscriptSpeaker = 'Caller' | 'Agent'
+
+/** Llamada en vivo (evento LiveCall). */
+export interface LiveCall {
+  callId: string
+  extensionId: string
+  extensionName: string
+  callerNumber: string
+  direction: 'Inbound' | 'Outbound'
+  status: 'Ringing' | 'InProgress' | 'Completed' | 'Transferred' | 'Failed' | 'Missed'
+  endReason: string | null
+  startedAt: string
+  answeredAt: string | null
+}
+
+/** Aviso para el dispositivo (evento Notify). */
+export interface PanelNotification {
+  kind: string
+  title: string
+  body: string
+  url: string
+}
+
+export interface RealtimeHandlers {
+  onNotify?: (notification: PanelNotification) => void
+  onLiveCall?: (call: LiveCall) => void
+  onTranscript?: (callId: string, speaker: TranscriptSpeaker, text: string) => void
+}
+
 /**
  * Conexión al hub de eventos (backend/src/Mapache.Api/Realtime/EventsHub.cs). Cada evento invalida
  * las queries afectadas para que TanStack Query las vuelva a pedir.
  */
-export function useRealtime() {
+export function useRealtime(handlers: RealtimeHandlers = {}) {
   const queryClient = useQueryClient()
+  // En un ref: la conexión se crea una vez y siempre llama a los manejadores más recientes.
+  const handlersRef = useRef(handlers)
+  useEffect(() => {
+    handlersRef.current = handlers
+  })
   const [status, setStatus] = useState<RealtimeStatus>('connecting')
 
   useEffect(() => {
@@ -33,6 +67,12 @@ export function useRealtime() {
       queryClient.invalidateQueries({ queryKey: keys.extensionStatuses })
       queryClient.invalidateQueries({ queryKey: keys.calls })
     })
+
+    connection.on('Notify', (n: PanelNotification) => handlersRef.current.onNotify?.(n))
+    connection.on('LiveCall', (call: LiveCall) => handlersRef.current.onLiveCall?.(call))
+    connection.on('CallTranscript', (callId: string, speaker: TranscriptSpeaker, text: string) =>
+      handlersRef.current.onTranscript?.(callId, speaker, text),
+    )
 
     // Recados, respuestas y grabaciones llegan desde las llamadas: se refrescan solos.
     connection.on('MessagesChanged', () => queryClient.invalidateQueries({ queryKey: ['messages'] }))

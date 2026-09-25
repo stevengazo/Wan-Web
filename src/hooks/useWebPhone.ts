@@ -13,6 +13,8 @@ export interface WebPhone {
   answeredAt: number | null
   muted: boolean
   call: (extensionId: string, number: string) => Promise<void>
+  /** Toma una llamada entrante que atiende el bot. */
+  take: (callId: string, number: string) => Promise<void>
   hangup: () => void
   sendDtmf: (digit: string) => void
   toggleMute: () => void
@@ -59,8 +61,8 @@ export function useWebPhone(): WebPhone {
     [cleanup],
   )
 
-  const call = useCallback(
-    async (extensionId: string, target: string) => {
+  const connect = useCallback(
+    async (query: Record<string, string>, target: string) => {
       if (session.current) return
       setNumber(target)
       setEndReason(null)
@@ -94,7 +96,7 @@ export function useWebPhone(): WebPhone {
         return
       }
 
-      const params = new URLSearchParams({ extensionId, to: target, access_token: authStore.get()?.accessToken ?? '' })
+      const params = new URLSearchParams({ ...query, access_token: authStore.get()?.accessToken ?? '' })
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
       const socket = new WebSocket(`${protocol}//${window.location.host}/hubs/phone?${params}`)
       socket.binaryType = 'arraybuffer'
@@ -140,6 +142,9 @@ export function useWebPhone(): WebPhone {
     [finish],
   )
 
+  const call = useCallback((extensionId: string, target: string) => connect({ extensionId, to: target }, target), [connect])
+  const take = useCallback((callId: string, caller: string) => connect({ takeCallId: callId }, caller), [connect])
+
   const hangup = useCallback(() => {
     const socket = session.current?.socket
     if (socket?.readyState === WebSocket.OPEN) {
@@ -165,7 +170,7 @@ export function useWebPhone(): WebPhone {
   // Cerrar la pestaña o salir del panel cuelga.
   useEffect(() => cleanup, [cleanup])
 
-  return { state, number, endReason, answeredAt, muted, call, hangup, sendDtmf, toggleMute }
+  return { state, number, endReason, answeredAt, muted, call, take, hangup, sendDtmf, toggleMute }
 }
 
 /** Tono de llamada local (425 Hz, 1 s sonando y 4 s en silencio) mientras la central no manda audio propio. */

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { NotificationsButton } from '@/components/molecules/NotificationsButton'
 import { PageHeader } from '@/components/organisms/PageHeader'
 import { Dialer } from '@/components/organisms/phone/Dialer'
 import { PhoneLog } from '@/components/organisms/phone/PhoneLog'
@@ -28,7 +29,11 @@ export function PhonePage() {
 
   return (
     <div>
-      <PageHeader title="Teléfono" subtitle="Llama desde tus extensiones para probarlas, sin salir del navegador." />
+      <PageHeader
+        title="Teléfono"
+        subtitle="Llama desde tus extensiones para probarlas, sin salir del navegador."
+        action={<NotificationsButton />}
+      />
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[360px_minmax(0,1fr)]">
         <Dialer
