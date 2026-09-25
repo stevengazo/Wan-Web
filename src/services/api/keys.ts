@@ -14,6 +14,7 @@ export const keys = {
   callSettings: ['call-settings'] as const,
   formActions: (formId: string) => ['forms', formId, 'actions'] as const,
   smtp: ['smtp'] as const,
+  siteSettings: ['site-settings'] as const,
   knowledge: ['knowledge'] as const,
   httpTools: ['http-tools'] as const,
   mcpServers: ['mcp-servers'] as const,

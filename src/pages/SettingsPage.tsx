@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { ApiError } from '@/services/api/client'
-import { useCallSettings, useLlmSettings, useSaveLlmSettings, useSmtpSettings } from '@/services/api'
+import { useCallSettings, useLlmSettings, usePublicUrl, useSaveLlmSettings, useSiteSettings, useSmtpSettings } from '@/services/api'
 import type { LlmProvider, LlmSettings } from '@/services/api'
 import { PasswordField } from '@/components/molecules/PasswordField'
 import { Button } from '@/components/atoms/Button'
@@ -10,11 +10,13 @@ import { CopyField } from '@/components/molecules/CopyField'
 import { CallSettingsForm } from '@/components/organisms/settings/CallSettingsForm'
 import { McpAccessSection } from '@/components/organisms/settings/McpAccessSection'
 import { SmtpSettingsForm } from '@/components/organisms/settings/SmtpSettingsForm'
+import { SiteSettingsForm } from '@/components/organisms/settings/SiteSettingsForm'
 
 export function SettingsPage() {
   const { data: settings, isPending, error } = useLlmSettings()
   const callSettings = useCallSettings()
   const smtp = useSmtpSettings()
+  const site = useSiteSettings()
 
   return (
     <div>
@@ -22,6 +24,15 @@ export function SettingsPage() {
       <p className="mt-2 text-zinc-500 dark:text-zinc-400">Ajustes generales del sistema, iguales para todas las cuentas.</p>
 
       <h2 className="mt-12 eyebrow flex items-center gap-4 text-zinc-500 dark:text-zinc-400">
+        <span className="h-px w-6 bg-brand-500" />
+        General
+      </h2>
+      <div className="mt-2">
+        {site.error && <p className="text-red-600 dark:text-red-400">{site.error.message}</p>}
+        {site.data && <SiteSettingsForm settings={site.data} />}
+      </div>
+
+      <h2 className="mt-16 eyebrow flex items-center gap-4 text-zinc-500 dark:text-zinc-400">
         <span className="h-px w-6 bg-brand-500" />
         Llamadas
       </h2>
@@ -74,6 +85,7 @@ interface ProviderDraft {
 
 function AiSettingsForm({ settings }: { settings: LlmSettings }) {
   const save = useSaveLlmSettings()
+  const publicUrl = usePublicUrl()
   const [activeProvider, setActiveProvider] = useState(settings.activeProvider)
   const [systemPrompt, setSystemPrompt] = useState(settings.systemPrompt ?? '')
   const [drafts, setDrafts] = useState<Record<LlmProvider, ProviderDraft>>(
@@ -216,7 +228,7 @@ function AiSettingsForm({ settings }: { settings: LlmSettings }) {
         </FormSection>
 
         <FormSection title="Conexión con ElevenLabs" description="Datos para configurar el agente como Custom LLM.">
-          <CopyField label="URL del Custom LLM" value={`${window.location.origin}/api/llm/v1`} />
+          <CopyField label="URL del Custom LLM" value={`${publicUrl}/api/llm/v1`} />
           <p className="text-sm text-zinc-500 dark:text-zinc-400">Como API key, el token de tools del servidor.</p>
         </FormSection>
       </FormSections>

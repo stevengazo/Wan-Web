@@ -66,6 +66,7 @@ El navegador pide permiso para el micrófono la primera vez. Fuera de `localhost
 
 | Sección | Qué se configura |
 |---------|------------------|
+| **General** | URL pública de Mapache, que se usa en las URLs para ElevenLabs y MCP. También se puede fijar con `App__PublicUrl` en el `.env`; la del panel tiene prioridad |
 | **Llamadas** | Grabar llamadas y el aviso de grabación que dice el bot |
 | **IA** | Proveedor activo (OpenAI, Gemini o Claude), API key y modelo de cada uno, instrucciones del bot y la URL del Custom LLM para pegar en ElevenLabs |
 | **ElevenLabs** | API key y ID del agente de voz |

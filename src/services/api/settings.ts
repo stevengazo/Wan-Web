@@ -42,3 +42,29 @@ export function useSaveSmtpSettings() {
     onSuccess: (settings) => queryClient.setQueryData(keys.smtp, settings),
   })
 }
+
+export interface SiteSettings {
+  /** La guardada en el panel. */
+  publicUrl: string | null
+  /** La de App__PublicUrl en el entorno (.env), como valor por defecto. */
+  environmentUrl: string | null
+  /** La que se usa: la del panel o, si no hay, la del entorno. */
+  effectiveUrl: string | null
+}
+
+export const useSiteSettings = () => useQuery({ queryKey: keys.siteSettings, queryFn: () => api<SiteSettings>('/settings/site') })
+
+export function useSaveSiteSettings() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    meta: { success: 'URL pública guardada' },
+    mutationFn: (input: { publicUrl: string | null }) => api<SiteSettings>('/settings/site', { method: 'PUT', body: input }),
+    onSuccess: (settings) => queryClient.setQueryData(keys.siteSettings, settings),
+  })
+}
+
+/** URL pública del panel (la configurada o, si no hay, la de esta pestaña), sin barra final. */
+export function usePublicUrl() {
+  const { data } = useSiteSettings()
+  return data?.effectiveUrl ?? window.location.origin
+}

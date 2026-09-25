@@ -8,6 +8,7 @@ import {
   useMcpServerTools,
   useMcpTokens,
   useRevokeMcpToken,
+  usePublicUrl,
   useUpdateMcpToken,
   type McpTokenPermissions,
 } from '@/services/api'
@@ -24,7 +25,7 @@ export function McpAccessSection() {
   const revoke = useRevokeMcpToken()
   const [name, setName] = useState('')
   const [permissions, setPermissions] = useState<McpTokenPermissions>({ allowAll: true, allowedTools: [] })
-  const url = `${window.location.origin}/api/mcp`
+  const url = `${usePublicUrl()}/api/mcp`
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
