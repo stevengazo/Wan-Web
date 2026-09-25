@@ -26,6 +26,7 @@ export const useCallSettings = () => useQuery({ queryKey: keys.callSettings, que
 export function useSaveCallSettings() {
   const queryClient = useQueryClient()
   return useMutation({
+    meta: { success: 'Configuración de llamadas guardada' },
     mutationFn: (input: CallSettings) => api<CallSettings>('/settings/calls', { method: 'PUT', body: input }),
     onSuccess: (settings) => queryClient.setQueryData(keys.callSettings, settings),
   })
@@ -36,6 +37,7 @@ export const useSmtpSettings = () => useQuery({ queryKey: keys.smtp, queryFn: ()
 export function useSaveSmtpSettings() {
   const queryClient = useQueryClient()
   return useMutation({
+    meta: { success: 'Correo saliente guardado' },
     mutationFn: (input: SaveSmtpSettings) => api<SmtpSettings>('/settings/smtp', { method: 'PUT', body: input }),
     onSuccess: (settings) => queryClient.setQueryData(keys.smtp, settings),
   })

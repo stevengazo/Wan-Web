@@ -7,8 +7,6 @@ import { Avatar } from '@/components/atoms/Avatar'
 import { Button } from '@/components/atoms/Button'
 import { TextField } from '@/components/molecules/Field'
 import { FormSection, FormSections } from '@/components/organisms/FormSection'
-import { Saved } from '@/components/atoms/Saved'
-import { useFlash } from '@/hooks/useFlash'
 
 export function ProfilePage() {
   const { user } = useAuth()
@@ -55,7 +53,6 @@ function ProfileForm() {
   const [displayName, setDisplayName] = useState(user?.displayName ?? '')
   const [error, setError] = useState<ApiError | null>(null)
   const [saving, setSaving] = useState(false)
-  const [saved, flash] = useFlash()
 
   const changed = displayName.trim() !== (user?.displayName ?? '') && displayName.trim().length > 0
 
@@ -65,7 +62,6 @@ function ProfileForm() {
     setSaving(true)
     try {
       await updateProfile(displayName.trim())
-      flash()
     } catch (e) {
       setError(e instanceof ApiError ? e : new ApiError(0, 'No se pudo guardar'))
     } finally {
@@ -87,7 +83,6 @@ function ProfileForm() {
         <Button type="submit" loading={saving} disabled={!changed}>
           Guardar
         </Button>
-        <Saved show={saved} />
       </div>
     </form>
   )
@@ -99,7 +94,6 @@ function PasswordForm() {
   const [next, setNext] = useState('')
   const [error, setError] = useState<ApiError | null>(null)
   const [saving, setSaving] = useState(false)
-  const [saved, flash] = useFlash()
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
@@ -109,7 +103,6 @@ function PasswordForm() {
       await changePassword(current, next)
       setCurrent('')
       setNext('')
-      flash()
     } catch (e) {
       setError(e instanceof ApiError ? e : new ApiError(0, 'No se pudo cambiar la contraseña'))
     } finally {
@@ -141,7 +134,6 @@ function PasswordForm() {
         <Button type="submit" loading={saving} disabled={!current || next.length < 8}>
           Cambiar contraseña
         </Button>
-        <Saved show={saved} />
       </div>
     </form>
   )

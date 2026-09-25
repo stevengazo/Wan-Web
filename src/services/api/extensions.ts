@@ -74,6 +74,7 @@ export const useExtension = (id: string | undefined) =>
 export function useSaveExtension(id: string | undefined) {
   const queryClient = useQueryClient()
   return useMutation({
+    meta: { success: 'Extensión guardada' },
     mutationFn: (input: ExtensionInput) =>
       id
         ? api<Extension>(`/extensions/${id}`, {
@@ -88,6 +89,7 @@ export function useSaveExtension(id: string | undefined) {
 export function useDeleteExtension() {
   const queryClient = useQueryClient()
   return useMutation({
+    meta: { success: 'Extensión eliminada' },
     mutationFn: (id: string) => api<void>(`/extensions/${id}`, { method: 'DELETE' }),
     onSuccess: (_, id) => {
       // Solo la lista: invalidar por prefijo volvería a pedir el detalle ya borrado (404).

@@ -14,6 +14,7 @@ export const useRecordings = () => useQuery({ queryKey: keys.recordings, queryFn
 export function useDeleteRecording() {
   const queryClient = useQueryClient()
   return useMutation({
+    meta: { success: 'Grabación eliminada' },
     mutationFn: (id: string) => api<void>(`/recordings/${id}`, { method: 'DELETE' }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.recordings }),
   })

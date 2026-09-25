@@ -6,14 +6,11 @@ import { PasswordField } from '@/components/molecules/PasswordField'
 import { Button } from '@/components/atoms/Button'
 import { TextField } from '@/components/molecules/Field'
 import { FormSection, FormSections } from '@/components/organisms/FormSection'
-import { Saved } from '@/components/atoms/Saved'
 import { Switch } from '@/components/atoms/Switch'
-import { useFlash } from '@/hooks/useFlash'
 
 /** Servidor de correo para las acciones de formularios de tipo correo. */
 export function SmtpSettingsForm({ settings }: { settings: SmtpSettings }) {
   const save = useSaveSmtpSettings()
-  const [saved, flash] = useFlash()
   const [host, setHost] = useState(settings.host ?? '')
   const [port, setPort] = useState(settings.port)
   const [useTls, setUseTls] = useState(settings.useTls)
@@ -30,7 +27,6 @@ export function SmtpSettingsForm({ settings }: { settings: SmtpSettings }) {
       {
         onSuccess: () => {
           setPassword('')
-          flash()
         },
       },
     )
@@ -88,7 +84,6 @@ export function SmtpSettingsForm({ settings }: { settings: SmtpSettings }) {
         </FormSection>
       </FormSections>
       <div className="flex items-center justify-end gap-3 border-t border-slate-200 pt-6 dark:border-white/10">
-        <Saved show={saved} />
         {save.error && Object.keys(fieldErrors).length === 0 && <span className="text-sm text-red-600 dark:text-red-400">{save.error.message}</span>}
         <Button type="submit" loading={save.isPending} className="sm:min-w-32">
           Guardar

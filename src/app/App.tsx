@@ -1,7 +1,8 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClientProvider } from '@tanstack/react-query'
 import { lazy, Suspense } from 'react'
 import { createBrowserRouter, Link, RouterProvider } from 'react-router'
-import { ApiError } from '@/services/api/client'
+import { queryClient } from '@/app/queryClient'
+import { Toaster } from '@/components/atoms/Toaster'
 import { RequireAuth } from '@/app/RequireAuth'
 import { LoginPage } from '@/pages/LoginPage'
 import { RegisterPage } from '@/pages/RegisterPage'
@@ -23,16 +24,6 @@ const KnowledgePage = lazy(() => import('@/pages/KnowledgePage').then((m) => ({ 
 const KnowledgeBasePage = lazy(() => import('@/pages/KnowledgeBasePage').then((m) => ({ default: m.KnowledgeBasePage })))
 const ToolsPage = lazy(() => import('@/pages/ToolsPage').then((m) => ({ default: m.ToolsPage })))
 const RecordingsPage = lazy(() => import('@/pages/RecordingsPage').then((m) => ({ default: m.RecordingsPage })))
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 30_000,
-      // Reintentar errores 4xx no sirve: la respuesta no va a cambiar.
-      retry: (count, error) => !(error instanceof ApiError && error.status >= 400 && error.status < 500) && count < 2,
-    },
-  },
-})
 
 const router = createBrowserRouter([
   { path: '/login', element: <LoginPage /> },
@@ -140,6 +131,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
+      <Toaster />
     </QueryClientProvider>
   )
 }

@@ -44,6 +44,7 @@ export const useKnowledgeBase = (id: string | undefined) =>
 export function useSaveKnowledgeBase(id: string | undefined) {
   const queryClient = useQueryClient()
   return useMutation({
+    meta: { success: 'Base guardada' },
     mutationFn: (input: KnowledgeBaseInput) =>
       id ? api<KnowledgeBase>(`/knowledge/${id}`, { method: 'PUT', body: input }) : api<KnowledgeBase>('/knowledge', { method: 'POST', body: input }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.knowledge }),
@@ -53,6 +54,7 @@ export function useSaveKnowledgeBase(id: string | undefined) {
 export function useDeleteKnowledgeBase() {
   const queryClient = useQueryClient()
   return useMutation({
+    meta: { success: 'Base eliminada' },
     mutationFn: (id: string) => api<void>(`/knowledge/${id}`, { method: 'DELETE' }),
     onSuccess: (_, id) => {
       queryClient.removeQueries({ queryKey: keys.knowledgeBase(id) })
@@ -79,6 +81,7 @@ export function useUploadDocuments(id: string) {
 export function useDeleteDocument() {
   const queryClient = useQueryClient()
   return useMutation({
+    meta: { success: 'Documento eliminado' },
     mutationFn: (documentId: string) => api<void>(`/knowledge/documents/${documentId}`, { method: 'DELETE' }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.knowledge }),
   })
@@ -86,6 +89,7 @@ export function useDeleteDocument() {
 
 export const useSearchKnowledge = () =>
   useMutation({
+    meta: { silentError: true },
     mutationFn: (input: { query: string; knowledgeBaseId?: string }) =>
       api<KnowledgeHit[]>('/knowledge/search', { method: 'POST', body: input }),
   })

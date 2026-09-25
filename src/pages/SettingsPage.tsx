@@ -7,8 +7,6 @@ import { Button } from '@/components/atoms/Button'
 import { TextAreaField, TextField } from '@/components/molecules/Field'
 import { FormSection, FormSections } from '@/components/organisms/FormSection'
 import { CopyIcon } from '@/components/atoms/icons'
-import { Saved } from '@/components/atoms/Saved'
-import { useFlash } from '@/hooks/useFlash'
 import { CallSettingsForm } from '@/components/organisms/settings/CallSettingsForm'
 import { McpAccessSection } from '@/components/organisms/settings/McpAccessSection'
 import { SmtpSettingsForm } from '@/components/organisms/settings/SmtpSettingsForm'
@@ -64,7 +62,6 @@ interface ProviderDraft {
 
 function AiSettingsForm({ settings }: { settings: LlmSettings }) {
   const save = useSaveLlmSettings()
-  const [saved, flash] = useFlash()
   const [activeProvider, setActiveProvider] = useState(settings.activeProvider)
   const [systemPrompt, setSystemPrompt] = useState(settings.systemPrompt ?? '')
   const [drafts, setDrafts] = useState<Record<LlmProvider, ProviderDraft>>(
@@ -104,7 +101,6 @@ function AiSettingsForm({ settings }: { settings: LlmSettings }) {
               updated.providers.map((p) => [p.provider, { model: p.model ?? '', apiKey: '', clearApiKey: false }]),
             ) as Record<LlmProvider, ProviderDraft>,
           )
-          flash()
         },
       },
     )
@@ -223,7 +219,6 @@ function AiSettingsForm({ settings }: { settings: LlmSettings }) {
       )}
 
       <div className="flex items-center justify-end gap-3 border-t border-slate-200 pt-6 dark:border-white/10">
-        <Saved show={saved} />
         <Button type="submit" loading={save.isPending} className="sm:min-w-32">
           Guardar
         </Button>

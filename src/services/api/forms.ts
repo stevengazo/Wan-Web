@@ -101,6 +101,7 @@ export const useForm = (id: string | undefined) =>
 export function useSaveForm(id: string | undefined) {
   const queryClient = useQueryClient()
   return useMutation({
+    meta: { success: 'Formulario guardado' },
     mutationFn: (input: FormTemplateInput) =>
       id ? api<FormTemplate>(`/forms/${id}`, { method: 'PUT', body: input }) : api<FormTemplate>('/forms', { method: 'POST', body: input }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.forms }),
@@ -110,6 +111,7 @@ export function useSaveForm(id: string | undefined) {
 export function useDeleteForm() {
   const queryClient = useQueryClient()
   return useMutation({
+    meta: { success: 'Formulario eliminado' },
     mutationFn: (id: string) => api<void>(`/forms/${id}`, { method: 'DELETE' }),
     onSuccess: (_, id) => {
       queryClient.removeQueries({ queryKey: keys.form(id) })
@@ -119,7 +121,8 @@ export function useDeleteForm() {
 }
 
 export const useGenerateForm = () =>
-  useMutation({ mutationFn: (description: string) => api<FormDraft>('/forms/generate', { method: 'POST', body: { description } }) })
+  useMutation({
+    meta: { silentError: true }, mutationFn: (description: string) => api<FormDraft>('/forms/generate', { method: 'POST', body: { description } }) })
 
 export const useSubmissions = (formId: string) =>
   useQuery({ queryKey: keys.submissions(formId), queryFn: () => api<FormSubmission[]>(`/forms/${formId}/submissions`) })
@@ -136,6 +139,7 @@ export function useUpdateSubmission() {
 export function useDeleteSubmission() {
   const queryClient = useQueryClient()
   return useMutation({
+    meta: { success: 'Respuesta eliminada' },
     mutationFn: (id: string) => api<void>(`/form-submissions/${id}`, { method: 'DELETE' }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.forms }),
   })
@@ -147,6 +151,7 @@ export const useFormActions = (formId: string, enabled = true) =>
 export function useSaveFormAction(formId: string, id: string | undefined) {
   const queryClient = useQueryClient()
   return useMutation({
+    meta: { success: 'Acción guardada' },
     mutationFn: (input: FormActionInput) =>
       id
         ? api<FormAction>(`/form-actions/${id}`, { method: 'PUT', body: input })
@@ -158,17 +163,20 @@ export function useSaveFormAction(formId: string, id: string | undefined) {
 export function useDeleteFormAction(formId: string) {
   const queryClient = useQueryClient()
   return useMutation({
+    meta: { success: 'Acción eliminada' },
     mutationFn: (id: string) => api<void>(`/form-actions/${id}`, { method: 'DELETE' }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.formActions(formId) }),
   })
 }
 
 export const useTestFormAction = () =>
-  useMutation({ mutationFn: (id: string) => api<ActionResult>(`/form-actions/${id}/test`, { method: 'POST' }) })
+  useMutation({
+    meta: { silentError: true }, mutationFn: (id: string) => api<ActionResult>(`/form-actions/${id}/test`, { method: 'POST' }) })
 
 export function useRetryExecution() {
   const queryClient = useQueryClient()
   return useMutation({
+    meta: { success: 'Reintento en cola' },
     mutationFn: (id: string) => api<void>(`/action-executions/${id}/retry`, { method: 'POST' }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.forms }),
   })

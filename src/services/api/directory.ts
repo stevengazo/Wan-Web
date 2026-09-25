@@ -32,6 +32,7 @@ export const useDirectoryEntry = (id: string | undefined) =>
 export function useSaveDirectoryEntry(id: string | undefined) {
   const queryClient = useQueryClient()
   return useMutation({
+    meta: { success: 'Entrada guardada' },
     mutationFn: (input: DirectoryEntryInput) =>
       id
         ? api<DirectoryEntry>(`/directory/${id}`, { method: 'PUT', body: input })
@@ -43,6 +44,7 @@ export function useSaveDirectoryEntry(id: string | undefined) {
 export function useDeleteDirectoryEntry() {
   const queryClient = useQueryClient()
   return useMutation({
+    meta: { success: 'Entrada eliminada' },
     mutationFn: (id: string) => api<void>(`/directory/${id}`, { method: 'DELETE' }),
     onSuccess: (_, id) => {
       queryClient.removeQueries({ queryKey: keys.directoryEntry(id), exact: true })

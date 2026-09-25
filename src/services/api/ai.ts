@@ -33,6 +33,7 @@ export const useLlmSettings = () =>
 export function useSaveLlmSettings() {
   const queryClient = useQueryClient()
   return useMutation({
+    meta: { success: 'Configuración de IA guardada' },
     mutationFn: (input: SaveLlmSettings) => api<LlmSettings>('/llm/settings', { method: 'PUT', body: input }),
     onSuccess: (settings) => queryClient.setQueryData(keys.llmSettings, settings),
   })

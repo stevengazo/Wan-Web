@@ -33,6 +33,7 @@ export function useUpdateMessage() {
 export function useDeleteMessage() {
   const queryClient = useQueryClient()
   return useMutation({
+    meta: { success: 'Recado eliminado' },
     mutationFn: (id: string) => api<void>(`/messages/${id}`, { method: 'DELETE' }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.messages }),
   })

@@ -80,6 +80,7 @@ export const useHttpTools = () => useQuery({ queryKey: keys.httpTools, queryFn: 
 export function useSaveHttpTool(id: string | undefined) {
   const queryClient = useQueryClient()
   return useMutation({
+    meta: { success: 'Petición guardada' },
     mutationFn: (input: SaveHttpTool) =>
       id ? api<HttpTool>(`/http-tools/${id}`, { method: 'PUT', body: input }) : api<HttpTool>('/http-tools', { method: 'POST', body: input }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.httpTools }),
@@ -89,6 +90,7 @@ export function useSaveHttpTool(id: string | undefined) {
 export function useDeleteHttpTool() {
   const queryClient = useQueryClient()
   return useMutation({
+    meta: { success: 'Petición eliminada' },
     mutationFn: (id: string) => api<void>(`/http-tools/${id}`, { method: 'DELETE' }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.httpTools }),
   })
@@ -96,6 +98,7 @@ export function useDeleteHttpTool() {
 
 export const useTestHttpTool = () =>
   useMutation({
+    meta: { silentError: true },
     mutationFn: ({ id, args }: { id: string; args: Record<string, unknown> }) =>
       api<{ url: string; result: string }>(`/http-tools/${id}/test`, { method: 'POST', body: { arguments: args } }),
   })
@@ -105,6 +108,7 @@ export const useMcpServers = () => useQuery({ queryKey: keys.mcpServers, queryFn
 export function useSaveMcpServer(id: string | undefined) {
   const queryClient = useQueryClient()
   return useMutation({
+    meta: { success: 'Servidor MCP guardado' },
     mutationFn: (input: SaveMcpServer) =>
       id ? api<McpServer>(`/mcp-servers/${id}`, { method: 'PUT', body: input }) : api<McpServer>('/mcp-servers', { method: 'POST', body: input }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.mcpServers }),
@@ -114,6 +118,7 @@ export function useSaveMcpServer(id: string | undefined) {
 export function useSyncMcpServer() {
   const queryClient = useQueryClient()
   return useMutation({
+    meta: { success: 'Herramientas actualizadas' },
     mutationFn: (id: string) => api<McpServer>(`/mcp-servers/${id}/sync`, { method: 'POST' }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.mcpServers }),
   })
@@ -122,6 +127,7 @@ export function useSyncMcpServer() {
 export function useDeleteMcpServer() {
   const queryClient = useQueryClient()
   return useMutation({
+    meta: { success: 'Servidor MCP eliminado' },
     mutationFn: (id: string) => api<void>(`/mcp-servers/${id}`, { method: 'DELETE' }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.mcpServers }),
   })
@@ -129,6 +135,7 @@ export function useDeleteMcpServer() {
 
 export const useTestMcpTool = () =>
   useMutation({
+    meta: { silentError: true },
     mutationFn: ({ id, tool, args }: { id: string; tool: string; args: Record<string, unknown> }) =>
       api<{ result: string }>(`/mcp-servers/${id}/tools/${encodeURIComponent(tool)}/test`, { method: 'POST', body: { arguments: args } }),
   })
@@ -146,6 +153,7 @@ export function useCreateMcpToken() {
 export function useRevokeMcpToken() {
   const queryClient = useQueryClient()
   return useMutation({
+    meta: { success: 'Token revocado' },
     mutationFn: (id: string) => api<void>(`/mcp-tokens/${id}`, { method: 'DELETE' }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.mcpTokens }),
   })

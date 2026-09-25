@@ -5,22 +5,19 @@ import type { CallSettings } from '@/services/api'
 import { Button } from '@/components/atoms/Button'
 import { TextAreaField } from '@/components/molecules/Field'
 import { FormSection, FormSections } from '@/components/organisms/FormSection'
-import { Saved } from '@/components/atoms/Saved'
 import { Switch } from '@/components/atoms/Switch'
-import { useFlash } from '@/hooks/useFlash'
 
 const defaultNotice = 'Esta llamada puede ser grabada para mejorar la calidad del servicio.'
 
 /** Grabación de llamadas y aviso de consentimiento. */
 export function CallSettingsForm({ settings }: { settings: CallSettings }) {
   const save = useSaveCallSettings()
-  const [saved, flash] = useFlash()
   const [recordCalls, setRecordCalls] = useState(settings.recordCalls)
   const [notice, setNotice] = useState(settings.recordingNotice ?? defaultNotice)
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
-    save.mutate({ recordCalls, recordingNotice: notice.trim() || null }, { onSuccess: flash })
+    save.mutate({ recordCalls, recordingNotice: notice.trim() || null })
   }
 
   const noticeError = save.error instanceof ApiError ? save.error.fieldErrors.recordingNotice?.[0] : undefined
@@ -45,7 +42,6 @@ export function CallSettingsForm({ settings }: { settings: CallSettings }) {
         </FormSection>
       </FormSections>
       <div className="flex items-center justify-end gap-3 border-t border-slate-200 pt-6 dark:border-white/10">
-        <Saved show={saved} />
         {save.error && !noticeError && <span className="text-sm text-red-600 dark:text-red-400">{save.error.message}</span>}
         <Button type="submit" loading={save.isPending} className="sm:min-w-32">
           Guardar
