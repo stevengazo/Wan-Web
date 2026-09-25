@@ -136,6 +136,13 @@ export interface FormTemplateInput {
   enabled: boolean
 }
 
+/** Borrador que arma la IA: se carga en el editor para revisarlo antes de guardar. */
+export interface FormDraft {
+  name: string
+  description: string | null
+  fields: FormField[]
+}
+
 export interface FormTemplate extends FormTemplateInput {
   id: string
   submissionCount: number

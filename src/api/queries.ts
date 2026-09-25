@@ -11,6 +11,7 @@ import type {
   ExtensionInput,
   FormAction,
   FormActionInput,
+  FormDraft,
   FormSubmission,
   FormTemplate,
   FormTemplateInput,
@@ -141,6 +142,9 @@ export function useDeleteForm() {
     },
   })
 }
+
+export const useGenerateForm = () =>
+  useMutation({ mutationFn: (description: string) => api<FormDraft>('/forms/generate', { method: 'POST', body: { description } }) })
 
 export const useSubmissions = (formId: string) =>
   useQuery({ queryKey: keys.submissions(formId), queryFn: () => api<FormSubmission[]>(`/forms/${formId}/submissions`) })

@@ -2,7 +2,7 @@ import { motion } from 'motion/react'
 import { Link } from 'react-router'
 import { useForms } from '../api/queries'
 import { useAuth } from '../auth/useAuth'
-import { ChevronRightIcon } from '../ui/icons'
+import { ChevronRightIcon, SparklesIcon } from '../ui/icons'
 import { CreateButton, EmptyState, PageHeader } from '../ui/PageHeader'
 
 export function FormsPage() {
@@ -14,7 +14,21 @@ export function FormsPage() {
       <PageHeader
         title="Formularios"
         subtitle="Datos que el bot pide y guarda durante la llamada. Las respuestas aparecen aquí al instante."
-        action={isAdmin && <CreateButton to="/formularios/nuevo" label="Nuevo formulario" />}
+        action={
+          isAdmin && (
+            <div className="flex items-center gap-2">
+              <Link
+                to="/formularios/nuevo?ia=1"
+                className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-slate-300 px-4 text-sm font-medium hover:border-slate-400 dark:border-white/15 dark:hover:border-white/30"
+              >
+                <SparklesIcon />
+                <span className="hidden sm:inline">Crear con IA</span>
+                <span className="sm:hidden">IA</span>
+              </Link>
+              <CreateButton to="/formularios/nuevo" label="Nuevo formulario" />
+            </div>
+          )
+        }
       />
 
       <div className="mt-10">
