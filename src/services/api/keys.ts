@@ -20,6 +20,7 @@ export const keys = {
   smtp: ['smtp'] as const,
   siteSettings: ['site-settings'] as const,
   voiceSettings: ['voice-settings'] as const,
+  storageSettings: ['storage-settings'] as const,
   knowledge: ['knowledge'] as const,
   httpTools: ['http-tools'] as const,
   mcpServers: ['mcp-servers'] as const,

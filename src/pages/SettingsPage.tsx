@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { ApiError } from '@/services/api/client'
-import { useCallSettings, useLlmSettings, usePublicUrl, useSaveLlmSettings, useSiteSettings, useSmtpSettings, useVoiceSettings } from '@/services/api'
+import { useCallSettings, useLlmSettings, usePublicUrl, useSaveLlmSettings, useSiteSettings, useSmtpSettings, useStorageSettings, useVoiceSettings } from '@/services/api'
 import type { LlmProvider, LlmSettings } from '@/services/api'
 import { PasswordField } from '@/components/molecules/PasswordField'
 import { Button } from '@/components/atoms/Button'
@@ -11,6 +11,7 @@ import { McpAccessSection } from '@/components/organisms/settings/McpAccessSecti
 import { SmtpSettingsForm } from '@/components/organisms/settings/SmtpSettingsForm'
 import { SiteSettingsForm } from '@/components/organisms/settings/SiteSettingsForm'
 import { VoiceSettingsForm } from '@/components/organisms/settings/VoiceSettingsForm'
+import { StorageSettingsForm } from '@/components/organisms/settings/StorageSettingsForm'
 
 export function SettingsPage() {
   const { data: settings, isPending, error } = useLlmSettings()
@@ -18,6 +19,7 @@ export function SettingsPage() {
   const smtp = useSmtpSettings()
   const site = useSiteSettings()
   const voice = useVoiceSettings()
+  const storage = useStorageSettings()
   const publicUrl = usePublicUrl()
 
   return (
@@ -50,6 +52,15 @@ export function SettingsPage() {
       <div className="mt-2">
         {callSettings.error && <p className="text-red-600 dark:text-red-400">{callSettings.error.message}</p>}
         {callSettings.data && <CallSettingsForm settings={callSettings.data} />}
+      </div>
+
+      <h2 className="mt-16 eyebrow flex items-center gap-4 text-zinc-500 dark:text-zinc-400">
+        <span className="h-px w-6 bg-brand-500" />
+        Grabaciones
+      </h2>
+      <div className="mt-2">
+        {storage.error && <p className="text-red-600 dark:text-red-400">{storage.error.message}</p>}
+        {storage.data && <StorageSettingsForm settings={storage.data} />}
       </div>
 
       <h2 className="mt-16 eyebrow flex items-center gap-4 text-zinc-500 dark:text-zinc-400">

@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from '@/services/api/client'
 import { keys } from '@/services/api/keys'
+import type { StorageProvider } from '@/services/api/recordings'
 
 export interface SmtpSettings {
   host: string | null
@@ -111,5 +112,50 @@ export function useSaveVoiceSettings() {
     meta: { success: 'Voz guardada' },
     mutationFn: (input: SaveVoiceSettings) => api<VoiceSettings>('/settings/voice', { method: 'PUT', body: input }),
     onSuccess: (settings) => queryClient.setQueryData(keys.voiceSettings, settings),
+  })
+}
+
+export interface StorageSettings {
+  provider: StorageProvider
+  s3Bucket: string | null
+  s3Region: string | null
+  s3ServiceUrl: string | null
+  s3AccessKeyId: string | null
+  hasS3SecretKey: boolean
+  hasAzureConnectionString: boolean
+  azureContainer: string | null
+  prefix: string | null
+}
+
+/** Secretos vacíos conservan los guardados. */
+export interface SaveStorageSettings {
+  provider: StorageProvider
+  s3Bucket: string | null
+  s3Region: string | null
+  s3ServiceUrl: string | null
+  s3AccessKeyId: string | null
+  s3SecretKey: string | null
+  azureConnectionString: string | null
+  azureContainer: string | null
+  prefix: string | null
+}
+
+export const useStorageSettings = () => useQuery({ queryKey: keys.storageSettings, queryFn: () => api<StorageSettings>('/settings/storage') })
+
+export function useSaveStorageSettings() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    meta: { success: 'Almacenamiento guardado' },
+    mutationFn: (input: SaveStorageSettings) => api<StorageSettings>('/settings/storage', { method: 'PUT', body: input }),
+    onSuccess: (settings) => queryClient.setQueryData(keys.storageSettings, settings),
+  })
+}
+
+/** Sube, firma y borra un archivo de prueba con los datos del formulario, sin guardarlos. */
+export function useTestStorage() {
+  return useMutation({
+    meta: { silentError: true },
+    mutationFn: (input: SaveStorageSettings) =>
+      api<{ ok: boolean; message: string }>('/settings/storage/test', { method: 'POST', body: input }),
   })
 }

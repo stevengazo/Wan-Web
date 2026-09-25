@@ -2,10 +2,11 @@ import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { authStore } from '@/stores/authStore'
+import { api } from '@/services/api/client'
 import { useCallSettings, useDeleteRecording, useRecordings } from '@/services/api'
 import type { Recording } from '@/services/api'
 import { useAuth } from '@/hooks/useAuth'
-import { formatBytes, formatDateTime, formatWhen } from '@/lib/format'
+import { formatBytes, formatDateTime, formatDuration, formatWhen } from '@/lib/format'
 import { EmptyState, PageHeader } from '@/components/organisms/PageHeader'
 
 export function RecordingsPage() {
@@ -35,7 +36,7 @@ export function RecordingsPage() {
         {error && <p className="text-red-600 dark:text-red-400">{error.message}</p>}
         {recordings?.length === 0 && (
           <EmptyState title="Todavía no hay grabaciones">
-            Aparecen aquí cuando termina una llamada con la grabación activada y el webhook de audio configurado en ElevenLabs.
+            Aparecen aquí cuando termina una llamada con la grabación activada (Configuración → Llamadas).
           </EmptyState>
         )}
         <ul className="divide-y divide-zinc-200 overflow-hidden rounded-xl border border-zinc-200 empty:hidden dark:divide-white/10 dark:border-white/10">
@@ -52,17 +53,26 @@ export function RecordingsPage() {
   )
 }
 
+const storageLabels: Record<Recording['storage'], string> = { Local: 'En el servidor', S3: 'S3', AzureBlob: 'Azure' }
+
 function RecordingRow({ recording, canDelete }: { recording: Recording; canDelete: boolean }) {
   const remove = useDeleteRecording()
   const [src, setSrc] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // El <audio> no puede mandar el JWT: el archivo se baja con fetch y se reproduce desde un blob local.
+  // El <audio> no puede mandar el JWT: en la nube se usa el enlace firmado; en disco, el archivo se baja con
+  // fetch y se reproduce desde un blob local.
   const load = async () => {
     setLoading(true)
     setError(null)
     try {
+      const { url } = await api<{ url: string | null }>(`/recordings/${recording.id}/location`)
+      if (url) {
+        setSrc(url)
+        return
+      }
+
       const response = await fetch(`/api/recordings/${recording.id}/audio`, {
         headers: { Authorization: `Bearer ${authStore.get()?.accessToken ?? ''}` },
       })
@@ -76,7 +86,7 @@ function RecordingRow({ recording, canDelete }: { recording: Recording; canDelet
   }
 
   useEffect(() => () => {
-    if (src) URL.revokeObjectURL(src)
+    if (src?.startsWith('blob:')) URL.revokeObjectURL(src)
   }, [src])
 
   return (
@@ -87,7 +97,8 @@ function RecordingRow({ recording, canDelete }: { recording: Recording; canDelet
             {formatWhen(recording.createdAt)}
           </p>
           <p className="truncate font-mono text-xs text-zinc-500 dark:text-zinc-400">
-            {recording.conversationId} · {formatBytes(recording.sizeBytes)}
+            {recording.durationSeconds != null && `${formatDuration(recording.durationSeconds)} · `}
+            {formatBytes(recording.sizeBytes)} · {storageLabels[recording.storage]}
           </p>
         </div>
         <div className="flex items-center gap-1">
@@ -104,7 +115,7 @@ function RecordingRow({ recording, canDelete }: { recording: Recording; canDelet
           {src && (
             <a
               href={src}
-              download={`grabacion-${recording.createdAt.slice(0, 16).replace(/[:T]/g, '-')}.mp3`}
+              download={`grabacion-${recording.createdAt.slice(0, 16).replace(/[:T]/g, '-')}.${recording.contentType === 'audio/wav' ? 'wav' : 'mp3'}`}
               className="min-h-10 content-center rounded-lg px-3 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-white/10"
             >
               Descargar

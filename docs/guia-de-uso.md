@@ -158,7 +158,9 @@ Los mensajes que el bot toma para quien no puede atender: para quién, de quién
 
 ## 🎙️ Grabaciones
 
-Con **Grabar llamadas** activo, cada conversación aparece aquí para escucharla y adelantarla. Un administrador puede borrarlas.
+Con **Grabar llamadas** activo, cada conversación aparece aquí con su duración y dónde está guardada, para escucharla, adelantarla o descargarla. Un administrador puede borrarlas.
+
+En **Configuración → Grabaciones** se elige dónde guardarlas: en el servidor, en Amazon S3 (o R2, MinIO, Spaces) o en Azure Blob Storage. **Probar** verifica los datos antes de guardar.
 
 ## 👥 Usuarios 🔒
 
