@@ -42,6 +42,7 @@ import {
   Upload,
   RotateCcw,
   ChartColumn,
+  CircleHelp,
   type LucideProps,
 } from 'lucide-react'
 
@@ -94,3 +95,4 @@ export const PlayIcon = (props: LucideProps) => <Play {...base} {...props} />
 export const UploadIcon = (props: LucideProps) => <Upload {...base} {...props} />
 export const RetryIcon = (props: LucideProps) => <RotateCcw {...base} {...props} />
 export const ChartIcon = (props: LucideProps) => <ChartColumn {...base} {...props} />
+export const HelpIcon = (props: LucideProps) => <CircleHelp {...base} {...props} />

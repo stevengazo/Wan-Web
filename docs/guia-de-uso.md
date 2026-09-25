@@ -2,6 +2,10 @@
 
 Recorrido por cada pantalla del panel. Las marcadas con 🔒 solo las ven los administradores.
 
+## ❔ Ayuda dentro del panel
+
+La sección **Ayuda** del menú explica cómo funciona Mapache con un diagrama, los primeros pasos, cada módulo, la solución de problemas frecuentes y un glosario. Tiene buscador, y las URLs para configurar ElevenLabs y MCP aparecen ya con la URL pública de tu instalación.
+
 ## Roles
 
 | Rol | Puede |

@@ -12,6 +12,7 @@ import {
   ChartIcon,
   ClipboardIcon,
   DatabaseIcon,
+  HelpIcon,
   HomeIcon,
   InboxIcon,
   LogOutIcon,
@@ -58,6 +59,7 @@ const allNav: NavItem[] = [
   { to: '/directorio', label: 'Directorio', icon: <BookIcon /> },
   { to: '/usuarios', label: 'Usuarios', icon: <UsersIcon />, admin: true },
   { to: '/configuracion', label: 'Configuración', icon: <SettingsIcon />, admin: true },
+  { to: '/ayuda', label: 'Ayuda', icon: <HelpIcon /> },
 ]
 
 export function AppTemplate() {

@@ -28,6 +28,7 @@ const CampaignsPage = lazy(() => import('@/pages/CampaignsPage').then((m) => ({ 
 const CampaignEditorPage = lazy(() => import('@/pages/CampaignEditorPage').then((m) => ({ default: m.CampaignEditorPage })))
 const CampaignDetailPage = lazy(() => import('@/pages/CampaignDetailPage').then((m) => ({ default: m.CampaignDetailPage })))
 const AnalyticsPage = lazy(() => import('@/pages/AnalyticsPage').then((m) => ({ default: m.AnalyticsPage })))
+const HelpPage = lazy(() => import('@/pages/HelpPage').then((m) => ({ default: m.HelpPage })))
 const PhonePage = lazy(() => import('@/pages/PhonePage').then((m) => ({ default: m.PhonePage })))
 const UsersPage = lazy(() => import('@/pages/UsersPage').then((m) => ({ default: m.UsersPage })))
 const RecordingsPage = lazy(() => import('@/pages/RecordingsPage').then((m) => ({ default: m.RecordingsPage })))
@@ -90,6 +91,7 @@ const router = createBrowserRouter([
       },
       { path: 'telefono', element: <PhonePage /> },
       { path: 'analitica', element: <AnalyticsPage /> },
+      { path: 'ayuda', element: <HelpPage /> },
       { path: 'campanas', element: <CampaignsPage /> },
       {
         path: 'campanas/nueva',
