@@ -4,6 +4,7 @@ import { createBrowserRouter, Link, RouterProvider } from 'react-router'
 import { ApiError } from './api/client'
 import { RequireAuth } from './auth/RequireAuth'
 import { LoginPage } from './pages/LoginPage'
+import { RegisterPage } from './pages/RegisterPage'
 
 // Carga diferida: el login no descarga SignalR ni el resto del panel (importa en móvil con red lenta).
 const AppLayout = lazy(() => import('./layout/AppLayout').then((m) => ({ default: m.AppLayout })))
@@ -23,6 +24,7 @@ const queryClient = new QueryClient({
 
 const router = createBrowserRouter([
   { path: '/login', element: <LoginPage /> },
+  { path: '/registro', element: <RegisterPage /> },
   {
     element: (
       <RequireAuth>

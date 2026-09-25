@@ -13,6 +13,13 @@ export function useAuth() {
       const response = await api<LoginResponse>('/auth/login', { method: 'POST', body: { email, password } })
       authStore.set(response)
     },
+    async register(displayName: string, email: string, password: string) {
+      const response = await api<LoginResponse>('/auth/register', {
+        method: 'POST',
+        body: { displayName, email, password },
+      })
+      authStore.set(response)
+    },
     logout: () => authStore.set(null),
   }
 }

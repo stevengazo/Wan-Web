@@ -1,0 +1,111 @@
+import { useState, type FormEvent } from 'react'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router'
+import { ApiError } from '../api/client'
+import { AuthLayout, FormAlert } from '../auth/AuthLayout'
+import { PasswordField } from '../auth/PasswordField'
+import { useAuth } from '../auth/useAuth'
+import { Button } from '../ui/Button'
+import { TextField } from '../ui/Field'
+import { MailIcon, UserIcon } from '../ui/icons'
+
+const minPasswordLength = 8
+
+export function RegisterPage() {
+  const { user, register } = useAuth()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const [displayName, setDisplayName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState<ApiError | null>(null)
+  const [submitting, setSubmitting] = useState(false)
+
+  const from = (location.state as { from?: string } | null)?.from ?? '/'
+
+  if (user) {
+    return <Navigate to={from} replace />
+  }
+
+  const fieldErrors = error?.fieldErrors ?? {}
+  const generalError = error && Object.keys(fieldErrors).length === 0 ? error.message : null
+  const passwordTooShort = password.length > 0 && password.length < minPasswordLength
+
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault()
+    setError(null)
+    setSubmitting(true)
+    try {
+      await register(displayName, email, password)
+      navigate(from, { replace: true })
+    } catch (e) {
+      setError(e instanceof ApiError ? e : new ApiError(0, 'No se pudo crear la cuenta'))
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <AuthLayout
+      title="Crea tu cuenta"
+      subtitle="Entra al panel en menos de un minuto."
+      footer={
+        <>
+          ¿Ya tienes cuenta?{' '}
+          <Link to="/login" state={location.state} className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
+            Inicia sesión
+          </Link>
+        </>
+      }
+    >
+      <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+        <TextField
+          label="Nombre"
+          autoComplete="name"
+          placeholder="Ana Rodríguez"
+          icon={<UserIcon />}
+          required
+          value={displayName}
+          onChange={(e) => setDisplayName(e.target.value)}
+          error={fieldErrors.displayName?.[0]}
+        />
+        <TextField
+          label="Correo"
+          type="email"
+          autoComplete="email"
+          inputMode="email"
+          placeholder="tu@empresa.com"
+          icon={<MailIcon />}
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          error={fieldErrors.email?.[0]}
+        />
+        <PasswordField
+          label="Contraseña"
+          autoComplete="new-password"
+          required
+          minLength={minPasswordLength}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          hint={`Mínimo ${minPasswordLength} caracteres.`}
+          error={fieldErrors.password?.[0] ?? (passwordTooShort ? `Faltan ${minPasswordLength - password.length} caracteres` : undefined)}
+        />
+
+        {generalError && <FormAlert message={generalError} />}
+
+        <Button
+          type="submit"
+          loading={submitting}
+          disabled={!displayName.trim() || !email || password.length < minPasswordLength}
+          className="w-full shadow-sm shadow-indigo-600/20"
+        >
+          Crear cuenta
+        </Button>
+
+        <p className="text-center text-xs text-slate-500 dark:text-slate-400">
+          Las cuentas nuevas pueden ver el panel; un administrador puede darte permisos para editar.
+        </p>
+      </form>
+    </AuthLayout>
+  )
+}

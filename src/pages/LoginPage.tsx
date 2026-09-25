@@ -1,11 +1,12 @@
-import { motion } from 'motion/react'
 import { useState, type FormEvent } from 'react'
-import { Navigate, useLocation, useNavigate } from 'react-router'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router'
 import { ApiError } from '../api/client'
+import { AuthLayout, FormAlert } from '../auth/AuthLayout'
+import { PasswordField } from '../auth/PasswordField'
 import { useAuth } from '../auth/useAuth'
-import { ThemeToggle } from '../theme/ThemeToggle'
 import { Button } from '../ui/Button'
 import { TextField } from '../ui/Field'
+import { MailIcon } from '../ui/icons'
 
 export function LoginPage() {
   const { user, login } = useAuth()
@@ -37,58 +38,44 @@ export function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-dvh flex-col px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[max(1rem,env(safe-area-inset-top))]">
-      <div className="flex justify-end">
-        <ThemeToggle />
-      </div>
-
-      <motion.form
-        onSubmit={handleSubmit}
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, ease: 'easeOut' }}
-        className="mx-auto mt-10 w-full max-w-sm space-y-5 sm:mt-24"
-        noValidate
-      >
-        <div>
-          <h1 className="text-3xl font-semibold tracking-tight">Mapache</h1>
-          <p className="mt-1 text-slate-600 dark:text-slate-400">Inicia sesión para administrar el bot.</p>
-        </div>
-
+    <AuthLayout
+      title="Bienvenido de nuevo"
+      subtitle="Inicia sesión para administrar el bot."
+      footer={
+        <>
+          ¿No tienes cuenta?{' '}
+          <Link to="/registro" state={location.state} className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
+            Regístrate
+          </Link>
+        </>
+      }
+    >
+      <form onSubmit={handleSubmit} className="space-y-5" noValidate>
         <TextField
           label="Correo"
           type="email"
           autoComplete="username"
           inputMode="email"
+          placeholder="tu@empresa.com"
+          icon={<MailIcon />}
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <TextField
+        <PasswordField
           label="Contraseña"
-          type="password"
           autoComplete="current-password"
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        {error && (
-          <motion.p
-            role="alert"
-            initial={{ opacity: 0, x: -6 }}
-            animate={{ opacity: 1, x: [6, -4, 2, 0] }}
-            transition={{ duration: 0.3 }}
-            className="rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700 dark:bg-red-500/10 dark:text-red-300"
-          >
-            {error}
-          </motion.p>
-        )}
+        {error && <FormAlert message={error} />}
 
-        <Button type="submit" loading={submitting} disabled={!email || !password} className="w-full">
+        <Button type="submit" loading={submitting} disabled={!email || !password} className="w-full shadow-sm shadow-indigo-600/20">
           Entrar
         </Button>
-      </motion.form>
-    </div>
+      </form>
+    </AuthLayout>
   )
 }
