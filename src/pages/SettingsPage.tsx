@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { ApiError } from '../api/client'
-import { useLlmSettings, useSaveLlmSettings } from '../api/queries'
+import { useCallSettings, useLlmSettings, useSaveLlmSettings } from '../api/queries'
 import type { LlmProvider, LlmSettings } from '../api/types'
 import { PasswordField } from '../auth/PasswordField'
 import { Button } from '../ui/Button'
@@ -9,16 +9,25 @@ import { FormSection, FormSections } from '../ui/FormSection'
 import { CopyIcon } from '../ui/icons'
 import { Saved } from '../ui/Saved'
 import { useFlash } from '../ui/useFlash'
+import { CallSettingsForm } from './CallSettingsForm'
 
 export function SettingsPage() {
   const { data: settings, isPending, error } = useLlmSettings()
+  const callSettings = useCallSettings()
 
   return (
     <div>
       <h1 className="font-display text-4xl md:text-5xl">Configuración</h1>
       <p className="mt-2 text-slate-500 dark:text-slate-400">Ajustes generales del sistema, iguales para todas las cuentas.</p>
 
-      <div className="mt-10">
+      <h2 className="mt-12 text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">Llamadas</h2>
+      <div className="mt-2">
+        {callSettings.error && <p className="text-red-600 dark:text-red-400">{callSettings.error.message}</p>}
+        {callSettings.data && <CallSettingsForm settings={callSettings.data} />}
+      </div>
+
+      <h2 className="mt-16 text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">Inteligencia artificial</h2>
+      <div className="mt-2">
         {isPending && <p className="text-slate-500">Cargando…</p>}
         {error && <p className="text-red-600 dark:text-red-400">{error.message}</p>}
         {settings && <AiSettingsForm settings={settings} />}

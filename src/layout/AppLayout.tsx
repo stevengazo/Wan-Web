@@ -1,17 +1,42 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { AnimatePresence, motion } from 'motion/react'
-import { Suspense, type ReactNode } from 'react'
+import { Suspense, useState, type ReactNode } from 'react'
 import { Link, NavLink, useLocation, useOutlet } from 'react-router'
+import { useMessages } from '../api/queries'
 import { useAuth } from '../auth/useAuth'
 import { RealtimeIndicator } from '../realtime/RealtimeIndicator'
 import { useRealtime } from '../realtime/useRealtime'
-import { BookIcon, HomeIcon, LogOutIcon, PanelLeftIcon, PhoneIcon, SettingsIcon } from '../ui/icons'
+import {
+  BookIcon,
+  ClipboardIcon,
+  HomeIcon,
+  InboxIcon,
+  LogOutIcon,
+  MicIcon,
+  MoreIcon,
+  PanelLeftIcon,
+  PhoneIcon,
+  SettingsIcon,
+} from '../ui/icons'
 import { Avatar } from '../ui/Avatar'
 import { Logo } from '../ui/Logo'
 import { useSidebarCollapsed } from './useSidebarCollapsed'
 
-const allNav: { to: string; label: string; icon: ReactNode; end?: boolean; admin?: boolean }[] = [
-  { to: '/', label: 'Inicio', icon: <HomeIcon />, end: true },
+interface NavItem {
+  to: string
+  label: string
+  icon: ReactNode
+  end?: boolean
+  admin?: boolean
+  /** Va en la barra inferior en móvil; el resto queda bajo "Más". */
+  primary?: boolean
+}
+
+const allNav: NavItem[] = [
+  { to: '/', label: 'Inicio', icon: <HomeIcon />, end: true, primary: true },
+  { to: '/recados', label: 'Recados', icon: <InboxIcon />, primary: true },
+  { to: '/formularios', label: 'Formularios', icon: <ClipboardIcon />, primary: true },
+  { to: '/grabaciones', label: 'Grabaciones', icon: <MicIcon /> },
   { to: '/extensiones', label: 'Extensiones', icon: <PhoneIcon /> },
   { to: '/directorio', label: 'Directorio', icon: <BookIcon /> },
   { to: '/configuracion', label: 'Configuración', icon: <SettingsIcon />, admin: true },
@@ -27,6 +52,12 @@ export function AppLayout() {
   const outlet = useOutlet()
   const realtime = useRealtime()
   const { collapsed, toggle } = useSidebarCollapsed()
+  const [moreOpen, setMoreOpen] = useState(false)
+  const { data: messages } = useMessages()
+  const unreadMessages = messages?.filter((m) => m.status === 'New').length ?? 0
+  const badgeFor = (item: NavItem) => (item.to === '/recados' ? unreadMessages : 0)
+  const secondary = nav.filter((item) => !item.primary)
+  const secondaryActive = secondary.some((item) => location.pathname.startsWith(item.to))
 
   const handleLogout = () => {
     logout()
@@ -80,8 +111,18 @@ export function AppLayout() {
                 }`
               }
             >
-              {item.icon}
-              {collapsed ? <Tooltip>{item.label}</Tooltip> : item.label}
+              <span className="relative">
+                {item.icon}
+                {collapsed && badgeFor(item) > 0 && <span className="absolute -right-1 -top-1 size-2 rounded-full bg-red-500" />}
+              </span>
+              {collapsed ? (
+                <Tooltip>{item.label}</Tooltip>
+              ) : (
+                <>
+                  <span className="flex-1">{item.label}</span>
+                  {badgeFor(item) > 0 && <Badge count={badgeFor(item)} />}
+                </>
+              )}
             </NavLink>
           ))}
         </nav>
@@ -159,34 +200,99 @@ export function AppLayout() {
 
       {/* Barra de navegación inferior en móvil, al alcance del pulgar. */}
       <nav className="fixed inset-x-0 bottom-0 z-10 flex border-t border-slate-200 bg-white/90 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden dark:border-white/10 dark:bg-slate-950/90">
-        {nav.map((item) => (
-          <NavLink
-            key={item.to}
-            to={item.to}
-            end={item.end}
-            className={({ isActive }) =>
-              `relative flex min-h-16 flex-1 flex-col items-center justify-center gap-1 text-xs font-medium ${
-                isActive ? 'text-slate-900 dark:text-white' : 'text-slate-400 dark:text-slate-500'
-              }`
-            }
-          >
-            {({ isActive }) => (
-              <>
-                {isActive && (
-                  <motion.span
-                    layoutId="bottom-nav-indicator"
-                    className="absolute inset-x-8 top-0 h-0.5 rounded-full bg-slate-900 dark:bg-white"
-                  />
-                )}
-                {item.icon}
-                {item.label}
-              </>
-            )}
-          </NavLink>
-        ))}
+        {nav
+          .filter((item) => item.primary)
+          .map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.end}
+              className={({ isActive }) =>
+                `relative flex min-h-16 flex-1 flex-col items-center justify-center gap-1 text-xs font-medium ${
+                  isActive ? 'text-slate-900 dark:text-white' : 'text-slate-400 dark:text-slate-500'
+                }`
+              }
+            >
+              {({ isActive }) => (
+                <>
+                  {isActive && <BottomIndicator />}
+                  <span className="relative">
+                    {item.icon}
+                    {badgeFor(item) > 0 && <span className="absolute -right-1 -top-1 size-2 rounded-full bg-red-500" />}
+                  </span>
+                  {item.label}
+                </>
+              )}
+            </NavLink>
+          ))}
+        <button
+          type="button"
+          onClick={() => setMoreOpen(true)}
+          aria-haspopup="dialog"
+          className={`relative flex min-h-16 flex-1 flex-col items-center justify-center gap-1 text-xs font-medium ${
+            secondaryActive ? 'text-slate-900 dark:text-white' : 'text-slate-400 dark:text-slate-500'
+          }`}
+        >
+          {secondaryActive && <BottomIndicator />}
+          <MoreIcon />
+          Más
+        </button>
       </nav>
+
+      <AnimatePresence>
+        {moreOpen && (
+          <motion.div
+            className="fixed inset-0 z-30 flex items-end bg-slate-950/50 md:hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setMoreOpen(false)}
+          >
+            <motion.nav
+              role="dialog"
+              aria-modal="true"
+              aria-label="Más secciones"
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'spring', stiffness: 400, damping: 40 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full rounded-t-3xl bg-white p-3 pb-[max(1rem,env(safe-area-inset-bottom))] dark:bg-slate-900"
+            >
+              <div className="mx-auto mb-2 h-1 w-10 rounded-full bg-slate-300 dark:bg-white/20" />
+              {secondary.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  onClick={() => setMoreOpen(false)}
+                  className={({ isActive }) =>
+                    `flex min-h-12 items-center gap-3 rounded-xl px-4 font-medium ${
+                      isActive ? 'bg-slate-100 dark:bg-white/10' : 'text-slate-600 dark:text-slate-300'
+                    }`
+                  }
+                >
+                  {item.icon}
+                  {item.label}
+                </NavLink>
+              ))}
+            </motion.nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
+}
+
+function Badge({ count }: { count: number }) {
+  return (
+    <span className="min-w-5 rounded-full bg-red-500 px-1.5 text-center text-xs font-medium leading-5 text-white tabular-nums">
+      {count > 99 ? '99+' : count}
+    </span>
+  )
+}
+
+function BottomIndicator() {
+  return <motion.span layoutId="bottom-nav-indicator" className="absolute inset-x-8 top-0 h-0.5 rounded-full bg-slate-900 dark:bg-white" />
 }
 
 /** Etiqueta que aparece a la derecha del ícono cuando el sidebar está colapsado. */

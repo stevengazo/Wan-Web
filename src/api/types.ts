@@ -115,3 +115,72 @@ export interface DirectoryEntry extends DirectoryEntryInput {
   createdAt: string
   updatedAt: string
 }
+
+export type FormFieldType = 'Text' | 'Number' | 'Phone' | 'Email' | 'Date' | 'YesNo' | 'Choice'
+
+export interface FormField {
+  /** Identificador estable que usa el bot (minúsculas, números y guion bajo). */
+  key: string
+  label: string
+  type: FormFieldType
+  required: boolean
+  hint: string | null
+  options: string[]
+}
+
+export interface FormTemplateInput {
+  name: string
+  /** Cuándo usarlo; le da contexto al bot. */
+  description: string | null
+  fields: FormField[]
+  enabled: boolean
+}
+
+export interface FormTemplate extends FormTemplateInput {
+  id: string
+  submissionCount: number
+  newSubmissionCount: number
+  createdAt: string
+  updatedAt: string
+}
+
+export type SubmissionStatus = 'New' | 'Reviewed'
+
+export interface FormSubmission {
+  id: string
+  formTemplateId: string
+  values: Record<string, string>
+  conversationId: string | null
+  callerNumber: string | null
+  status: SubmissionStatus
+  createdAt: string
+}
+
+export type CallMessageStatus = 'New' | 'Read' | 'Done'
+
+/** Recado que el bot tomó durante una llamada. */
+export interface CallMessage {
+  id: string
+  recipient: string
+  directoryEntryId: string | null
+  directoryEntryName: string | null
+  callerName: string | null
+  callbackNumber: string | null
+  body: string
+  urgent: boolean
+  status: CallMessageStatus
+  conversationId: string | null
+  createdAt: string
+}
+
+export interface Recording {
+  id: string
+  conversationId: string
+  sizeBytes: number
+  createdAt: string
+}
+
+export interface CallSettings {
+  recordCalls: boolean
+  recordingNotice: string | null
+}

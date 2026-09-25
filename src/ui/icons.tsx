@@ -129,3 +129,32 @@ export const SearchIcon = () => (
     <path d="m20 20-3.5-3.5" />
   </Icon>
 )
+
+export const InboxIcon = () => (
+  <Icon>
+    <path d="M22 12h-6l-2 3h-4l-2-3H2" />
+    <path d="M5.5 5.1 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.5-6.9A2 2 0 0 0 16.8 4H7.2a2 2 0 0 0-1.7 1.1Z" />
+  </Icon>
+)
+
+export const ClipboardIcon = () => (
+  <Icon>
+    <rect x="5" y="4" width="14" height="17" rx="2" />
+    <path d="M9 4V3h6v1M9 11h6M9 15h4" />
+  </Icon>
+)
+
+export const MicIcon = () => (
+  <Icon>
+    <rect x="9" y="2" width="6" height="12" rx="3" />
+    <path d="M5 10a7 7 0 0 0 14 0M12 17v4" />
+  </Icon>
+)
+
+export const MoreIcon = () => (
+  <Icon>
+    <circle cx="5" cy="12" r="1" />
+    <circle cx="12" cy="12" r="1" />
+    <circle cx="19" cy="12" r="1" />
+  </Icon>
+)

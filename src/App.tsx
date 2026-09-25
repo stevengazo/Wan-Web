@@ -15,6 +15,11 @@ const SettingsPage = lazy(() => import('./pages/SettingsPage').then((m) => ({ de
 const ProfilePage = lazy(() => import('./pages/ProfilePage').then((m) => ({ default: m.ProfilePage })))
 const DirectoryPage = lazy(() => import('./pages/DirectoryPage').then((m) => ({ default: m.DirectoryPage })))
 const DirectoryFormPage = lazy(() => import('./pages/DirectoryFormPage').then((m) => ({ default: m.DirectoryFormPage })))
+const FormsPage = lazy(() => import('./pages/FormsPage').then((m) => ({ default: m.FormsPage })))
+const FormDetailPage = lazy(() => import('./pages/FormDetailPage').then((m) => ({ default: m.FormDetailPage })))
+const FormEditorPage = lazy(() => import('./pages/FormEditorPage').then((m) => ({ default: m.FormEditorPage })))
+const MessagesPage = lazy(() => import('./pages/MessagesPage').then((m) => ({ default: m.MessagesPage })))
+const RecordingsPage = lazy(() => import('./pages/RecordingsPage').then((m) => ({ default: m.RecordingsPage })))
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -70,6 +75,26 @@ const router = createBrowserRouter([
         element: (
           <RequireAuth admin>
             <DirectoryFormPage />
+          </RequireAuth>
+        ),
+      },
+      { path: 'recados', element: <MessagesPage /> },
+      { path: 'grabaciones', element: <RecordingsPage /> },
+      { path: 'formularios', element: <FormsPage /> },
+      {
+        path: 'formularios/nuevo',
+        element: (
+          <RequireAuth admin>
+            <FormEditorPage />
+          </RequireAuth>
+        ),
+      },
+      { path: 'formularios/:id', element: <FormDetailPage /> },
+      {
+        path: 'formularios/:id/editar',
+        element: (
+          <RequireAuth admin>
+            <FormEditorPage />
           </RequireAuth>
         ),
       },

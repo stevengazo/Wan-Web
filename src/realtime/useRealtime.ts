@@ -27,6 +27,11 @@ export function useRealtime() {
       queryClient.invalidateQueries({ queryKey: ['extensions'], refetchType: 'none' })
     })
 
+    // Recados, respuestas y grabaciones llegan desde las llamadas: se refrescan solos.
+    connection.on('MessagesChanged', () => queryClient.invalidateQueries({ queryKey: ['messages'] }))
+    connection.on('FormSubmissionsChanged', () => queryClient.invalidateQueries({ queryKey: ['forms'] }))
+    connection.on('RecordingsChanged', () => queryClient.invalidateQueries({ queryKey: ['recordings'] }))
+
     connection.onreconnecting(() => setStatus('reconnecting'))
     connection.onreconnected(() => {
       setStatus('connected')
