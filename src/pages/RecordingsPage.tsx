@@ -31,14 +31,14 @@ export function RecordingsPage() {
       )}
 
       <div className="mt-8">
-        {isPending && <p className="text-slate-500">Cargando…</p>}
+        {isPending && <p className="text-zinc-500">Cargando…</p>}
         {error && <p className="text-red-600 dark:text-red-400">{error.message}</p>}
         {recordings?.length === 0 && (
           <EmptyState title="Todavía no hay grabaciones">
             Aparecen aquí cuando termina una llamada con la grabación activada y el webhook de audio configurado en ElevenLabs.
           </EmptyState>
         )}
-        <ul className="divide-y divide-slate-200 overflow-hidden rounded-xl border border-slate-200 empty:hidden dark:divide-white/10 dark:border-white/10">
+        <ul className="divide-y divide-zinc-200 overflow-hidden rounded-xl border border-zinc-200 empty:hidden dark:divide-white/10 dark:border-white/10">
           <AnimatePresence initial={false}>
             {recordings?.map((recording) => (
               <motion.li key={recording.id} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
@@ -86,7 +86,7 @@ function RecordingRow({ recording, canDelete }: { recording: Recording; canDelet
           <p className="font-medium" title={formatDateTime(recording.createdAt)}>
             {formatWhen(recording.createdAt)}
           </p>
-          <p className="truncate font-mono text-xs text-slate-500 dark:text-slate-400">
+          <p className="truncate font-mono text-xs text-zinc-500 dark:text-zinc-400">
             {recording.conversationId} · {formatBytes(recording.sizeBytes)}
           </p>
         </div>
@@ -96,7 +96,7 @@ function RecordingRow({ recording, canDelete }: { recording: Recording; canDelet
               type="button"
               onClick={load}
               disabled={loading}
-              className="min-h-10 rounded-lg bg-slate-900 px-3 text-sm font-medium text-white hover:bg-slate-700 disabled:opacity-60 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
+              className="min-h-10 rounded-lg bg-brand-600 px-3 text-xs font-semibold uppercase tracking-[0.2em] text-white hover:bg-brand-500 disabled:opacity-60 dark:bg-brand-600 dark:text-white dark:hover:bg-brand-500"
             >
               {loading ? 'Cargando…' : 'Escuchar'}
             </button>
@@ -105,7 +105,7 @@ function RecordingRow({ recording, canDelete }: { recording: Recording; canDelet
             <a
               href={src}
               download={`grabacion-${recording.createdAt.slice(0, 16).replace(/[:T]/g, '-')}.mp3`}
-              className="min-h-10 content-center rounded-lg px-3 text-sm font-medium hover:bg-slate-100 dark:hover:bg-white/10"
+              className="min-h-10 content-center rounded-lg px-3 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-white/10"
             >
               Descargar
             </a>

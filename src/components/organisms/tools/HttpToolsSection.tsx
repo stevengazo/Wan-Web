@@ -17,7 +17,7 @@ export function HttpToolsSection() {
 
   return (
     <div className="space-y-3">
-      {isPending && <p className="text-slate-500">Cargando…</p>}
+      {isPending && <p className="text-zinc-500">Cargando…</p>}
       {error && <p className="text-red-600 dark:text-red-400">{error.message}</p>}
       {tools?.map((tool) =>
         editing === tool.id ? (
@@ -38,16 +38,16 @@ export function HttpToolsSection() {
 function HttpToolRow({ tool, onEdit }: { tool: HttpTool; onEdit: () => void }) {
   const [testing, setTesting] = useState(false)
   return (
-    <div className={`rounded-xl border border-slate-200 p-4 dark:border-white/10 ${tool.enabled ? '' : 'opacity-60'}`}>
+    <div className={`rounded-xl border border-zinc-200 p-4 dark:border-white/10 ${tool.enabled ? '' : 'opacity-60'}`}>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="min-w-0">
           <p className="flex flex-wrap items-center gap-2">
             <code className="font-medium">{tool.name}</code>
-            <span className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-xs dark:bg-white/10">{tool.method}</span>
-            {!tool.enabled && <span className="text-xs text-slate-500">Inactiva</span>}
+            <span className="rounded bg-zinc-100 px-1.5 py-0.5 font-mono text-xs dark:bg-white/10">{tool.method}</span>
+            {!tool.enabled && <span className="text-xs text-zinc-500">Inactiva</span>}
           </p>
-          <p className="mt-0.5 truncate font-mono text-xs text-slate-500 dark:text-slate-400">{tool.urlTemplate}</p>
-          <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">{tool.description}</p>
+          <p className="mt-0.5 truncate font-mono text-xs text-zinc-500 dark:text-zinc-400">{tool.urlTemplate}</p>
+          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-300">{tool.description}</p>
         </div>
         <div className="flex gap-1">
           <SmallButton onClick={() => setTesting(!testing)}>{testing ? 'Cerrar prueba' : 'Probar'}</SmallButton>
@@ -75,7 +75,7 @@ function HttpToolTester({ tool }: { tool: HttpTool }) {
   }
 
   return (
-    <form onSubmit={run} className="mt-4 space-y-3 border-t border-slate-100 pt-4 dark:border-white/5">
+    <form onSubmit={run} className="mt-4 space-y-3 border-t border-zinc-100 pt-4 dark:border-white/5">
       <div className="grid gap-3 sm:grid-cols-2">
         {tool.parameters.map((p) => (
           <TextField key={p.name} label={p.name} placeholder={p.description ?? ''} value={values[p.name] ?? ''} onChange={(e) => setValues({ ...values, [p.name]: e.target.value })} />
@@ -86,8 +86,8 @@ function HttpToolTester({ tool }: { tool: HttpTool }) {
       </Button>
       {test.data && (
         <div className="space-y-1 text-sm">
-          <p className="break-all font-mono text-xs text-slate-500 dark:text-slate-400">{test.data.url}</p>
-          <pre className="max-h-60 overflow-auto whitespace-pre-wrap break-all rounded-lg bg-slate-50 p-3 font-mono text-xs dark:bg-white/5">{test.data.result}</pre>
+          <p className="break-all font-mono text-xs text-zinc-500 dark:text-zinc-400">{test.data.url}</p>
+          <pre className="max-h-60 overflow-auto whitespace-pre-wrap break-all rounded-lg bg-zinc-50 p-3 font-mono text-xs dark:bg-white/5">{test.data.result}</pre>
         </div>
       )}
       {test.error && <p className="text-sm text-red-600 dark:text-red-400">{test.error.message}</p>}
@@ -125,7 +125,7 @@ function HttpToolEditor({ tool, onDone }: { tool?: HttpTool; onDone: () => void 
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-5 rounded-xl border border-slate-300 p-4 dark:border-white/20">
+    <form onSubmit={handleSubmit} noValidate className="space-y-5 rounded-xl border border-zinc-300 p-4 dark:border-white/20">
       <div className="grid gap-4 md:grid-cols-[1fr_120px]">
         <TextField label="Nombre para el bot" placeholder="consultar_pedido" className="font-mono" autoCapitalize="off" spellCheck={false} value={name} onChange={(e) => setName(e.target.value)} error={fieldErrors.name?.[0]} hint="snake_case: así la ve el modelo." />
         <SelectField label="Método" value={method} onChange={(e) => setMethod(e.target.value)} error={fieldErrors.method?.[0]}>
@@ -167,21 +167,21 @@ function HttpToolEditor({ tool, onDone }: { tool?: HttpTool; onDone: () => void 
       )}
 
       <div className="space-y-2">
-        <p className="text-sm font-medium text-slate-700 dark:text-slate-300">Parámetros que completa el bot</p>
+        <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Parámetros que completa el bot</p>
         {parameters.map((p, index) => (
-          <div key={index} className="grid gap-2 rounded-lg border border-slate-200 p-3 sm:grid-cols-[1fr_120px_2fr_auto_auto] sm:items-center dark:border-white/10">
-            <input aria-label="Nombre" placeholder="numero" value={p.name} onChange={(e) => updateParameter(index, { name: e.target.value })} className="min-h-11 rounded-lg border border-slate-300 bg-white px-3 font-mono text-sm dark:border-slate-700 dark:bg-slate-900" />
-            <select aria-label="Tipo" value={p.type} onChange={(e) => updateParameter(index, { type: e.target.value as HttpToolParameterType })} className="min-h-11 rounded-lg border border-slate-300 bg-white px-2 text-sm dark:border-slate-700 dark:bg-slate-900">
+          <div key={index} className="grid gap-2 rounded-lg border border-zinc-200 p-3 sm:grid-cols-[1fr_120px_2fr_auto_auto] sm:items-center dark:border-white/10">
+            <input aria-label="Nombre" placeholder="numero" value={p.name} onChange={(e) => updateParameter(index, { name: e.target.value })} className="min-h-11 rounded-lg border border-zinc-300 bg-white px-3 font-mono text-sm dark:border-zinc-700 dark:bg-zinc-900" />
+            <select aria-label="Tipo" value={p.type} onChange={(e) => updateParameter(index, { type: e.target.value as HttpToolParameterType })} className="min-h-11 rounded-lg border border-zinc-300 bg-white px-2 text-sm dark:border-zinc-700 dark:bg-zinc-900">
               <option value="String">Texto</option>
               <option value="Number">Número</option>
               <option value="Boolean">Sí/No</option>
             </select>
-            <input aria-label="Descripción" placeholder="Número de pedido que da quien llama" value={p.description ?? ''} onChange={(e) => updateParameter(index, { description: e.target.value })} className="min-h-11 rounded-lg border border-slate-300 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900" />
+            <input aria-label="Descripción" placeholder="Número de pedido que da quien llama" value={p.description ?? ''} onChange={(e) => updateParameter(index, { description: e.target.value })} className="min-h-11 rounded-lg border border-zinc-300 bg-white px-3 text-sm dark:border-zinc-700 dark:bg-zinc-900" />
             <label className="flex min-h-11 items-center gap-2 text-sm">
-              <input type="checkbox" checked={p.required} onChange={(e) => updateParameter(index, { required: e.target.checked })} className="size-4 accent-slate-900 dark:accent-white" />
+              <input type="checkbox" checked={p.required} onChange={(e) => updateParameter(index, { required: e.target.checked })} className="size-4 accent-zinc-900 dark:accent-white" />
               Obligatorio
             </label>
-            <button type="button" aria-label="Quitar parámetro" onClick={() => setParameters(parameters.filter((_, i) => i !== index))} className="min-h-11 rounded-lg px-3 text-sm text-slate-500 hover:bg-slate-100 dark:hover:bg-white/10">
+            <button type="button" aria-label="Quitar parámetro" onClick={() => setParameters(parameters.filter((_, i) => i !== index))} className="min-h-11 rounded-lg px-3 text-sm text-zinc-500 hover:bg-zinc-100 dark:hover:bg-white/10">
               ✕
             </button>
           </div>
@@ -228,7 +228,7 @@ export function EditorActions({ onCancel, onDelete, saving }: { onCancel: () => 
 
 export function SmallButton({ onClick, children, disabled }: { onClick: () => void; children: string; disabled?: boolean }) {
   return (
-    <button type="button" onClick={onClick} disabled={disabled} className="min-h-10 rounded-lg px-3 text-sm font-medium hover:bg-slate-100 disabled:opacity-60 dark:hover:bg-white/10">
+    <button type="button" onClick={onClick} disabled={disabled} className="min-h-10 rounded-lg px-3 text-sm font-medium hover:bg-zinc-100 disabled:opacity-60 dark:hover:bg-white/10">
       {children}
     </button>
   )
@@ -239,7 +239,7 @@ export function AddButton({ onClick, children }: { onClick: () => void; children
     <button
       type="button"
       onClick={onClick}
-      className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 text-sm font-medium text-slate-600 hover:border-slate-400 hover:text-slate-900 dark:border-white/15 dark:text-slate-300 dark:hover:border-white/30 dark:hover:text-white"
+      className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-dashed border-zinc-300 text-sm font-medium text-zinc-600 hover:border-zinc-400 hover:text-zinc-900 dark:border-white/15 dark:text-zinc-300 dark:hover:border-white/30 dark:hover:text-white"
     >
       <PlusIcon />
       {children}

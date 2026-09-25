@@ -83,7 +83,7 @@ export function SmtpSettingsForm({ settings }: { settings: SmtpSettings }) {
           />
         </FormSection>
       </FormSections>
-      <div className="flex items-center justify-end gap-3 border-t border-slate-200 pt-6 dark:border-white/10">
+      <div className="flex items-center justify-end gap-3 border-t border-zinc-200 pt-6 dark:border-white/10">
         {save.error && Object.keys(fieldErrors).length === 0 && <span className="text-sm text-red-600 dark:text-red-400">{save.error.message}</span>}
         <Button type="submit" loading={save.isPending} className="sm:min-w-32">
           Guardar

@@ -30,7 +30,7 @@ export function ThemeToggle() {
     <div
       role="radiogroup"
       aria-label="Tema"
-      className="inline-flex rounded-full bg-slate-100 p-1 dark:bg-slate-800"
+      className="inline-flex rounded-full bg-zinc-100 p-1 dark:bg-zinc-800"
     >
       {options.map((option) => {
         const active = option.value === preference
@@ -42,12 +42,12 @@ export function ThemeToggle() {
             aria-checked={active}
             aria-label={option.label}
             onClick={() => select(option.value)}
-            className="relative flex size-11 items-center justify-center rounded-full text-slate-500 transition-colors aria-checked:text-slate-900 dark:text-slate-400 dark:aria-checked:text-white"
+            className="relative flex size-11 items-center justify-center rounded-full text-zinc-500 transition-colors aria-checked:text-zinc-900 dark:text-zinc-400 dark:aria-checked:text-white"
           >
             {active && (
               <motion.span
                 layoutId={indicatorId}
-                className="absolute inset-0 rounded-full bg-white shadow-sm dark:bg-slate-700"
+                className="absolute inset-0 rounded-full bg-white shadow-sm dark:bg-zinc-700"
                 transition={{ type: 'spring', stiffness: 500, damping: 35 }}
               />
             )}

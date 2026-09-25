@@ -3,10 +3,40 @@
 /* Dark mode por clase en <html> para poder forzar light/dark además de seguir al sistema. */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Estilo de savegresoft.com (zinc, serif ligera, esquinas rectas) con acento violeta en vez de azul. */
 @theme {
-  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Instrument Sans Variable', ui-sans-serif, system-ui, sans-serif;
   /* Serif de display: solo para titulares puntuales, nunca para texto corrido. */
-  --font-display: 'Instrument Serif', ui-serif, Georgia, serif;
+  --font-display: 'Cormorant Garamond', ui-serif, Georgia, serif;
+
+  --color-brand-50: #faf5ff;
+  --color-brand-100: #f3e8ff;
+  --color-brand-200: #e9d5ff;
+  --color-brand-300: #d8b4fe;
+  --color-brand-400: #c084fc;
+  --color-brand-500: #a855f7;
+  --color-brand-600: #9333ea;
+  --color-brand-700: #7e22ce;
+  --color-brand-800: #6b21a8;
+  --color-brand-900: #581c87;
+  --color-brand-950: #3b0764;
+
+  /* Esquinas rectas en todo; los círculos (rounded-full) no dependen de estas variables. */
+  --radius-xs: 0;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-2xl: 0;
+  --radius-3xl: 0;
+}
+
+/* Etiqueta chica en mayúsculas y espaciada, como las de savegresoft.com. */
+@utility eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
 }
 
 @layer base {
@@ -15,6 +45,12 @@
   }
 
   body {
-    @apply min-h-dvh bg-white text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100;
+    @apply min-h-dvh bg-white text-zinc-900 antialiased dark:bg-zinc-950 dark:text-zinc-100;
   }
+}
+
+/* Cormorant se ve mejor ligera; fuera de capas para ganarle al peso heredado de los encabezados. */
+.font-display {
+  font-weight: 300;
+  letter-spacing: -0.01em;
 }

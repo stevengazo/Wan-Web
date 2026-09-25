@@ -15,7 +15,7 @@ interface UserListProps {
 
 export function UserList({ users, onChangeRole, onResetPassword, onDelete }: UserListProps) {
   return (
-    <ul className="divide-y divide-slate-200 overflow-hidden rounded-xl border border-slate-200 dark:divide-white/10 dark:border-white/10">
+    <ul className="divide-y divide-zinc-200 overflow-hidden rounded-xl border border-zinc-200 dark:divide-white/10 dark:border-white/10">
       {users.map((user) => (
         <UserRow key={user.id} user={user} onChangeRole={onChangeRole} onResetPassword={onResetPassword} onDelete={onDelete} />
       ))}
@@ -41,9 +41,9 @@ function UserRow({ user, onChangeRole, onResetPassword, onDelete }: { user: User
         <div className="min-w-0 flex-1">
           <p className="flex items-center gap-2 truncate font-medium">
             {user.displayName}
-            {user.isCurrent && <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600 dark:bg-white/10 dark:text-slate-300">Tú</span>}
+            {user.isCurrent && <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-600 dark:bg-white/10 dark:text-zinc-300">Tú</span>}
           </p>
-          <p className="truncate text-sm text-slate-500 dark:text-slate-400" title={`Desde ${formatDateTime(user.createdAt)}`}>
+          <p className="truncate text-sm text-zinc-500 dark:text-zinc-400" title={`Desde ${formatDateTime(user.createdAt)}`}>
             {user.email}
           </p>
         </div>
@@ -51,7 +51,7 @@ function UserRow({ user, onChangeRole, onResetPassword, onDelete }: { user: User
           aria-label={`Rol de ${user.displayName}`}
           value={user.role}
           onChange={(e) => onChangeRole(user, e.target.value as UserRole)}
-          className="min-h-10 rounded-lg border border-slate-300 bg-white px-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+          className="min-h-10 rounded-lg border border-zinc-300 bg-white px-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
         >
           {Object.entries(roleLabels).map(([value, { label }]) => (
             <option key={value} value={value}>
@@ -59,7 +59,7 @@ function UserRow({ user, onChangeRole, onResetPassword, onDelete }: { user: User
             </option>
           ))}
         </select>
-        <button type="button" onClick={() => setResetting(!resetting)} className="min-h-10 rounded-lg px-3 text-sm font-medium hover:bg-slate-100 dark:hover:bg-white/10">
+        <button type="button" onClick={() => setResetting(!resetting)} className="min-h-10 rounded-lg px-3 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-white/10">
           Contraseña
         </button>
         {!user.isCurrent && (

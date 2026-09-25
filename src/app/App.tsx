@@ -129,7 +129,7 @@ function NotFound() {
   return (
     <div className="py-16 text-center">
       <p className="text-lg font-medium">Página no encontrada</p>
-      <Link to="/" className="mt-2 inline-flex min-h-11 items-center font-medium text-indigo-600 dark:text-indigo-400">
+      <Link to="/" className="mt-2 inline-flex min-h-11 items-center font-medium text-brand-600 dark:text-brand-400">
         Volver al inicio
       </Link>
     </div>

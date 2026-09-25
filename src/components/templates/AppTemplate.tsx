@@ -75,10 +75,10 @@ export function AppTemplate() {
   const section = location.pathname.split('/')[1] ?? ''
 
   return (
-    <div className="flex min-h-dvh bg-white dark:bg-slate-950">
+    <div className="flex min-h-dvh bg-white dark:bg-zinc-950">
       {/* Sidebar desde md:. El ancho se anima con CSS: es un solo elemento y el contenido solo se reacomoda. */}
       <aside
-        className={`sticky top-0 hidden h-dvh shrink-0 flex-col border-r border-slate-200 bg-slate-50/60 transition-[width] duration-200 ease-out md:flex dark:border-white/10 dark:bg-white/2 ${
+        className={`sticky top-0 hidden h-dvh shrink-0 flex-col border-r border-zinc-200 bg-zinc-50/60 transition-[width] duration-200 ease-out md:flex dark:border-white/10 dark:bg-white/2 ${
           collapsed ? 'w-18' : 'w-64'
         }`}
       >
@@ -94,7 +94,7 @@ export function AppTemplate() {
             aria-label={collapsed ? 'Expandir menú' : 'Colapsar menú'}
             aria-expanded={!collapsed}
             title={`${collapsed ? 'Expandir' : 'Colapsar'} (Ctrl+B)`}
-            className="flex size-10 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-200/60 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white"
+            className="flex size-10 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-zinc-200/60 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-white/10 dark:hover:text-white"
           >
             <PanelLeftIcon />
           </button>
@@ -112,8 +112,8 @@ export function AppTemplate() {
                   collapsed ? 'justify-center' : 'px-3'
                 } ${
                   isActive
-                    ? 'bg-white text-slate-900 shadow-sm ring-1 ring-slate-200 dark:bg-white/10 dark:text-white dark:shadow-none dark:ring-white/10'
-                    : 'text-slate-500 hover:bg-slate-200/50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-white'
+                    ? 'bg-white text-zinc-900 shadow-sm ring-1 ring-zinc-200 dark:bg-white/10 dark:text-white dark:shadow-none dark:ring-white/10'
+                    : 'text-zinc-500 hover:bg-zinc-200/50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-white/5 dark:hover:text-white'
                 }`
               }
             >
@@ -133,7 +133,7 @@ export function AppTemplate() {
           ))}
         </nav>
 
-        <div className="border-t border-slate-200 p-3 dark:border-white/10">
+        <div className="border-t border-zinc-200 p-3 dark:border-white/10">
           <div className={`mb-2 ${collapsed ? 'flex justify-center' : 'px-3'}`}>
             <RealtimeIndicator status={realtime} compact={collapsed} />
           </div>
@@ -144,7 +144,7 @@ export function AppTemplate() {
               title={collapsed ? 'Mi perfil' : undefined}
               className={({ isActive }) =>
                 `flex min-w-0 items-center gap-3 rounded-lg p-1.5 transition-colors ${collapsed ? '' : 'flex-1'} ${
-                  isActive ? 'bg-slate-200/60 dark:bg-white/10' : 'hover:bg-slate-200/50 dark:hover:bg-white/5'
+                  isActive ? 'bg-zinc-200/60 dark:bg-white/10' : 'hover:bg-zinc-200/50 dark:hover:bg-white/5'
                 }`
               }
             >
@@ -152,7 +152,7 @@ export function AppTemplate() {
               {!collapsed && (
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-sm font-medium">{user?.displayName}</span>
-                  <span className="block truncate text-xs text-slate-500 dark:text-slate-400">{user?.email}</span>
+                  <span className="block truncate text-xs text-zinc-500 dark:text-zinc-400">{user?.email}</span>
                 </span>
               )}
             </NavLink>
@@ -161,7 +161,7 @@ export function AppTemplate() {
               onClick={handleLogout}
               aria-label="Cerrar sesión"
               title="Cerrar sesión"
-              className="flex size-10 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-200/60 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white"
+              className="flex size-10 items-center justify-center rounded-lg text-zinc-500 hover:bg-zinc-200/60 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-white/10 dark:hover:text-white"
             >
               <LogOutIcon />
             </button>
@@ -170,7 +170,7 @@ export function AppTemplate() {
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white/80 px-4 pb-2 pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur md:hidden dark:border-white/10 dark:bg-slate-950/80">
+        <header className="sticky top-0 z-10 flex items-center justify-between border-b border-zinc-200 bg-white/80 px-4 pb-2 pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur md:hidden dark:border-white/10 dark:bg-zinc-950/80">
           <Logo />
           <div className="flex items-center gap-2">
             <RealtimeIndicator status={realtime} />
@@ -181,7 +181,7 @@ export function AppTemplate() {
               type="button"
               onClick={handleLogout}
               aria-label="Cerrar sesión"
-              className="flex size-11 items-center justify-center rounded-full text-slate-500 dark:text-slate-400"
+              className="flex size-11 items-center justify-center rounded-full text-zinc-500 dark:text-zinc-400"
             >
               <LogOutIcon />
             </button>
@@ -205,7 +205,7 @@ export function AppTemplate() {
       </div>
 
       {/* Barra de navegación inferior en móvil, al alcance del pulgar. */}
-      <nav className="fixed inset-x-0 bottom-0 z-10 flex border-t border-slate-200 bg-white/90 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden dark:border-white/10 dark:bg-slate-950/90">
+      <nav className="fixed inset-x-0 bottom-0 z-10 flex border-t border-zinc-200 bg-white/90 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden dark:border-white/10 dark:bg-zinc-950/90">
         {nav
           .filter((item) => item.primary)
           .map((item) => (
@@ -215,7 +215,7 @@ export function AppTemplate() {
               end={item.end}
               className={({ isActive }) =>
                 `relative flex min-h-16 flex-1 flex-col items-center justify-center gap-1 text-xs font-medium ${
-                  isActive ? 'text-slate-900 dark:text-white' : 'text-slate-400 dark:text-slate-500'
+                  isActive ? 'text-zinc-900 dark:text-white' : 'text-zinc-400 dark:text-zinc-500'
                 }`
               }
             >
@@ -236,7 +236,7 @@ export function AppTemplate() {
           onClick={() => setMoreOpen(true)}
           aria-haspopup="dialog"
           className={`relative flex min-h-16 flex-1 flex-col items-center justify-center gap-1 text-xs font-medium ${
-            secondaryActive ? 'text-slate-900 dark:text-white' : 'text-slate-400 dark:text-slate-500'
+            secondaryActive ? 'text-zinc-900 dark:text-white' : 'text-zinc-400 dark:text-zinc-500'
           }`}
         >
           {secondaryActive && <BottomIndicator />}
@@ -248,7 +248,7 @@ export function AppTemplate() {
       <AnimatePresence>
         {moreOpen && (
           <motion.div
-            className="fixed inset-0 z-30 flex items-end bg-slate-950/50 md:hidden"
+            className="fixed inset-0 z-30 flex items-end bg-zinc-950/50 md:hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -263,9 +263,9 @@ export function AppTemplate() {
               exit={{ y: '100%' }}
               transition={{ type: 'spring', stiffness: 400, damping: 40 }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full rounded-t-3xl bg-white p-3 pb-[max(1rem,env(safe-area-inset-bottom))] dark:bg-slate-900"
+              className="w-full rounded-t-3xl bg-white p-3 pb-[max(1rem,env(safe-area-inset-bottom))] dark:bg-zinc-900"
             >
-              <div className="mx-auto mb-2 h-1 w-10 rounded-full bg-slate-300 dark:bg-white/20" />
+              <div className="mx-auto mb-2 h-1 w-10 rounded-full bg-zinc-300 dark:bg-white/20" />
               {secondary.map((item) => (
                 <NavLink
                   key={item.to}
@@ -273,7 +273,7 @@ export function AppTemplate() {
                   onClick={() => setMoreOpen(false)}
                   className={({ isActive }) =>
                     `flex min-h-12 items-center gap-3 rounded-xl px-4 font-medium ${
-                      isActive ? 'bg-slate-100 dark:bg-white/10' : 'text-slate-600 dark:text-slate-300'
+                      isActive ? 'bg-zinc-100 dark:bg-white/10' : 'text-zinc-600 dark:text-zinc-300'
                     }`
                   }
                 >
@@ -298,13 +298,13 @@ function Badge({ count }: { count: number }) {
 }
 
 function BottomIndicator() {
-  return <motion.span layoutId="bottom-nav-indicator" className="absolute inset-x-8 top-0 h-0.5 rounded-full bg-slate-900 dark:bg-white" />
+  return <motion.span layoutId="bottom-nav-indicator" className="absolute inset-x-8 top-0 h-0.5 rounded-full bg-brand-600 dark:bg-brand-600" />
 }
 
 /** Etiqueta que aparece a la derecha del ícono cuando el sidebar está colapsado. */
 function Tooltip({ children }: { children: ReactNode }) {
   return (
-    <span className="pointer-events-none absolute left-full z-20 ml-3 whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 dark:bg-white dark:text-slate-900">
+    <span className="pointer-events-none absolute left-full z-20 ml-3 whitespace-nowrap rounded-md bg-brand-600 px-2 py-1 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 dark:bg-brand-600 dark:text-white">
       {children}
     </span>
   )

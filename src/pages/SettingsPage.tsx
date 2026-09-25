@@ -19,28 +19,40 @@ export function SettingsPage() {
   return (
     <div>
       <h1 className="font-display text-4xl md:text-5xl">Configuración</h1>
-      <p className="mt-2 text-slate-500 dark:text-slate-400">Ajustes generales del sistema, iguales para todas las cuentas.</p>
+      <p className="mt-2 text-zinc-500 dark:text-zinc-400">Ajustes generales del sistema, iguales para todas las cuentas.</p>
 
-      <h2 className="mt-12 text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">Llamadas</h2>
+      <h2 className="mt-12 eyebrow flex items-center gap-4 text-zinc-500 dark:text-zinc-400">
+        <span className="h-px w-6 bg-brand-500" />
+        Llamadas
+      </h2>
       <div className="mt-2">
         {callSettings.error && <p className="text-red-600 dark:text-red-400">{callSettings.error.message}</p>}
         {callSettings.data && <CallSettingsForm settings={callSettings.data} />}
       </div>
 
-      <h2 className="mt-16 text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">Acceso por MCP</h2>
+      <h2 className="mt-16 eyebrow flex items-center gap-4 text-zinc-500 dark:text-zinc-400">
+        <span className="h-px w-6 bg-brand-500" />
+        Acceso por MCP
+      </h2>
       <div className="mt-2">
         <McpAccessSection />
       </div>
 
-      <h2 className="mt-16 text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">Correo saliente</h2>
+      <h2 className="mt-16 eyebrow flex items-center gap-4 text-zinc-500 dark:text-zinc-400">
+        <span className="h-px w-6 bg-brand-500" />
+        Correo saliente
+      </h2>
       <div className="mt-2">
         {smtp.error && <p className="text-red-600 dark:text-red-400">{smtp.error.message}</p>}
         {smtp.data && <SmtpSettingsForm settings={smtp.data} />}
       </div>
 
-      <h2 className="mt-16 text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">Inteligencia artificial</h2>
+      <h2 className="mt-16 eyebrow flex items-center gap-4 text-zinc-500 dark:text-zinc-400">
+        <span className="h-px w-6 bg-brand-500" />
+        Inteligencia artificial
+      </h2>
       <div className="mt-2">
-        {isPending && <p className="text-slate-500">Cargando…</p>}
+        {isPending && <p className="text-zinc-500">Cargando…</p>}
         {error && <p className="text-red-600 dark:text-red-400">{error.message}</p>}
         {settings && <AiSettingsForm settings={settings} />}
       </div>
@@ -125,25 +137,25 @@ function AiSettingsForm({ settings }: { settings: LlmSettings }) {
                   onClick={() => setActiveProvider(p.provider)}
                   className={`flex min-h-14 items-center gap-3 rounded-lg border px-4 text-left transition-colors ${
                     active
-                      ? 'border-slate-900 ring-1 ring-slate-900 dark:border-white dark:ring-white'
-                      : 'border-slate-200 hover:border-slate-400 dark:border-white/10 dark:hover:border-white/30'
+                      ? 'border-zinc-900 ring-1 ring-zinc-900 dark:border-white dark:ring-white'
+                      : 'border-zinc-200 hover:border-zinc-400 dark:border-white/10 dark:hover:border-white/30'
                   }`}
                 >
                   <span
                     className={`flex size-4 items-center justify-center rounded-full border ${
-                      active ? 'border-slate-900 dark:border-white' : 'border-slate-300 dark:border-white/30'
+                      active ? 'border-zinc-900 dark:border-white' : 'border-zinc-300 dark:border-white/30'
                     }`}
                   >
-                    {active && <span className="size-2 rounded-full bg-slate-900 dark:bg-white" />}
+                    {active && <span className="size-2 rounded-full bg-brand-600 dark:bg-brand-600" />}
                   </span>
                   <span className="flex-1">
                     <span className="block text-sm font-medium">{providerLabels[p.provider]}</span>
-                    <span className="block font-mono text-xs text-slate-500 dark:text-slate-400">
+                    <span className="block font-mono text-xs text-zinc-500 dark:text-zinc-400">
                       {drafts[p.provider].model || p.defaultModel}
                     </span>
                   </span>
-                  <span className={`inline-flex items-center gap-1.5 text-xs ${ready ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
-                    <span className={`size-1.5 rounded-full ${ready ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-600'}`} />
+                  <span className={`inline-flex items-center gap-1.5 text-xs ${ready ? 'text-emerald-600 dark:text-emerald-400' : 'text-zinc-400'}`}>
+                    <span className={`size-1.5 rounded-full ${ready ? 'bg-emerald-500' : 'bg-zinc-300 dark:bg-zinc-600'}`} />
                     {ready ? 'Con API key' : 'Sin API key'}
                   </span>
                 </button>
@@ -205,7 +217,7 @@ function AiSettingsForm({ settings }: { settings: LlmSettings }) {
 
         <FormSection title="Conexión con ElevenLabs" description="Datos para configurar el agente como Custom LLM.">
           <CopyField label="URL del Custom LLM" value={`${window.location.origin}/api/llm/v1`} />
-          <p className="text-sm text-slate-500 dark:text-slate-400">Como API key, el token de tools del servidor.</p>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">Como API key, el token de tools del servidor.</p>
         </FormSection>
       </FormSections>
 
@@ -215,7 +227,7 @@ function AiSettingsForm({ settings }: { settings: LlmSettings }) {
         </p>
       )}
 
-      <div className="flex items-center justify-end gap-3 border-t border-slate-200 pt-6 dark:border-white/10">
+      <div className="flex items-center justify-end gap-3 border-t border-zinc-200 pt-6 dark:border-white/10">
         <Button type="submit" loading={save.isPending} className="sm:min-w-32">
           Guardar
         </Button>

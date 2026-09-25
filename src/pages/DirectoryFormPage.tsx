@@ -22,16 +22,16 @@ export function DirectoryFormPage() {
         <Link
           to="/directorio"
           aria-label="Volver al directorio"
-          className="-ml-3 flex size-11 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-white/10"
+          className="-ml-3 flex size-11 items-center justify-center rounded-lg text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-white/10"
         >
           <ChevronLeftIcon />
         </Link>
         <h1 className="font-display text-4xl md:text-5xl">{id ? 'Editar entrada' : 'Nueva entrada'}</h1>
       </div>
-      <p className="mt-2 text-slate-500 dark:text-slate-400">Una persona, un área o un número externo al que el bot puede transferir.</p>
+      <p className="mt-2 text-zinc-500 dark:text-zinc-400">Una persona, un área o un número externo al que el bot puede transferir.</p>
 
       <div className="mt-10">
-        {id && isPending && <p className="text-slate-500">Cargando…</p>}
+        {id && isPending && <p className="text-zinc-500">Cargando…</p>}
         {id && error && <p className="text-red-600 dark:text-red-400">{error.message}</p>}
         {(!id || entry) && <EntryForm key={entry?.id ?? 'new'} entry={entry} />}
       </div>
@@ -130,7 +130,7 @@ function EntryForm({ entry }: { entry?: DirectoryEntry }) {
         </p>
       )}
 
-      <div className="flex flex-col-reverse gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:justify-between dark:border-white/10">
+      <div className="flex flex-col-reverse gap-3 border-t border-zinc-200 pt-6 sm:flex-row sm:justify-between dark:border-white/10">
         {entry ? (
           <Button variant="secondary" onClick={() => setConfirmingDelete(true)} className="text-red-600 dark:text-red-400">
             Eliminar

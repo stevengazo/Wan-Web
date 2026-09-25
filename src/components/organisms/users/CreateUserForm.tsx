@@ -23,7 +23,7 @@ export function CreateUserForm({ saving, fieldErrors, onSubmit, onCancel }: Crea
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-4 rounded-xl border border-slate-300 p-5 dark:border-white/20">
+    <form onSubmit={handleSubmit} noValidate className="space-y-4 rounded-xl border border-zinc-300 p-5 dark:border-white/20">
       <div className="grid gap-4 md:grid-cols-2">
         <TextField label="Nombre" autoComplete="off" value={form.displayName} onChange={(e) => set('displayName', e.target.value)} error={fieldErrors.displayName?.[0]} />
         <TextField label="Correo" type="email" autoComplete="off" value={form.email} onChange={(e) => set('email', e.target.value)} error={fieldErrors.email?.[0]} />

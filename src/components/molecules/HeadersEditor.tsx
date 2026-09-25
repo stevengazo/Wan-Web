@@ -15,12 +15,12 @@ export function HeadersEditor({ savedNames, onChange }: { savedNames: string[]; 
 
   return (
     <div className="space-y-2">
-      <p className="text-sm font-medium text-slate-700 dark:text-slate-300">Headers</p>
+      <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Headers</p>
       {!replacing ? (
         <div className="flex flex-wrap items-center gap-2 text-sm">
-          <span className="text-slate-500 dark:text-slate-400">Guardados (cifrados):</span>
+          <span className="text-zinc-500 dark:text-zinc-400">Guardados (cifrados):</span>
           {savedNames.map((name) => (
-            <code key={name} className="rounded bg-slate-100 px-1.5 py-0.5 text-xs dark:bg-white/10">
+            <code key={name} className="rounded bg-zinc-100 px-1.5 py-0.5 text-xs dark:bg-white/10">
               {name}
             </code>
           ))}
@@ -44,7 +44,7 @@ export function HeadersEditor({ savedNames, onChange }: { savedNames: string[]; 
                 placeholder="Authorization"
                 value={row.key}
                 onChange={(e) => emit(rows.map((r, i) => (i === index ? { ...r, key: e.target.value } : r)))}
-                className="min-h-11 w-2/5 rounded-lg border border-slate-300 bg-white px-3 font-mono text-sm dark:border-slate-700 dark:bg-slate-900"
+                className="min-h-11 w-2/5 rounded-lg border border-zinc-300 bg-white px-3 font-mono text-sm dark:border-zinc-700 dark:bg-zinc-900"
               />
               <input
                 aria-label="Valor del header"
@@ -53,13 +53,13 @@ export function HeadersEditor({ savedNames, onChange }: { savedNames: string[]; 
                 autoComplete="off"
                 value={row.value}
                 onChange={(e) => emit(rows.map((r, i) => (i === index ? { ...r, value: e.target.value } : r)))}
-                className="min-h-11 flex-1 rounded-lg border border-slate-300 bg-white px-3 font-mono text-sm dark:border-slate-700 dark:bg-slate-900"
+                className="min-h-11 flex-1 rounded-lg border border-zinc-300 bg-white px-3 font-mono text-sm dark:border-zinc-700 dark:bg-zinc-900"
               />
               <button
                 type="button"
                 aria-label="Quitar header"
                 onClick={() => emit(rows.filter((_, i) => i !== index))}
-                className="min-h-11 rounded-lg px-3 text-sm text-slate-500 hover:bg-slate-100 dark:hover:bg-white/10"
+                className="min-h-11 rounded-lg px-3 text-sm text-zinc-500 hover:bg-zinc-100 dark:hover:bg-white/10"
               >
                 ✕
               </button>
@@ -68,7 +68,7 @@ export function HeadersEditor({ savedNames, onChange }: { savedNames: string[]; 
           <button type="button" onClick={() => emit([...rows, { key: '', value: '' }])} className="text-sm underline underline-offset-4">
             Agregar header
           </button>
-          <p className="text-xs text-slate-500 dark:text-slate-400">Se guardan cifrados y no se vuelven a mostrar.</p>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400">Se guardan cifrados y no se vuelven a mostrar.</p>
         </>
       )}
     </div>

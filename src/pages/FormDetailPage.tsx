@@ -31,7 +31,7 @@ export function FormDetailPage() {
           isAdmin && (
             <Link
               to={`/formularios/${id}/editar`}
-              className="inline-flex min-h-11 items-center rounded-lg border border-slate-300 px-4 text-sm font-medium hover:border-slate-400 dark:border-white/15 dark:hover:border-white/30"
+              className="inline-flex min-h-11 items-center rounded-lg border border-zinc-300 px-4 text-sm font-medium hover:border-zinc-400 dark:border-white/15 dark:hover:border-white/30"
             >
               Editar
             </Link>
@@ -48,7 +48,7 @@ export function FormDetailPage() {
             role="tab"
             aria-selected={filter === value}
             onClick={() => setFilter(value)}
-            className="min-h-10 rounded-lg px-3 text-sm font-medium text-slate-500 aria-selected:bg-slate-100 aria-selected:text-slate-900 dark:text-slate-400 dark:aria-selected:bg-white/10 dark:aria-selected:text-white"
+            className="min-h-10 rounded-lg px-3 text-sm font-medium text-zinc-500 aria-selected:bg-zinc-100 aria-selected:text-zinc-900 dark:text-zinc-400 dark:aria-selected:bg-white/10 dark:aria-selected:text-white"
           >
             {value === 'New' ? `Nuevas (${pending})` : value === 'All' ? `Todas (${submissions?.length ?? 0})` : 'Acciones'}
           </button>
@@ -62,7 +62,7 @@ export function FormDetailPage() {
       )}
 
       <div className={`mt-6 ${filter === 'Actions' ? 'hidden' : ''}`}>
-        {isPending && <p className="text-slate-500">Cargando…</p>}
+        {isPending && <p className="text-zinc-500">Cargando…</p>}
         {submissions && visible.length === 0 && (
           <EmptyState title={filter === 'New' ? 'No hay respuestas nuevas' : 'Todavía no hay respuestas'}>
             Cuando el bot complete este formulario en una llamada, la respuesta aparece aquí.
@@ -100,10 +100,10 @@ function SubmissionCard({ form, submission, canDelete }: { form: FormTemplate; s
   const extra = Object.entries(submission.values).filter(([key]) => !form.fields.some((f) => f.key === key))
 
   return (
-    <article className={`rounded-xl border p-5 ${isNew ? 'border-slate-300 dark:border-white/20' : 'border-slate-200 dark:border-white/10'}`}>
-      <header className="flex flex-wrap items-center justify-between gap-2 text-sm text-slate-500 dark:text-slate-400">
+    <article className={`rounded-xl border p-5 ${isNew ? 'border-zinc-300 dark:border-white/20' : 'border-zinc-200 dark:border-white/10'}`}>
+      <header className="flex flex-wrap items-center justify-between gap-2 text-sm text-zinc-500 dark:text-zinc-400">
         <span className="flex items-center gap-2">
-          {isNew && <span className="size-2 rounded-full bg-slate-900 dark:bg-white" aria-label="Nueva" />}
+          {isNew && <span className="size-2 rounded-full bg-brand-600 dark:bg-brand-600" aria-label="Nueva" />}
           <time dateTime={submission.createdAt} title={formatDateTime(submission.createdAt)}>
             {formatWhen(submission.createdAt)}
           </time>
@@ -118,7 +118,7 @@ function SubmissionCard({ form, submission, canDelete }: { form: FormTemplate; s
       <dl className="mt-4 grid gap-x-6 gap-y-3 sm:grid-cols-2">
         {[...known, ...extra].map(([label, value]) => (
           <div key={label} className="min-w-0">
-            <dt className="text-xs text-slate-500 dark:text-slate-400">{label}</dt>
+            <dt className="text-xs text-zinc-500 dark:text-zinc-400">{label}</dt>
             <dd className="mt-0.5 break-words">{value}</dd>
           </div>
         ))}
@@ -132,12 +132,12 @@ function SubmissionCard({ form, submission, canDelete }: { form: FormTemplate; s
         </ul>
       )}
 
-      <footer className="mt-4 flex flex-wrap gap-2 border-t border-slate-100 pt-3 dark:border-white/5">
+      <footer className="mt-4 flex flex-wrap gap-2 border-t border-zinc-100 pt-3 dark:border-white/5">
         <button
           type="button"
           disabled={update.isPending}
           onClick={() => update.mutate({ id: submission.id, status: isNew ? 'Reviewed' : 'New' })}
-          className="min-h-10 rounded-lg px-3 text-sm font-medium hover:bg-slate-100 dark:hover:bg-white/10"
+          className="min-h-10 rounded-lg px-3 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-white/10"
         >
           {isNew ? 'Marcar como revisada' : 'Marcar como nueva'}
         </button>
@@ -169,12 +169,12 @@ function ExecutionChip({ execution }: { execution: ActionExecution }) {
 
   return (
     <li
-      className="inline-flex min-h-9 items-center gap-2 rounded-lg border border-slate-200 px-2.5 text-sm dark:border-white/10"
+      className="inline-flex min-h-9 items-center gap-2 rounded-lg border border-zinc-200 px-2.5 text-sm dark:border-white/10"
       title={execution.lastError ?? undefined}
     >
       <span className={`size-2 rounded-full ${style.dot}`} />
       <span className="font-medium">{execution.actionName}</span>
-      <span className="text-slate-500 dark:text-slate-400">
+      <span className="text-zinc-500 dark:text-zinc-400">
         {actionTypeLabels[execution.actionType]} · {style.label}
         {execution.attempts > 1 && ` · ${execution.attempts} intentos`}
       </span>

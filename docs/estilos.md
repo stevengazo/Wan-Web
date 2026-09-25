@@ -7,7 +7,7 @@
 | 📱 **Mobile first** | Se diseña para ~360 px. Las clases sin prefijo son para el teléfono; `sm:`, `md:` y `lg:` solo agregan. |
 | 🌗 **Claro y oscuro** | Todo color de fondo, texto y borde lleva su variante `dark:`. |
 | ✋ **Táctil** | Áreas de toque de al menos 44×44 px (`min-h-11`, `size-11`). |
-| 🧘 **Sobrio** | Blanco, grises `slate` y un acento. Tipografía con carácter en los títulos. |
+| 🧘 **Sobrio** | El estilo de [savegresoft.com](https://savegresoft.com): grises `zinc`, serif ligera en los títulos, esquinas rectas y un solo acento violeta. |
 | ⚡ **Movimiento con propósito** | Animaciones de 150 a 300 ms, respetando "reducir movimiento". |
 
 ## Tailwind CSS v4
@@ -15,12 +15,32 @@
 - Plugin `@tailwindcss/vite`; **no hay `tailwind.config.js`**: la configuración vive en `src/index.css` (`@theme`, `@custom-variant`).
 - Sin archivos `.css` por componente; solo clases de Tailwind.
 
+## Identidad visual
+
+Sigue el lenguaje de [savegresoft.com](https://savegresoft.com), con violeta en lugar de azul.
+
+| Elemento | Regla |
+|----------|-------|
+| Neutros | `zinc` (fondo oscuro `zinc-950` = `#09090b`). No usar `slate` ni `gray`. |
+| Acento | `brand-*` (violeta, definido en `@theme`): botones principales, indicadores, avatar, logo, foco. Rosa (`pink`) solo en degradados de fondo. |
+| Esquinas | Rectas: `--radius-*` vale 0, así `rounded-lg` o `rounded-xl` no redondean. Solo `rounded-full` para puntos, avatares y switches. |
+| Botones | Mayúsculas, `text-xs font-semibold tracking-[0.2em]`. Principal violeta sólido; secundario con borde fino. |
+| Etiquetas de sección | Utilidad `eyebrow` (10 px, mayúsculas, espaciado 0,25em) con una línea `h-px w-6 bg-brand-500` delante. |
+| Logo | Onda en un cuadrado violeta y "Mapache" en serif con punto violeta. |
+
+| Token | Valor |
+|-------|-------|
+| `brand-400` | `#c084fc` |
+| `brand-500` | `#a855f7` |
+| `brand-600` | `#9333ea` (botones) |
+| `brand-700` | `#7e22ce` |
+
 ## Tipografía
 
 | Uso | Fuente |
 |-----|--------|
-| Texto e interfaz | **Inter** variable (`@fontsource-variable/inter`) |
-| Títulos de página y login | **Instrument Serif** (`@fontsource/instrument-serif`) |
+| Texto e interfaz | **Instrument Sans** variable (`@fontsource-variable/instrument-sans`) |
+| Títulos de página y login | **Cormorant Garamond** 300 (`@fontsource/cormorant-garamond`); `.font-display` fija el peso ligero |
 
 Las fuentes se empaquetan con la app: no se piden a Google Fonts en tiempo de ejecución.
 

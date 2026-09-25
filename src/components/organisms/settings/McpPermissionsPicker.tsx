@@ -30,8 +30,8 @@ export function McpPermissionsPicker({ tools, value, onChange }: McpPermissionsP
       />
       {!value.allowAll &&
         groups.map((group) => (
-          <fieldset key={group.title} className="rounded-lg border border-slate-200 px-3 pb-1 pt-2 dark:border-white/10">
-            <legend className="px-1 text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">{group.title}</legend>
+          <fieldset key={group.title} className="rounded-lg border border-zinc-200 px-3 pb-1 pt-2 dark:border-white/10">
+            <legend className="px-1 eyebrow text-zinc-500 dark:text-zinc-400">{group.title}</legend>
             {group.items.map((tool) => (
               <Switch
                 key={tool.name}

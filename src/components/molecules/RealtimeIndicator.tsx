@@ -19,7 +19,7 @@ const colors: Record<RealtimeStatus, string> = {
 export function RealtimeIndicator({ status, compact = false }: { status: RealtimeStatus; compact?: boolean }) {
   const pending = status === 'connecting' || status === 'reconnecting'
   return (
-    <span role="status" title={labels[status]} className="inline-flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+    <span role="status" title={labels[status]} className="inline-flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
       <motion.span
         className={`size-2 rounded-full ${colors[status]}`}
         animate={pending ? { opacity: [1, 0.3, 1] } : { opacity: 1 }}

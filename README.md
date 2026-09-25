@@ -132,7 +132,7 @@ src/
 |------|------------|
 | UI | React 19 · TypeScript |
 | Build | Vite 8 · Oxlint |
-| Estilos | Tailwind CSS v4 · Inter + Instrument Serif (Fontsource) |
+| Estilos | Tailwind CSS v4 · Instrument Sans + Cormorant Garamond (Fontsource) · estilo de [savegresoft.com](https://savegresoft.com) en violeta |
 | Animación | Motion |
 | Datos | TanStack Query 5 |
 | Rutas | React Router 8 |

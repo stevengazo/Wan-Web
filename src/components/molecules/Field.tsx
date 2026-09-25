@@ -1,7 +1,7 @@
 import { useId, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from 'react'
 
 const controlClass =
-  'block min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-base text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:outline-2 focus:outline-indigo-500/30 aria-invalid:border-red-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500'
+  'block min-h-11 w-full rounded-xl border border-zinc-300 bg-white px-3 text-base text-zinc-900 placeholder:text-zinc-400 focus:border-brand-500 focus:outline-2 focus:outline-brand-500/30 aria-invalid:border-red-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:placeholder:text-zinc-500'
 
 interface FieldProps {
   label: string
@@ -15,7 +15,7 @@ function Field({ label, error, hint, children }: FieldProps) {
   const describedBy = error ? `${id}-error` : hint ? `${id}-hint` : undefined
   return (
     <div className="space-y-1.5">
-      <label htmlFor={id} className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+      <label htmlFor={id} className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
         {label}
       </label>
       {children({ id, 'aria-invalid': error ? true : undefined, 'aria-describedby': describedBy, className: controlClass })}
@@ -25,7 +25,7 @@ function Field({ label, error, hint, children }: FieldProps) {
         </p>
       ) : (
         hint && (
-          <p id={`${id}-hint`} className="text-sm text-slate-500 dark:text-slate-400">
+          <p id={`${id}-hint`} className="text-sm text-zinc-500 dark:text-zinc-400">
             {hint}
           </p>
         )

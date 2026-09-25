@@ -45,12 +45,12 @@ export function FormActionsPanel({ formId }: { formId: string }) {
 
   return (
     <div>
-      <p className="max-w-xl text-sm text-slate-500 dark:text-slate-400">
+      <p className="max-w-xl text-sm text-zinc-500 dark:text-zinc-400">
         Cada respuesta nueva dispara las acciones activas. Si el destino falla se reintenta varias veces, con esperas crecientes.
       </p>
 
       <div className="mt-6 space-y-3">
-        {isPending && <p className="text-slate-500">Cargando…</p>}
+        {isPending && <p className="text-zinc-500">Cargando…</p>}
         {error && <p className="text-red-600 dark:text-red-400">{error.message}</p>}
         <AnimatePresence initial={false}>
           {actions?.map((action) => (
@@ -70,7 +70,7 @@ export function FormActionsPanel({ formId }: { formId: string }) {
           <button
             type="button"
             onClick={() => setEditing('new')}
-            className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 text-sm font-medium text-slate-600 hover:border-slate-400 hover:text-slate-900 dark:border-white/15 dark:text-slate-300 dark:hover:border-white/30 dark:hover:text-white"
+            className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-dashed border-zinc-300 text-sm font-medium text-zinc-600 hover:border-zinc-400 hover:text-zinc-900 dark:border-white/15 dark:text-zinc-300 dark:hover:border-white/30 dark:hover:text-white"
           >
             <PlusIcon />
             Agregar acción
@@ -85,28 +85,28 @@ function ActionRow({ action, onEdit }: { action: FormAction; onEdit: () => void 
   const test = useTestFormAction()
 
   return (
-    <div className={`rounded-xl border border-slate-200 p-4 dark:border-white/10 ${action.enabled ? '' : 'opacity-60'}`}>
+    <div className={`rounded-xl border border-zinc-200 p-4 dark:border-white/10 ${action.enabled ? '' : 'opacity-60'}`}>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="min-w-0">
           <p className="flex items-center gap-2 font-medium">
             {action.name}
-            <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600 dark:bg-white/10 dark:text-slate-300">
+            <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-medium text-zinc-600 dark:bg-white/10 dark:text-zinc-300">
               {actionTypeLabels[action.type]}
             </span>
-            {!action.enabled && <span className="text-xs text-slate-500">Inactiva</span>}
+            {!action.enabled && <span className="text-xs text-zinc-500">Inactiva</span>}
           </p>
-          <p className="mt-0.5 truncate font-mono text-xs text-slate-500 dark:text-slate-400">{action.target}</p>
+          <p className="mt-0.5 truncate font-mono text-xs text-zinc-500 dark:text-zinc-400">{action.target}</p>
         </div>
         <div className="flex items-center gap-1">
           <button
             type="button"
             onClick={() => test.mutate(action.id)}
             disabled={test.isPending}
-            className="min-h-10 rounded-lg px-3 text-sm font-medium hover:bg-slate-100 disabled:opacity-60 dark:hover:bg-white/10"
+            className="min-h-10 rounded-lg px-3 text-sm font-medium hover:bg-zinc-100 disabled:opacity-60 dark:hover:bg-white/10"
           >
             {test.isPending ? 'Probando…' : 'Probar'}
           </button>
-          <button type="button" onClick={onEdit} className="min-h-10 rounded-lg px-3 text-sm font-medium hover:bg-slate-100 dark:hover:bg-white/10">
+          <button type="button" onClick={onEdit} className="min-h-10 rounded-lg px-3 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-white/10">
             Editar
           </button>
         </div>
@@ -143,7 +143,7 @@ function ActionEditor({ formId, action, onDone }: { formId: string; action?: For
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-5 rounded-xl border border-slate-300 p-4 dark:border-white/20">
+    <form onSubmit={handleSubmit} noValidate className="space-y-5 rounded-xl border border-zinc-300 p-4 dark:border-white/20">
       <div role="radiogroup" aria-label="Tipo de acción" className="flex flex-wrap gap-2">
         {(Object.keys(actionTypeLabels) as FormActionType[]).map((value) => (
           <button
@@ -152,7 +152,7 @@ function ActionEditor({ formId, action, onDone }: { formId: string; action?: For
             role="radio"
             aria-checked={type === value}
             onClick={() => setType(value)}
-            className="min-h-10 rounded-lg border border-slate-300 px-3 text-sm font-medium text-slate-600 aria-checked:border-slate-900 aria-checked:bg-slate-900 aria-checked:text-white dark:border-white/15 dark:text-slate-300 dark:aria-checked:border-white dark:aria-checked:bg-white dark:aria-checked:text-slate-900"
+            className="min-h-10 rounded-lg border border-zinc-300 px-3 text-sm font-medium text-zinc-600 aria-checked:border-zinc-900 aria-checked:bg-zinc-900 aria-checked:text-white dark:border-white/15 dark:text-zinc-300 dark:aria-checked:border-white dark:aria-checked:bg-white dark:aria-checked:text-zinc-900"
           >
             {actionTypeLabels[value]}
           </button>

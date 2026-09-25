@@ -16,7 +16,7 @@ export function McpServersSection() {
 
   return (
     <div className="space-y-3">
-      {isPending && <p className="text-slate-500">Cargando…</p>}
+      {isPending && <p className="text-zinc-500">Cargando…</p>}
       {error && <p className="text-red-600 dark:text-red-400">{error.message}</p>}
       {servers?.map((server) =>
         editing === server.id ? (
@@ -42,16 +42,16 @@ function McpServerCard({ server, onEdit }: { server: McpServer; onEdit: () => vo
   }
 
   return (
-    <div className={`rounded-xl border border-slate-200 p-4 dark:border-white/10 ${server.enabled ? '' : 'opacity-60'}`}>
+    <div className={`rounded-xl border border-zinc-200 p-4 dark:border-white/10 ${server.enabled ? '' : 'opacity-60'}`}>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="min-w-0">
           <p className="flex items-center gap-2 font-medium">
             <span className={`size-2 rounded-full ${server.lastError ? 'bg-red-500' : 'bg-emerald-500'}`} />
             {server.name}
-            {!server.enabled && <span className="text-xs font-normal text-slate-500">Inactivo</span>}
+            {!server.enabled && <span className="text-xs font-normal text-zinc-500">Inactivo</span>}
           </p>
-          <p className="mt-0.5 truncate font-mono text-xs text-slate-500 dark:text-slate-400">{server.url}</p>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+          <p className="mt-0.5 truncate font-mono text-xs text-zinc-500 dark:text-zinc-400">{server.url}</p>
+          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
             {server.lastError ?? `${enabledTools} de ${server.tools.length} herramientas habilitadas`}
             {server.lastSyncedAt && ` · leído ${formatWhen(server.lastSyncedAt)}`}
           </p>
@@ -65,7 +65,7 @@ function McpServerCard({ server, onEdit }: { server: McpServer; onEdit: () => vo
       </div>
 
       {server.tools.length > 0 && (
-        <ul className="mt-4 divide-y divide-slate-100 border-t border-slate-100 dark:divide-white/5 dark:border-white/5">
+        <ul className="mt-4 divide-y divide-zinc-100 border-t border-zinc-100 dark:divide-white/5 dark:border-white/5">
           {server.tools.map((tool) => (
             <li key={tool.name} className="py-2">
               <div className="flex items-start gap-3">
@@ -75,11 +75,11 @@ function McpServerCard({ server, onEdit }: { server: McpServer; onEdit: () => vo
                   checked={tool.enabled}
                   disabled={save.isPending}
                   onChange={() => toggleTool(tool.name)}
-                  className="mt-1 size-4 accent-slate-900 dark:accent-white"
+                  className="mt-1 size-4 accent-zinc-900 dark:accent-white"
                 />
                 <div className="min-w-0 flex-1">
                   <code className="text-sm font-medium">{tool.name}</code>
-                  {tool.description && <p className="line-clamp-2 text-xs text-slate-500 dark:text-slate-400">{tool.description}</p>}
+                  {tool.description && <p className="line-clamp-2 text-xs text-zinc-500 dark:text-zinc-400">{tool.description}</p>}
                 </div>
                 <button type="button" onClick={() => setTesting(testing === tool.name ? null : tool.name)} className="shrink-0 text-xs underline underline-offset-4">
                   {testing === tool.name ? 'Cerrar' : 'Probar'}
@@ -116,7 +116,7 @@ function McpToolTester({ serverId, tool }: { serverId: string; tool: string }) {
       <Button type="submit" loading={test.isPending}>
         Ejecutar
       </Button>
-      {test.data && <pre className="max-h-60 overflow-auto whitespace-pre-wrap break-all rounded-lg bg-slate-50 p-3 font-mono text-xs dark:bg-white/5">{test.data.result}</pre>}
+      {test.data && <pre className="max-h-60 overflow-auto whitespace-pre-wrap break-all rounded-lg bg-zinc-50 p-3 font-mono text-xs dark:bg-white/5">{test.data.result}</pre>}
       {test.error && <p className="text-sm text-red-600 dark:text-red-400">{test.error.message}</p>}
     </form>
   )
@@ -138,7 +138,7 @@ function McpServerEditor({ server, onDone }: { server?: McpServer; onDone: () =>
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-5 rounded-xl border border-slate-300 p-4 dark:border-white/20">
+    <form onSubmit={handleSubmit} noValidate className="space-y-5 rounded-xl border border-zinc-300 p-4 dark:border-white/20">
       <div className="grid gap-4 md:grid-cols-[1fr_2fr]">
         <TextField label="Nombre" placeholder="GitHub" value={name} onChange={(e) => setName(e.target.value)} error={fieldErrors.name?.[0]} hint="Prefijo de sus herramientas para el bot." />
         <TextField label="URL del servidor" placeholder="https://mcp.empresa.com/mcp" className="font-mono" autoCapitalize="off" spellCheck={false} value={url} onChange={(e) => setUrl(e.target.value)} error={fieldErrors.url?.[0]} hint="Streamable HTTP o SSE." />

@@ -13,14 +13,14 @@ export function PageHeader(props: { title: ReactNode; subtitle?: ReactNode; back
             <Link
               to={props.back.to}
               aria-label={props.back.label}
-              className="-ml-3 flex size-11 shrink-0 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-white/10"
+              className="-ml-3 flex size-11 shrink-0 items-center justify-center rounded-lg text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-white/10"
             >
               <ChevronLeftIcon />
             </Link>
           )}
           <h1 className="truncate font-display text-4xl md:text-5xl">{props.title}</h1>
         </div>
-        {props.subtitle && <p className="mt-2 max-w-xl text-slate-500 dark:text-slate-400">{props.subtitle}</p>}
+        {props.subtitle && <p className="mt-2 max-w-xl text-zinc-500 dark:text-zinc-400">{props.subtitle}</p>}
       </div>
       {props.action && <div className="shrink-0">{props.action}</div>}
     </div>
@@ -36,7 +36,7 @@ export function CreateButton({ to, label }: { to: string; label: string }) {
     <>
       <Link
         to={to}
-        className="hidden min-h-11 items-center gap-2 rounded-lg bg-slate-900 px-4 text-sm font-medium text-white hover:bg-slate-700 md:inline-flex dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
+        className="hidden min-h-11 items-center gap-2 rounded-lg bg-brand-600 px-4 text-xs font-semibold uppercase tracking-[0.2em] text-white hover:bg-brand-500 md:inline-flex dark:bg-brand-600 dark:text-white dark:hover:bg-brand-500"
       >
         <PlusIcon />
         {label}
@@ -45,7 +45,7 @@ export function CreateButton({ to, label }: { to: string; label: string }) {
         <Link
           to={to}
           aria-label={label}
-          className="fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] right-4 z-20 flex size-14 items-center justify-center rounded-2xl bg-slate-900 text-white shadow-lg shadow-slate-900/30 md:hidden dark:bg-white dark:text-slate-900"
+          className="fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] right-4 z-20 flex size-14 items-center justify-center rounded-2xl bg-brand-600 text-white shadow-lg shadow-brand-600/30 md:hidden dark:bg-brand-600 dark:text-white"
         >
           <PlusIcon />
         </Link>,
@@ -58,9 +58,9 @@ export function CreateButton({ to, label }: { to: string; label: string }) {
 /** Estado vacío de una lista. */
 export function EmptyState({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <div className="rounded-xl border border-dashed border-slate-300 p-10 text-center dark:border-white/15">
+    <div className="rounded-xl border border-dashed border-zinc-300 p-10 text-center dark:border-white/15">
       <p className="font-medium">{title}</p>
-      <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{children}</p>
+      <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{children}</p>
     </div>
   )
 }

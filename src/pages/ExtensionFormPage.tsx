@@ -30,18 +30,18 @@ export function ExtensionFormPage() {
         <Link
           to="/extensiones"
           aria-label="Volver a extensiones"
-          className="-ml-3 flex size-11 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-white/10"
+          className="-ml-3 flex size-11 items-center justify-center rounded-lg text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-white/10"
         >
           <ChevronLeftIcon />
         </Link>
         <h1 className="font-display text-4xl md:text-5xl">{id ? 'Editar extensión' : 'Nueva extensión'}</h1>
       </div>
-      <p className="mt-2 text-slate-500 dark:text-slate-400">
+      <p className="mt-2 text-zinc-500 dark:text-zinc-400">
         Los mismos datos que pide un softphone. Solo son obligatorios el servidor, el usuario y la contraseña.
       </p>
 
       <div className="mt-10">
-        {id && isPending && <p className="text-slate-500">Cargando…</p>}
+        {id && isPending && <p className="text-zinc-500">Cargando…</p>}
         {id && error && <p className="text-red-600 dark:text-red-400">{error.message}</p>}
         {(!id || extension) && <ExtensionForm key={extension?.id ?? 'new'} extension={extension} />}
       </div>
@@ -237,7 +237,7 @@ function ExtensionForm({ extension }: { extension?: Extension }) {
         </p>
       )}
 
-      <div className="flex flex-col-reverse gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:justify-between dark:border-white/10">
+      <div className="flex flex-col-reverse gap-3 border-t border-zinc-200 pt-6 sm:flex-row sm:justify-between dark:border-white/10">
         {extension ? (
           <Button variant="secondary" onClick={() => setConfirmingDelete(true)} className="text-red-600 dark:text-red-400">
             Eliminar
@@ -280,7 +280,7 @@ function CodecPicker({ value, onChange, error }: { value: string[]; onChange: (c
 
   return (
     <fieldset>
-      <legend className="text-sm font-medium text-slate-700 dark:text-slate-300">Códecs</legend>
+      <legend className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Códecs</legend>
       <div className="mt-1.5 flex flex-wrap gap-2">
         {supportedCodecs.map((codec) => {
           const position = value.indexOf(codec)
@@ -291,14 +291,14 @@ function CodecPicker({ value, onChange, error }: { value: string[]; onChange: (c
               type="button"
               aria-pressed={active}
               onClick={() => toggle(codec)}
-              className={`inline-flex min-h-11 items-center gap-2 rounded-lg border px-3 text-sm font-medium transition-colors ${
+              className={`inline-flex min-h-11 items-center gap-2 rounded-lg border px-3 text-xs font-semibold uppercase tracking-[0.2em] transition-colors ${
                 active
-                  ? 'border-slate-900 bg-slate-900 text-white dark:border-white dark:bg-white dark:text-slate-900'
-                  : 'border-slate-300 text-slate-600 hover:border-slate-400 dark:border-white/15 dark:text-slate-300 dark:hover:border-white/30'
+                  ? 'border-brand-600 bg-brand-600 text-white dark:border-brand-500 dark:bg-brand-600 dark:text-white'
+                  : 'border-zinc-300 text-zinc-600 hover:border-zinc-400 dark:border-white/15 dark:text-zinc-300 dark:hover:border-white/30'
               }`}
             >
               {active && (
-                <span className="flex size-5 items-center justify-center rounded-full bg-white/20 text-xs tabular-nums dark:bg-slate-900/15">
+                <span className="flex size-5 items-center justify-center rounded-full bg-white/20 text-xs tabular-nums dark:bg-zinc-900/15">
                   {position + 1}
                 </span>
               )}
@@ -307,7 +307,7 @@ function CodecPicker({ value, onChange, error }: { value: string[]; onChange: (c
           )
         })}
       </div>
-      <p className={`mt-1.5 text-sm ${error ? 'text-red-600 dark:text-red-400' : 'text-slate-500 dark:text-slate-400'}`}>
+      <p className={`mt-1.5 text-sm ${error ? 'text-red-600 dark:text-red-400' : 'text-zinc-500 dark:text-zinc-400'}`}>
         {error ?? 'El orden en que los activas es el orden de preferencia.'}
       </p>
     </fieldset>

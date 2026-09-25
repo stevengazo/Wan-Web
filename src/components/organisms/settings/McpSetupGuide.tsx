@@ -54,13 +54,13 @@ export function McpSetupGuide({ url, token }: { url: string; token?: string }) {
             role="tab"
             aria-selected={client === c.id}
             onClick={() => setClient(c.id)}
-            className="min-h-10 rounded-lg px-3 text-sm font-medium text-slate-500 aria-selected:bg-slate-100 aria-selected:text-slate-900 dark:text-slate-400 dark:aria-selected:bg-white/10 dark:aria-selected:text-white"
+            className="min-h-10 rounded-lg px-3 text-sm font-medium text-zinc-500 aria-selected:bg-zinc-100 aria-selected:text-zinc-900 dark:text-zinc-400 dark:aria-selected:bg-white/10 dark:aria-selected:text-white"
           >
             {c.label}
           </button>
         ))}
       </div>
-      <ol className="list-decimal space-y-1 pl-5 text-sm text-slate-600 dark:text-slate-300">
+      <ol className="list-decimal space-y-1 pl-5 text-sm text-zinc-600 dark:text-zinc-300">
         {current.steps.map((step) => (
           <li key={step}>{step}</li>
         ))}

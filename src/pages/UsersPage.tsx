@@ -29,7 +29,7 @@ export function UsersPage() {
             <button
               type="button"
               onClick={() => setCreating(true)}
-              className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-slate-900 px-4 text-sm font-medium text-white hover:bg-slate-700 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
+              className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-brand-600 px-4 text-xs font-semibold uppercase tracking-[0.2em] text-white hover:bg-brand-500 dark:bg-brand-600 dark:text-white dark:hover:bg-brand-500"
             >
               <PlusIcon />
               <span className="hidden sm:inline">Nuevo usuario</span>
@@ -40,9 +40,9 @@ export function UsersPage() {
 
       <dl className="mt-8 grid gap-3 sm:grid-cols-2">
         {Object.values(roleLabels).map((role) => (
-          <div key={role.label} className="rounded-xl border border-slate-200 p-4 dark:border-white/10">
+          <div key={role.label} className="rounded-xl border border-zinc-200 p-4 dark:border-white/10">
             <dt className="text-sm font-medium">{role.label}</dt>
-            <dd className="mt-1 text-sm text-slate-500 dark:text-slate-400">{role.description}</dd>
+            <dd className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{role.description}</dd>
           </div>
         ))}
       </dl>
@@ -66,7 +66,7 @@ export function UsersPage() {
             }}
           />
         )}
-        {isPending && <p className="text-slate-500">Cargando…</p>}
+        {isPending && <p className="text-zinc-500">Cargando…</p>}
         {error && <p className="text-red-600 dark:text-red-400">{error.message}</p>}
         {users && (
           <UserList

@@ -16,7 +16,7 @@ export function ExtensionsPage() {
         {isAdmin && (
           <Link
             to="/extensiones/nueva"
-            className="hidden min-h-11 items-center gap-2 rounded-lg bg-slate-900 px-4 text-sm font-medium text-white hover:bg-slate-700 md:inline-flex dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
+            className="hidden min-h-11 items-center gap-2 rounded-lg bg-brand-600 px-4 text-xs font-semibold uppercase tracking-[0.2em] text-white hover:bg-brand-500 md:inline-flex dark:bg-brand-600 dark:text-white dark:hover:bg-brand-500"
           >
             <PlusIcon />
             Nueva extensión
@@ -36,30 +36,30 @@ export function ExtensionsPage() {
       )}
 
       {extensions?.length === 0 && (
-        <div className="rounded-2xl border border-dashed border-slate-300 p-8 text-center dark:border-slate-700">
+        <div className="rounded-2xl border border-dashed border-zinc-300 p-8 text-center dark:border-zinc-700">
           <p className="font-medium">Todavía no hay extensiones</p>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
             {isAdmin ? 'Agrega la primera para que el bot pueda atender llamadas.' : 'Un administrador debe crearlas.'}
           </p>
         </div>
       )}
 
       {extensions && extensions.length > 0 && (
-        <ul className="divide-y divide-slate-200 overflow-hidden rounded-2xl border border-slate-200 dark:divide-slate-800 dark:border-slate-800">
+        <ul className="divide-y divide-zinc-200 overflow-hidden rounded-2xl border border-zinc-200 dark:divide-zinc-800 dark:border-zinc-800">
           {extensions.map((extension, index) => {
             const content = (
               <>
                 <span
-                  className={`size-2.5 shrink-0 rounded-full ${extension.enabled ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-600'}`}
+                  className={`size-2.5 shrink-0 rounded-full ${extension.enabled ? 'bg-emerald-500' : 'bg-zinc-300 dark:bg-zinc-600'}`}
                   aria-label={extension.enabled ? 'Habilitada' : 'Deshabilitada'}
                 />
                 <span className="min-w-0 flex-1">
                   <span className="block truncate font-medium">{extension.name}</span>
-                  <span className="block truncate text-sm text-slate-500 dark:text-slate-400">
+                  <span className="block truncate text-sm text-zinc-500 dark:text-zinc-400">
                     {extension.sipUsername}@{extension.sipDomain ?? extension.sipServer}
                   </span>
                 </span>
-                <span className="hidden text-sm text-slate-500 sm:block dark:text-slate-400">
+                <span className="hidden text-sm text-zinc-500 sm:block dark:text-zinc-400">
                   {extension.enabled ? 'Habilitada' : 'Deshabilitada'}
                 </span>
                 {isAdmin && <ChevronRightIcon />}
@@ -75,7 +75,7 @@ export function ExtensionsPage() {
                 {isAdmin ? (
                   <Link
                     to={`/extensiones/${extension.id}`}
-                    className="flex min-h-16 items-center gap-3 px-4 py-3 transition-colors hover:bg-slate-50 dark:hover:bg-slate-900"
+                    className="flex min-h-16 items-center gap-3 px-4 py-3 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-900"
                   >
                     {content}
                   </Link>
@@ -100,7 +100,7 @@ export function ExtensionsPage() {
           <Link
             to="/extensiones/nueva"
             aria-label="Nueva extensión"
-            className="flex size-14 items-center justify-center rounded-2xl bg-slate-900 text-white shadow-lg shadow-slate-900/30 dark:bg-white dark:text-slate-900"
+            className="flex size-14 items-center justify-center rounded-2xl bg-brand-600 text-white shadow-lg shadow-brand-600/30 dark:bg-brand-600 dark:text-white"
           >
             <PlusIcon />
           </Link>
@@ -113,10 +113,10 @@ export function ExtensionsPage() {
 
 function ListSkeleton() {
   return (
-    <div className="space-y-px overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800" aria-label="Cargando">
+    <div className="space-y-px overflow-hidden rounded-2xl border border-zinc-200 dark:border-zinc-800" aria-label="Cargando">
       {[0, 1, 2].map((i) => (
         <div key={i} className="flex min-h-16 items-center gap-3 px-4">
-          <div className="h-4 w-1/3 animate-pulse rounded bg-slate-200 dark:bg-slate-800" />
+          <div className="h-4 w-1/3 animate-pulse rounded bg-zinc-200 dark:bg-zinc-800" />
         </div>
       ))}
     </div>

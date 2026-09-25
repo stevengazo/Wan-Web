@@ -30,7 +30,7 @@ export function MessagesPage() {
             role="tab"
             aria-selected={filter === value}
             onClick={() => setFilter(value)}
-            className="min-h-10 rounded-lg px-3 text-sm font-medium text-slate-500 aria-selected:bg-slate-100 aria-selected:text-slate-900 dark:text-slate-400 dark:aria-selected:bg-white/10 dark:aria-selected:text-white"
+            className="min-h-10 rounded-lg px-3 text-sm font-medium text-zinc-500 aria-selected:bg-zinc-100 aria-selected:text-zinc-900 dark:text-zinc-400 dark:aria-selected:bg-white/10 dark:aria-selected:text-white"
           >
             {filterLabels[value]} ({count(value)})
           </button>
@@ -38,7 +38,7 @@ export function MessagesPage() {
       </div>
 
       <div className="mt-6">
-        {isPending && <p className="text-slate-500">Cargando…</p>}
+        {isPending && <p className="text-zinc-500">Cargando…</p>}
         {error && <p className="text-red-600 dark:text-red-400">{error.message}</p>}
         {messages && visible.length === 0 && (
           <EmptyState title={filter === 'Pending' ? 'No hay recados pendientes' : 'No hay recados'}>
@@ -83,19 +83,19 @@ function MessageCard({ message, canDelete }: { message: CallMessage; canDelete: 
       // Al abrir un recado nuevo se marca como leído.
       onClick={() => unread && setStatus('Read')}
       className={`rounded-xl border p-5 ${
-        unread ? 'border-slate-300 bg-slate-50/60 dark:border-white/20 dark:bg-white/[0.03]' : 'border-slate-200 dark:border-white/10'
+        unread ? 'border-zinc-300 bg-zinc-50/60 dark:border-white/20 dark:bg-white/[0.03]' : 'border-zinc-200 dark:border-white/10'
       } ${message.status === 'Done' ? 'opacity-60' : ''}`}
     >
       <header className="flex flex-wrap items-start justify-between gap-2">
         <div className="min-w-0">
           <p className="flex flex-wrap items-center gap-2 font-medium">
-            {unread && <span className="size-2 rounded-full bg-slate-900 dark:bg-white" aria-label="No leído" />}
+            {unread && <span className="size-2 rounded-full bg-brand-600 dark:bg-brand-600" aria-label="No leído" />}
             Para {message.directoryEntryName ?? message.recipient}
             {message.urgent && (
               <span className="rounded-full bg-red-600 px-2 py-0.5 text-xs font-medium text-white dark:bg-red-500">Urgente</span>
             )}
           </p>
-          <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">
+          <p className="mt-0.5 text-sm text-zinc-500 dark:text-zinc-400">
             De {message.callerName ?? 'alguien que no dio su nombre'}
             {message.callbackNumber && (
               <>
@@ -107,14 +107,14 @@ function MessageCard({ message, canDelete }: { message: CallMessage; canDelete: 
             )}
           </p>
         </div>
-        <time dateTime={message.createdAt} title={formatDateTime(message.createdAt)} className="shrink-0 text-sm text-slate-500 dark:text-slate-400">
+        <time dateTime={message.createdAt} title={formatDateTime(message.createdAt)} className="shrink-0 text-sm text-zinc-500 dark:text-zinc-400">
           {formatWhen(message.createdAt)}
         </time>
       </header>
 
       <p className="mt-4 whitespace-pre-line">{message.body}</p>
 
-      <footer className="mt-4 flex flex-wrap gap-2 border-t border-slate-100 pt-3 dark:border-white/5" onClick={(e) => e.stopPropagation()}>
+      <footer className="mt-4 flex flex-wrap gap-2 border-t border-zinc-100 pt-3 dark:border-white/5" onClick={(e) => e.stopPropagation()}>
         {message.status === 'Done' ? (
           <ActionButton onClick={() => setStatus('Read')} disabled={update.isPending}>
             Reabrir
@@ -150,7 +150,7 @@ function ActionButton(props: { onClick: () => void; disabled: boolean; children:
       type="button"
       onClick={props.onClick}
       disabled={props.disabled}
-      className="min-h-10 rounded-lg px-3 text-sm font-medium hover:bg-slate-100 dark:hover:bg-white/10"
+      className="min-h-10 rounded-lg px-3 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-white/10"
     >
       {props.children}
     </button>

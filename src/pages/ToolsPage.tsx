@@ -12,7 +12,7 @@ export function ToolsPage() {
 
       <section className="mt-10">
         <h2 className="font-medium">Peticiones a sistemas externos</h2>
-        <p className="mt-1 max-w-xl text-sm text-slate-500 dark:text-slate-400">
+        <p className="mt-1 max-w-xl text-sm text-zinc-500 dark:text-zinc-400">
           Por ejemplo, consultar un pedido en tu ERP o el saldo de un cliente. El bot completa los parámetros con lo que dice quien llama.
         </p>
         <div className="mt-4">
@@ -22,7 +22,7 @@ export function ToolsPage() {
 
       <section className="mt-12">
         <h2 className="font-medium">Servidores MCP</h2>
-        <p className="mt-1 max-w-xl text-sm text-slate-500 dark:text-slate-400">
+        <p className="mt-1 max-w-xl text-sm text-zinc-500 dark:text-zinc-400">
           Conecta servidores MCP y elige qué herramientas puede usar el bot.
         </p>
         <div className="mt-4">
