@@ -1,4 +1,6 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
+import { useSearchParams } from 'react-router'
+import toast from 'react-hot-toast'
 import { ApiError } from '@/services/api/client'
 import { PasswordField } from '@/components/molecules/PasswordField'
 import { useAuth } from '@/hooks/useAuth'
@@ -7,9 +9,22 @@ import { Avatar } from '@/components/atoms/Avatar'
 import { Button } from '@/components/atoms/Button'
 import { TextField } from '@/components/molecules/Field'
 import { FormSection, FormSections } from '@/components/organisms/FormSection'
+import { LinkedAccountsSection } from '@/components/organisms/profile/LinkedAccountsSection'
+import { MfaSection } from '@/components/organisms/profile/MfaSection'
 
 export function ProfilePage() {
-  const { user } = useAuth()
+  const { user, refreshUser, startExternal } = useAuth()
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  // Vuelta de vincular Google o Microsoft.
+  useEffect(() => {
+    const error = searchParams.get('ssoError')
+    const linked = searchParams.get('sso') === 'linked'
+    if (!error && !linked) return
+    if (error) toast.error(error)
+    else toast.success('Cuenta vinculada')
+    setSearchParams({}, { replace: true })
+  }, [searchParams, setSearchParams])
 
   return (
     <div>
@@ -31,8 +46,17 @@ export function ProfilePage() {
           <FormSection title="Datos" description="Cómo te ven los demás en el panel.">
             <ProfileForm />
           </FormSection>
-          <FormSection title="Contraseña" description="Usa al menos 8 caracteres.">
-            <PasswordForm />
+          <FormSection
+            title="Contraseña"
+            description={user?.hasPassword ? 'Usa al menos 8 caracteres.' : 'Entraste con Google o Microsoft: define una para entrar también con tu correo.'}
+          >
+            <PasswordForm hasPassword={user?.hasPassword ?? true} onSaved={() => void refreshUser()} />
+          </FormSection>
+          <FormSection title="Doble factor" description="Un código de tu teléfono además de la contraseña. No aplica al entrar con Google o Microsoft: ahí lo pide tu proveedor.">
+            <MfaSection onChanged={() => void refreshUser()} />
+          </FormSection>
+          <FormSection title="Cuentas vinculadas" description="Entra con tu cuenta de Google o Microsoft de la empresa.">
+            <LinkedAccountsSection onLink={(provider) => startExternal(provider, 'Link')} />
           </FormSection>
           <FormSection title="Apariencia" description="Se guarda en este navegador.">
             <ThemeToggle />
@@ -88,7 +112,7 @@ function ProfileForm() {
   )
 }
 
-function PasswordForm() {
+function PasswordForm({ hasPassword, onSaved }: { hasPassword: boolean; onSaved: () => void }) {
   const { changePassword } = useAuth()
   const [current, setCurrent] = useState('')
   const [next, setNext] = useState('')
@@ -100,9 +124,11 @@ function PasswordForm() {
     setError(null)
     setSaving(true)
     try {
-      await changePassword(current, next)
+      await changePassword(hasPassword ? current : null, next)
       setCurrent('')
       setNext('')
+      toast.success(hasPassword ? 'Contraseña cambiada' : 'Contraseña definida')
+      if (!hasPassword) onSaved()
     } catch (e) {
       setError(e instanceof ApiError ? e : new ApiError(0, 'No se pudo cambiar la contraseña'))
     } finally {
@@ -115,13 +141,15 @@ function PasswordForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-      <PasswordField
-        label="Contraseña actual"
-        autoComplete="current-password"
-        value={current}
-        onChange={(e) => setCurrent(e.target.value)}
-        error={fieldErrors.currentPassword?.[0]}
-      />
+      {hasPassword && (
+        <PasswordField
+          label="Contraseña actual"
+          autoComplete="current-password"
+          value={current}
+          onChange={(e) => setCurrent(e.target.value)}
+          error={fieldErrors.currentPassword?.[0]}
+        />
+      )}
       <PasswordField
         label="Contraseña nueva"
         autoComplete="new-password"
@@ -131,8 +159,8 @@ function PasswordForm() {
       />
       {generalError && <p className="text-sm text-red-600 dark:text-red-400">{generalError}</p>}
       <div className="flex items-center gap-3">
-        <Button type="submit" loading={saving} disabled={!current || next.length < 8}>
-          Cambiar contraseña
+        <Button type="submit" loading={saving} disabled={(hasPassword && !current) || next.length < 8}>
+          {hasPassword ? 'Cambiar contraseña' : 'Definir contraseña'}
         </Button>
       </div>
     </form>

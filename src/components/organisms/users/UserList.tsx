@@ -1,6 +1,8 @@
 import { useState, type FormEvent } from 'react'
 import { Avatar } from '@/components/atoms/Avatar'
 import { Button } from '@/components/atoms/Button'
+import { ShieldIcon } from '@/components/atoms/icons'
+import { providerLogos } from '@/components/atoms/providerLogos'
 import { PasswordField } from '@/components/molecules/PasswordField'
 import { formatDateTime } from '@/lib/format'
 import type { UserListItem, UserRole } from '@/services/api'
@@ -10,20 +12,21 @@ interface UserListProps {
   users: UserListItem[]
   onChangeRole: (user: UserListItem, role: UserRole) => void
   onResetPassword: (user: UserListItem, password: string) => void
+  onResetMfa: (user: UserListItem) => void
   onDelete: (user: UserListItem) => void
 }
 
-export function UserList({ users, onChangeRole, onResetPassword, onDelete }: UserListProps) {
+export function UserList({ users, onChangeRole, onResetPassword, onResetMfa, onDelete }: UserListProps) {
   return (
     <ul className="divide-y divide-zinc-200 overflow-hidden rounded-xl border border-zinc-200 dark:divide-white/10 dark:border-white/10">
       {users.map((user) => (
-        <UserRow key={user.id} user={user} onChangeRole={onChangeRole} onResetPassword={onResetPassword} onDelete={onDelete} />
+        <UserRow key={user.id} user={user} onChangeRole={onChangeRole} onResetPassword={onResetPassword} onResetMfa={onResetMfa} onDelete={onDelete} />
       ))}
     </ul>
   )
 }
 
-function UserRow({ user, onChangeRole, onResetPassword, onDelete }: { user: UserListItem } & Omit<UserListProps, 'users'>) {
+function UserRow({ user, onChangeRole, onResetPassword, onResetMfa, onDelete }: { user: UserListItem } & Omit<UserListProps, 'users'>) {
   const [resetting, setResetting] = useState(false)
   const [password, setPassword] = useState('')
 
@@ -42,6 +45,15 @@ function UserRow({ user, onChangeRole, onResetPassword, onDelete }: { user: User
           <p className="flex items-center gap-2 truncate font-medium">
             {user.displayName}
             {user.isCurrent && <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-600 dark:bg-white/10 dark:text-zinc-300">Tú</span>}
+            {user.mfaEnabled && (
+              <span title="Doble factor activo" className="text-emerald-600 dark:text-emerald-400">
+                <ShieldIcon className="size-4" aria-label="Doble factor activo" />
+              </span>
+            )}
+            {user.externalLogins.map((provider) => {
+              const Logo = providerLogos[provider]
+              return <Logo key={provider} className="size-3.5" aria-label={`Entra con ${provider}`} />
+            })}
           </p>
           <p className="truncate text-sm text-zinc-500 dark:text-zinc-400" title={`Desde ${formatDateTime(user.createdAt)}`}>
             {user.email}
@@ -62,6 +74,11 @@ function UserRow({ user, onChangeRole, onResetPassword, onDelete }: { user: User
         <button type="button" onClick={() => setResetting(!resetting)} className="min-h-10 rounded-lg px-3 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-white/10">
           Contraseña
         </button>
+        {user.mfaEnabled && (
+          <button type="button" onClick={() => onResetMfa(user)} className="min-h-10 rounded-lg px-3 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-white/10">
+            Quitar doble factor
+          </button>
+        )}
         {!user.isCurrent && (
           <button type="button" onClick={() => onDelete(user)} className="min-h-10 rounded-lg px-3 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10">
             Eliminar

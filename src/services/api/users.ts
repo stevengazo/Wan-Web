@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from '@/services/api/client'
 import { keys } from '@/services/api/keys'
 import type { UserRole } from '@/services/api/auth'
+import type { ExternalProvider } from '@/services/api/account'
 
 export interface UserListItem {
   id: string
@@ -11,6 +12,9 @@ export interface UserListItem {
   createdAt: string
   /** La sesión actual: no se puede eliminar a sí misma. */
   isCurrent: boolean
+  mfaEnabled: boolean
+  /** Proveedores con los que puede entrar. */
+  externalLogins: ExternalProvider[]
 }
 
 export interface CreateUserInput {
@@ -46,6 +50,16 @@ export function useResetUserPassword() {
     meta: { success: 'Contraseña cambiada' },
     mutationFn: ({ id, password }: { id: string; password: string }) =>
       api<void>(`/users/${id}/password`, { method: 'POST', body: { password } }),
+  })
+}
+
+/** Para quien perdió el teléfono y los códigos de recuperación. */
+export function useResetUserMfa() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    meta: { success: 'Doble factor quitado' },
+    mutationFn: (id: string) => api<void>(`/users/${id}/mfa`, { method: 'DELETE' }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.users }),
   })
 }
 

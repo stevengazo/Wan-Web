@@ -7,7 +7,7 @@ import { PageHeader } from '@/components/organisms/PageHeader'
 import { CreateUserForm } from '@/components/organisms/users/CreateUserForm'
 import { roleLabels } from '@/components/organisms/users/roleLabels'
 import { UserList } from '@/components/organisms/users/UserList'
-import { ApiError, useCreateUser, useDeleteUser, useResetUserPassword, useUpdateUser, useUsers, type UserListItem } from '@/services/api'
+import { ApiError, useCreateUser, useDeleteUser, useResetUserMfa, useResetUserPassword, useUpdateUser, useUsers, type UserListItem } from '@/services/api'
 
 /** Contenedor: conecta los datos de usuarios con los organismos que los muestran. */
 export function UsersPage() {
@@ -15,9 +15,11 @@ export function UsersPage() {
   const create = useCreateUser()
   const update = useUpdateUser()
   const resetPassword = useResetUserPassword()
+  const resetMfa = useResetUserMfa()
   const remove = useDeleteUser()
   const [creating, setCreating] = useState(false)
   const [deleting, setDeleting] = useState<UserListItem | null>(null)
+  const [resettingMfa, setResettingMfa] = useState<UserListItem | null>(null)
 
   return (
     <div>
@@ -73,6 +75,7 @@ export function UsersPage() {
             users={users}
             onChangeRole={(user, role) => update.mutate({ id: user.id, displayName: user.displayName, role })}
             onResetPassword={(user, password) => resetPassword.mutate({ id: user.id, password })}
+            onResetMfa={setResettingMfa}
             onDelete={setDeleting}
           />
         )}
@@ -90,6 +93,19 @@ export function UsersPage() {
               onCancel={() => {
                 remove.reset()
                 setDeleting(null)
+              }}
+            />
+          )}
+          {resettingMfa && (
+            <ConfirmSheet
+              title={`¿Quitar el doble factor a ${resettingMfa.displayName}?`}
+              description="Podrá entrar solo con la contraseña hasta que vuelva a activarlo. Hazlo solo si confirmaste que es la persona (por ejemplo, perdió el teléfono)."
+              error={resetMfa.error?.message}
+              loading={resetMfa.isPending}
+              onConfirm={() => resetMfa.mutate(resettingMfa.id, { onSuccess: () => setResettingMfa(null) })}
+              onCancel={() => {
+                resetMfa.reset()
+                setResettingMfa(null)
               }}
             />
           )}

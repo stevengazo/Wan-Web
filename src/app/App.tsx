@@ -6,6 +6,7 @@ import { Toaster } from '@/components/atoms/Toaster'
 import { RequireAuth } from '@/app/RequireAuth'
 import { LoginPage } from '@/pages/LoginPage'
 import { RegisterPage } from '@/pages/RegisterPage'
+import { SsoCallbackPage } from '@/pages/SsoCallbackPage'
 
 // Carga diferida: el login no descarga SignalR ni el resto del panel (importa en móvil con red lenta).
 const AppTemplate = lazy(() => import('@/components/templates/AppTemplate').then((m) => ({ default: m.AppTemplate })))
@@ -37,6 +38,7 @@ const RecordingsPage = lazy(() => import('@/pages/RecordingsPage').then((m) => (
 const router = createBrowserRouter([
   { path: '/login', element: <LoginPage /> },
   { path: '/registro', element: <RegisterPage /> },
+  { path: '/login/sso', element: <SsoCallbackPage /> },
   {
     // Enlace público de un recado (WhatsApp): sin sesión.
     path: '/r/:token',

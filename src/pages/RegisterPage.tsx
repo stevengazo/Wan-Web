@@ -3,13 +3,14 @@ import { Link, Navigate, useLocation, useNavigate } from 'react-router'
 import { ApiError } from '@/services/api/client'
 import { AuthTemplate, FormAlert, SubmitButton } from '@/components/templates/AuthTemplate'
 import { PasswordField } from '@/components/molecules/PasswordField'
+import { ExternalLoginButtons } from '@/components/molecules/ExternalLoginButtons'
 import { useAuth } from '@/hooks/useAuth'
 import { TextField } from '@/components/molecules/Field'
 
 const minPasswordLength = 8
 
 export function RegisterPage() {
-  const { user, register } = useAuth()
+  const { user, register, startExternal } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const [displayName, setDisplayName] = useState('')
@@ -65,6 +66,9 @@ export function RegisterPage() {
         </>
       }
     >
+      <div className="mb-5">
+        <ExternalLoginButtons onSelect={(provider) => startExternal(provider)} onError={(message) => setError(new ApiError(0, message))} />
+      </div>
       <form onSubmit={handleSubmit} className="space-y-5" noValidate>
         <TextField
           label="Nombre"
