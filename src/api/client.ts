@@ -19,17 +19,19 @@ interface ProblemDetails {
 }
 
 export async function api<T>(path: string, init: { method?: string; body?: unknown } = {}): Promise<T> {
+  // FormData va tal cual: el navegador pone el Content-Type multipart con su boundary.
+  const isForm = init.body instanceof FormData
   const headers: Record<string, string> = { Accept: 'application/json' }
   const token = authStore.get()?.accessToken
   if (token) headers.Authorization = `Bearer ${token}`
-  if (init.body !== undefined) headers['Content-Type'] = 'application/json'
+  if (init.body !== undefined && !isForm) headers['Content-Type'] = 'application/json'
 
   let response: Response
   try {
     response = await fetch(`/api${path}`, {
       method: init.method ?? 'GET',
       headers,
-      body: init.body === undefined ? undefined : JSON.stringify(init.body),
+      body: init.body === undefined ? undefined : isForm ? (init.body as FormData) : JSON.stringify(init.body),
     })
   } catch {
     throw new ApiError(0, 'No se pudo conectar con el servidor')

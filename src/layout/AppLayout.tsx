@@ -9,6 +9,7 @@ import { useRealtime } from '../realtime/useRealtime'
 import {
   BookIcon,
   ClipboardIcon,
+  DatabaseIcon,
   HomeIcon,
   InboxIcon,
   LogOutIcon,
@@ -37,6 +38,7 @@ const allNav: NavItem[] = [
   { to: '/recados', label: 'Recados', icon: <InboxIcon />, primary: true },
   { to: '/formularios', label: 'Formularios', icon: <ClipboardIcon />, primary: true },
   { to: '/grabaciones', label: 'Grabaciones', icon: <MicIcon /> },
+  { to: '/conocimiento', label: 'Conocimiento', icon: <DatabaseIcon /> },
   { to: '/extensiones', label: 'Extensiones', icon: <PhoneIcon /> },
   { to: '/directorio', label: 'Directorio', icon: <BookIcon /> },
   { to: '/configuracion', label: 'Configuración', icon: <SettingsIcon />, admin: true },

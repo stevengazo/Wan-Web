@@ -19,6 +19,8 @@ const FormsPage = lazy(() => import('./pages/FormsPage').then((m) => ({ default:
 const FormDetailPage = lazy(() => import('./pages/FormDetailPage').then((m) => ({ default: m.FormDetailPage })))
 const FormEditorPage = lazy(() => import('./pages/FormEditorPage').then((m) => ({ default: m.FormEditorPage })))
 const MessagesPage = lazy(() => import('./pages/MessagesPage').then((m) => ({ default: m.MessagesPage })))
+const KnowledgePage = lazy(() => import('./pages/KnowledgePage').then((m) => ({ default: m.KnowledgePage })))
+const KnowledgeBasePage = lazy(() => import('./pages/KnowledgeBasePage').then((m) => ({ default: m.KnowledgeBasePage })))
 const RecordingsPage = lazy(() => import('./pages/RecordingsPage').then((m) => ({ default: m.RecordingsPage })))
 
 const queryClient = new QueryClient({
@@ -80,6 +82,8 @@ const router = createBrowserRouter([
       },
       { path: 'recados', element: <MessagesPage /> },
       { path: 'grabaciones', element: <RecordingsPage /> },
+      { path: 'conocimiento', element: <KnowledgePage /> },
+      { path: 'conocimiento/:id', element: <KnowledgeBasePage /> },
       { path: 'formularios', element: <FormsPage /> },
       {
         path: 'formularios/nuevo',

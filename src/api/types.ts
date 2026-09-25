@@ -249,3 +249,37 @@ export interface CallSettings {
   recordCalls: boolean
   recordingNotice: string | null
 }
+
+/** Conjunto de documentos que el bot consulta durante la llamada. */
+export interface KnowledgeBaseInput {
+  name: string
+  description: string | null
+  enabled: boolean
+}
+
+export interface KnowledgeBase extends KnowledgeBaseInput {
+  id: string
+  documentCount: number
+  chunkCount: number
+  createdAt: string
+}
+
+export type KnowledgeDocumentStatus = 'Ready' | 'Failed'
+
+export interface KnowledgeDocument {
+  id: string
+  fileName: string
+  sizeBytes: number
+  status: KnowledgeDocumentStatus
+  /** Por qué no se pudo leer. */
+  error: string | null
+  chunkCount: number
+  createdAt: string
+}
+
+export interface KnowledgeHit {
+  text: string
+  documentName: string
+  baseName: string
+  rank: number
+}
