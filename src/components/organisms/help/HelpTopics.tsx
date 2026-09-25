@@ -278,6 +278,10 @@ export function RecordingsTopic() {
         ]}
       />
       <Tip>Cambiar de destino no mueve ni rompe las grabaciones anteriores. Usa Probar antes de guardar.</Tip>
+      <p>
+        Las grabaciones se guardan <b>cifradas</b> (AES-256), también en la nube; el panel las descifra al escucharlas. En Configuración → Llamadas se
+        define cuántos días se guardan grabaciones y transcripciones: se borran solas cada noche.
+      </p>
     </>
   )
 }
@@ -316,6 +320,27 @@ export function UsersTopic() {
         Los administradores crean usuarios y cambian roles en <Go to="/usuarios">Usuarios</Go>. Cada persona cambia su nombre, su contraseña y el
         tema en su perfil.
       </p>
+    </>
+  )
+}
+
+export function SecurityTopic() {
+  return (
+    <>
+      <Table
+        rows={[
+          ['Doble factor', 'En tu perfil: escanea el QR con una app autenticadora y guarda los códigos de recuperación.'],
+          ['Google y Microsoft', 'Un administrador los habilita en Configuración → Inicio de sesión; cada persona vincula su cuenta en el perfil.'],
+          ['Auditoría', 'Quién entró, escuchó una grabación, compartió un recado o cambió la configuración. Se exporta a CSV.'],
+          ['Retención', 'Borrado automático de grabaciones y transcripciones viejas (Configuración → Llamadas).'],
+        ]}
+      />
+      <p>
+        Si alguien perdió el teléfono y los códigos de recuperación, un administrador le quita el doble factor en <Go to="/usuarios">Usuarios</Go>.
+      </p>
+      <Tip>
+        Una cuenta de Google o Microsoft nunca se une sola a un usuario por tener el mismo correo: se vincula desde el perfil, con la sesión abierta.
+      </Tip>
     </>
   )
 }

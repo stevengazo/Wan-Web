@@ -27,6 +27,7 @@ const topics: HelpTopic[] = [
   { id: 'grabaciones', title: 'Grabaciones', keywords: 'grabar audio s3 azure almacenamiento', Body: Topics.RecordingsTopic },
   { id: 'analitica', title: 'Analítica', keywords: 'estadísticas reportes métricas', Body: Topics.AnalyticsTopic },
   { id: 'usuarios', title: 'Usuarios y roles', keywords: 'administrador operador permisos', Body: Topics.UsersTopic },
+  { id: 'seguridad', title: 'Seguridad y acceso', keywords: 'doble factor mfa 2fa google microsoft sso auditoría retención cifrado', Body: Topics.SecurityTopic },
   { id: 'mcp', title: 'Conectar agentes de IA (MCP)', keywords: 'claude cursor token mcp', Body: Topics.McpTopic },
   { id: 'problemas', title: 'Solución de problemas', keywords: 'error no funciona falla ayuda', Body: Topics.TroubleshootingTopic },
   { id: 'glosario', title: 'Glosario', keywords: 'qué significa términos', Body: Topics.GlossaryTopic },
