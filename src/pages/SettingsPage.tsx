@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { ApiError } from '../api/client'
-import { useCallSettings, useLlmSettings, useSaveLlmSettings } from '../api/queries'
+import { useCallSettings, useLlmSettings, useSaveLlmSettings, useSmtpSettings } from '../api/queries'
 import type { LlmProvider, LlmSettings } from '../api/types'
 import { PasswordField } from '../auth/PasswordField'
 import { Button } from '../ui/Button'
@@ -10,10 +10,12 @@ import { CopyIcon } from '../ui/icons'
 import { Saved } from '../ui/Saved'
 import { useFlash } from '../ui/useFlash'
 import { CallSettingsForm } from './CallSettingsForm'
+import { SmtpSettingsForm } from './SmtpSettingsForm'
 
 export function SettingsPage() {
   const { data: settings, isPending, error } = useLlmSettings()
   const callSettings = useCallSettings()
+  const smtp = useSmtpSettings()
 
   return (
     <div>
@@ -24,6 +26,12 @@ export function SettingsPage() {
       <div className="mt-2">
         {callSettings.error && <p className="text-red-600 dark:text-red-400">{callSettings.error.message}</p>}
         {callSettings.data && <CallSettingsForm settings={callSettings.data} />}
+      </div>
+
+      <h2 className="mt-16 text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">Correo saliente</h2>
+      <div className="mt-2">
+        {smtp.error && <p className="text-red-600 dark:text-red-400">{smtp.error.message}</p>}
+        {smtp.data && <SmtpSettingsForm settings={smtp.data} />}
       </div>
 
       <h2 className="mt-16 text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">Inteligencia artificial</h2>

@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from './client'
 import type {
+  ActionResult,
   CallMessage,
   CallMessageStatus,
   CallSettings,
@@ -8,12 +9,16 @@ import type {
   DirectoryEntryInput,
   Extension,
   ExtensionInput,
+  FormAction,
+  FormActionInput,
   FormSubmission,
   FormTemplate,
   FormTemplateInput,
   LlmSettings,
   Recording,
   SaveLlmSettings,
+  SaveSmtpSettings,
+  SmtpSettings,
   SubmissionStatus,
 } from './types'
 
@@ -28,6 +33,8 @@ const keys = {
   messages: ['messages'] as const,
   recordings: ['recordings'] as const,
   callSettings: ['call-settings'] as const,
+  formActions: (formId: string) => ['forms', formId, 'actions'] as const,
+  smtp: ['smtp'] as const,
   directoryEntry: (id: string) => ['directory', id] as const,
 }
 
@@ -191,5 +198,48 @@ export function useSaveCallSettings() {
   return useMutation({
     mutationFn: (input: CallSettings) => api<CallSettings>('/settings/calls', { method: 'PUT', body: input }),
     onSuccess: (settings) => queryClient.setQueryData(keys.callSettings, settings),
+  })
+}
+
+export const useFormActions = (formId: string, enabled = true) =>
+  useQuery({ queryKey: keys.formActions(formId), queryFn: () => api<FormAction[]>(`/forms/${formId}/actions`), enabled })
+
+export function useSaveFormAction(formId: string, id: string | undefined) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (input: FormActionInput) =>
+      id
+        ? api<FormAction>(`/form-actions/${id}`, { method: 'PUT', body: input })
+        : api<FormAction>(`/forms/${formId}/actions`, { method: 'POST', body: input }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.formActions(formId) }),
+  })
+}
+
+export function useDeleteFormAction(formId: string) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => api<void>(`/form-actions/${id}`, { method: 'DELETE' }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.formActions(formId) }),
+  })
+}
+
+export const useTestFormAction = () =>
+  useMutation({ mutationFn: (id: string) => api<ActionResult>(`/form-actions/${id}/test`, { method: 'POST' }) })
+
+export function useRetryExecution() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => api<void>(`/action-executions/${id}/retry`, { method: 'POST' }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.forms }),
+  })
+}
+
+export const useSmtpSettings = () => useQuery({ queryKey: keys.smtp, queryFn: () => api<SmtpSettings>('/settings/smtp') })
+
+export function useSaveSmtpSettings() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (input: SaveSmtpSettings) => api<SmtpSettings>('/settings/smtp', { method: 'PUT', body: input }),
+    onSuccess: (settings) => queryClient.setQueryData(keys.smtp, settings),
   })
 }

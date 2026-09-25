@@ -154,6 +154,64 @@ export interface FormSubmission {
   callerNumber: string | null
   status: SubmissionStatus
   createdAt: string
+  /** Acciones que disparó esta respuesta y cómo les fue. */
+  actions: ActionExecution[]
+}
+
+export type FormActionType = 'Webhook' | 'Teams' | 'GoogleChat' | 'Slack' | 'Email'
+
+export interface FormActionInput {
+  type: FormActionType
+  name: string
+  /** URL del webhook, o correos separados por coma. */
+  target: string
+  /** Solo webhook propio; vacío conserva el guardado. */
+  secret: string | null
+  clearSecret: boolean
+  enabled: boolean
+}
+
+export interface FormAction {
+  id: string
+  formTemplateId: string
+  type: FormActionType
+  name: string
+  target: string
+  hasSecret: boolean
+  enabled: boolean
+}
+
+export type ActionExecutionStatus = 'Pending' | 'Succeeded' | 'Failed'
+
+export interface ActionExecution {
+  id: string
+  formActionId: string
+  actionName: string
+  actionType: FormActionType
+  status: ActionExecutionStatus
+  attempts: number
+  lastError: string | null
+  completedAt: string | null
+}
+
+export interface SmtpSettings {
+  host: string | null
+  port: number
+  useTls: boolean
+  username: string | null
+  hasPassword: boolean
+  from: string | null
+}
+
+export interface SaveSmtpSettings extends Omit<SmtpSettings, 'hasPassword'> {
+  /** Vacía conserva la guardada. */
+  password: string | null
+}
+
+/** Respuesta de una prueba o de una tool: ok y un mensaje para mostrar. */
+export interface ActionResult {
+  ok: boolean
+  message: string
 }
 
 export type CallMessageStatus = 'New' | 'Read' | 'Done'

@@ -1,13 +1,15 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useState } from 'react'
 import { Link, useParams } from 'react-router'
-import { useDeleteSubmission, useForm, useSubmissions, useUpdateSubmission } from '../api/queries'
-import type { FormSubmission, FormTemplate } from '../api/types'
+import { useDeleteSubmission, useForm, useRetryExecution, useSubmissions, useUpdateSubmission } from '../api/queries'
+import type { ActionExecution, FormSubmission, FormTemplate } from '../api/types'
 import { useAuth } from '../auth/useAuth'
 import { formatDateTime, formatWhen } from '../ui/format'
 import { EmptyState, PageHeader } from '../ui/PageHeader'
+import { actionTypeLabels } from './formActionLabels'
+import { FormActionsPanel } from './FormActionsPanel'
 
-type Filter = 'New' | 'All'
+type Filter = 'New' | 'All' | 'Actions'
 
 export function FormDetailPage() {
   const { id = '' } = useParams()
@@ -38,8 +40,8 @@ export function FormDetailPage() {
       />
       {error && <p className="mt-6 text-red-600 dark:text-red-400">{error.message}</p>}
 
-      <div className="mt-8 flex items-center gap-1" role="tablist" aria-label="Filtrar respuestas">
-        {(['New', 'All'] as const).map((value) => (
+      <div className="mt-8 flex items-center gap-1" role="tablist" aria-label="Respuestas y acciones">
+        {(isAdmin ? (['New', 'All', 'Actions'] as const) : (['New', 'All'] as const)).map((value) => (
           <button
             key={value}
             type="button"
@@ -48,12 +50,18 @@ export function FormDetailPage() {
             onClick={() => setFilter(value)}
             className="min-h-10 rounded-lg px-3 text-sm font-medium text-slate-500 aria-selected:bg-slate-100 aria-selected:text-slate-900 dark:text-slate-400 dark:aria-selected:bg-white/10 dark:aria-selected:text-white"
           >
-            {value === 'New' ? `Nuevas (${pending})` : `Todas (${submissions?.length ?? 0})`}
+            {value === 'New' ? `Nuevas (${pending})` : value === 'All' ? `Todas (${submissions?.length ?? 0})` : 'Acciones'}
           </button>
         ))}
       </div>
 
-      <div className="mt-6">
+      {filter === 'Actions' && (
+        <div className="mt-6">
+          <FormActionsPanel formId={id} />
+        </div>
+      )}
+
+      <div className={`mt-6 ${filter === 'Actions' ? 'hidden' : ''}`}>
         {isPending && <p className="text-slate-500">Cargando…</p>}
         {submissions && visible.length === 0 && (
           <EmptyState title={filter === 'New' ? 'No hay respuestas nuevas' : 'Todavía no hay respuestas'}>
@@ -116,6 +124,14 @@ function SubmissionCard({ form, submission, canDelete }: { form: FormTemplate; s
         ))}
       </dl>
 
+      {submission.actions.length > 0 && (
+        <ul className="mt-4 flex flex-wrap gap-2">
+          {submission.actions.map((execution) => (
+            <ExecutionChip key={execution.id} execution={execution} />
+          ))}
+        </ul>
+      )}
+
       <footer className="mt-4 flex flex-wrap gap-2 border-t border-slate-100 pt-3 dark:border-white/5">
         <button
           type="button"
@@ -137,5 +153,41 @@ function SubmissionCard({ form, submission, canDelete }: { form: FormTemplate; s
         )}
       </footer>
     </article>
+  )
+}
+
+const executionStyles: Record<ActionExecution['status'], { dot: string; label: string }> = {
+  Pending: { dot: 'bg-amber-400', label: 'En cola' },
+  Succeeded: { dot: 'bg-emerald-500', label: 'Enviado' },
+  Failed: { dot: 'bg-red-500', label: 'Falló' },
+}
+
+/** Estado de una acción disparada por la respuesta; si falló muestra el error y permite reintentar. */
+function ExecutionChip({ execution }: { execution: ActionExecution }) {
+  const retry = useRetryExecution()
+  const style = executionStyles[execution.status]
+
+  return (
+    <li
+      className="inline-flex min-h-9 items-center gap-2 rounded-lg border border-slate-200 px-2.5 text-sm dark:border-white/10"
+      title={execution.lastError ?? undefined}
+    >
+      <span className={`size-2 rounded-full ${style.dot}`} />
+      <span className="font-medium">{execution.actionName}</span>
+      <span className="text-slate-500 dark:text-slate-400">
+        {actionTypeLabels[execution.actionType]} · {style.label}
+        {execution.attempts > 1 && ` · ${execution.attempts} intentos`}
+      </span>
+      {execution.status === 'Failed' && (
+        <button
+          type="button"
+          onClick={() => retry.mutate(execution.id)}
+          disabled={retry.isPending}
+          className="rounded px-1.5 font-medium underline underline-offset-4 disabled:opacity-60"
+        >
+          Reintentar
+        </button>
+      )}
+    </li>
   )
 }
