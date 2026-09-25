@@ -67,7 +67,21 @@ export interface SaveMcpServer {
   enabled: boolean
 }
 
-export interface McpAccessToken {
+/** Herramienta del servidor MCP de Mapache que se puede permitir a un token. */
+export interface McpServerToolInfo {
+  name: string
+  description: string
+  /** Solo consulta; las demás modifican datos. */
+  readOnly: boolean
+}
+
+export interface McpTokenPermissions {
+  /** Todas las herramientas, incluidas las que se agreguen en el futuro. */
+  allowAll: boolean
+  allowedTools: string[]
+}
+
+export interface McpAccessToken extends McpTokenPermissions {
   id: string
   name: string
   prefix: string
@@ -142,10 +156,24 @@ export const useTestMcpTool = () =>
 
 export const useMcpTokens = () => useQuery({ queryKey: keys.mcpTokens, queryFn: () => api<McpAccessToken[]>('/mcp-tokens') })
 
+export const useMcpServerTools = () =>
+  useQuery({ queryKey: keys.mcpServerTools, queryFn: () => api<McpServerToolInfo[]>('/mcp-tokens/tools'), staleTime: Infinity })
+
+export function useUpdateMcpToken() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    meta: { success: 'Permisos actualizados' },
+    mutationFn: ({ id, ...permissions }: McpTokenPermissions & { id: string }) =>
+      api<McpAccessToken>(`/mcp-tokens/${id}`, { method: 'PUT', body: permissions }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.mcpTokens }),
+  })
+}
+
 export function useCreateMcpToken() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: (name: string) => api<{ token: McpAccessToken; value: string }>('/mcp-tokens', { method: 'POST', body: { name } }),
+    mutationFn: (input: McpTokenPermissions & { name: string }) =>
+      api<{ token: McpAccessToken; value: string }>('/mcp-tokens', { method: 'POST', body: input }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.mcpTokens }),
   })
 }

@@ -16,6 +16,8 @@ export const keys = {
   httpTools: ['http-tools'] as const,
   mcpServers: ['mcp-servers'] as const,
   mcpTokens: ['mcp-tokens'] as const,
+  mcpServerTools: ['mcp-tokens', 'tools'] as const,
+  users: ['users'] as const,
   knowledgeBase: (id: string) => ['knowledge', id] as const,
   knowledgeDocuments: (id: string) => ['knowledge', id, 'documents'] as const,
   directoryEntry: (id: string) => ['directory', id] as const,

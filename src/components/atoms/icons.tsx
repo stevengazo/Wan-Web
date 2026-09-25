@@ -178,3 +178,10 @@ export const WrenchIcon = () => (
     <path d="M14.7 6.3a4 4 0 0 0 5 5L21 13l-8 8-3-3 8-8-1.3-1.3a4 4 0 0 1-5-5L13 2l3 3Z" />
   </Icon>
 )
+
+export const UsersIcon = () => (
+  <Icon>
+    <circle cx="9" cy="8" r="3.5" />
+    <path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6" />
+  </Icon>
+)

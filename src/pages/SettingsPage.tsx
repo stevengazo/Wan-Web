@@ -6,7 +6,7 @@ import { PasswordField } from '@/components/molecules/PasswordField'
 import { Button } from '@/components/atoms/Button'
 import { TextAreaField, TextField } from '@/components/molecules/Field'
 import { FormSection, FormSections } from '@/components/organisms/FormSection'
-import { CopyIcon } from '@/components/atoms/icons'
+import { CopyField } from '@/components/molecules/CopyField'
 import { CallSettingsForm } from '@/components/organisms/settings/CallSettingsForm'
 import { McpAccessSection } from '@/components/organisms/settings/McpAccessSection'
 import { SmtpSettingsForm } from '@/components/organisms/settings/SmtpSettingsForm'
@@ -204,11 +204,8 @@ function AiSettingsForm({ settings }: { settings: LlmSettings }) {
         </FormSection>
 
         <FormSection title="Conexión con ElevenLabs" description="Datos para configurar el agente como Custom LLM.">
-          <div>
-            <p className="text-sm font-medium text-slate-700 dark:text-slate-300">URL del Custom LLM</p>
-            <CopyField value={`${window.location.origin}/api/llm/v1`} />
-            <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">Como API key, el token de tools del servidor.</p>
-          </div>
+          <CopyField label="URL del Custom LLM" value={`${window.location.origin}/api/llm/v1`} />
+          <p className="text-sm text-slate-500 dark:text-slate-400">Como API key, el token de tools del servidor.</p>
         </FormSection>
       </FormSections>
 
@@ -224,34 +221,5 @@ function AiSettingsForm({ settings }: { settings: LlmSettings }) {
         </Button>
       </div>
     </form>
-  )
-}
-
-function CopyField({ value }: { value: string }) {
-  const [copied, setCopied] = useState(false)
-
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(value)
-      setCopied(true)
-      window.setTimeout(() => setCopied(false), 1500)
-    } catch {
-      // Sin permiso de portapapeles: el valor sigue visible para copiarlo a mano.
-    }
-  }
-
-  return (
-    <div className="mt-1.5 flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 py-1 pl-3 pr-1 dark:border-white/10 dark:bg-white/5">
-      <code className="min-w-0 flex-1 truncate text-sm">{value}</code>
-      <button
-        type="button"
-        onClick={copy}
-        aria-label="Copiar URL"
-        className="flex min-h-9 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium text-slate-600 hover:bg-slate-200/60 dark:text-slate-300 dark:hover:bg-white/10"
-      >
-        <CopyIcon />
-        {copied ? 'Copiada' : 'Copiar'}
-      </button>
-    </div>
   )
 }

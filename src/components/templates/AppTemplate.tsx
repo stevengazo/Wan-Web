@@ -18,6 +18,7 @@ import {
   PanelLeftIcon,
   PhoneIcon,
   SettingsIcon,
+  UsersIcon,
   WrenchIcon,
 } from '@/components/atoms/icons'
 import { Avatar } from '@/components/atoms/Avatar'
@@ -43,6 +44,7 @@ const allNav: NavItem[] = [
   { to: '/herramientas', label: 'Herramientas', icon: <WrenchIcon />, admin: true },
   { to: '/extensiones', label: 'Extensiones', icon: <PhoneIcon /> },
   { to: '/directorio', label: 'Directorio', icon: <BookIcon /> },
+  { to: '/usuarios', label: 'Usuarios', icon: <UsersIcon />, admin: true },
   { to: '/configuracion', label: 'Configuración', icon: <SettingsIcon />, admin: true },
 ]
 
