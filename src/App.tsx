@@ -12,6 +12,7 @@ const DashboardPage = lazy(() => import('./pages/DashboardPage').then((m) => ({ 
 const ExtensionsPage = lazy(() => import('./pages/ExtensionsPage').then((m) => ({ default: m.ExtensionsPage })))
 const ExtensionFormPage = lazy(() => import('./pages/ExtensionFormPage').then((m) => ({ default: m.ExtensionFormPage })))
 const SettingsPage = lazy(() => import('./pages/SettingsPage').then((m) => ({ default: m.SettingsPage })))
+const ProfilePage = lazy(() => import('./pages/ProfilePage').then((m) => ({ default: m.ProfilePage })))
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -53,7 +54,15 @@ const router = createBrowserRouter([
           </RequireAuth>
         ),
       },
-      { path: 'configuracion', element: <SettingsPage /> },
+      { path: 'perfil', element: <ProfilePage /> },
+      {
+        path: 'configuracion',
+        element: (
+          <RequireAuth admin>
+            <SettingsPage />
+          </RequireAuth>
+        ),
+      },
       { path: '*', element: <NotFound /> },
     ],
   },

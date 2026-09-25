@@ -17,24 +17,22 @@ export interface LoginResponse {
 
 export type SipTransport = 'Udp' | 'Tcp' | 'Tls'
 
+/** Cifrado del audio (SRTP). */
+export type MediaEncryption = 'Disabled' | 'Optional' | 'Mandatory'
+
+export type DtmfMode = 'Rfc2833' | 'SipInfo' | 'Inband'
+
 /** Quién contesta las llamadas entrantes de la cuenta. */
 export type AnswerMode = 'Bot' | 'Human' | 'BotWithHandoff'
 
-/** Proveedor del LLM del bot; ElevenLabs sigue haciendo la voz. */
-export type LlmProvider = 'OpenAi' | 'Gemini' | 'Anthropic'
+/** Códecs que acepta el backend, en su orden de preferencia sugerido. */
+export const supportedCodecs = ['PCMU', 'PCMA', 'G722', 'G729', 'opus'] as const
 
-export interface LlmProviderInfo {
-  provider: LlmProvider
-  /** Tiene API key y modelo por defecto en la configuración del servidor. */
-  configured: boolean
-  defaultModel: string
-  isDefault: boolean
-}
-
-/** Cuenta SIP genérica, con los mismos datos que una cuenta de MicroSIP. */
+/** Cuenta SIP genérica, con los datos de una cuenta de softphone como MicroSIP. */
 export interface ExtensionSettings {
   name: string
   sipServer: string
+  secondarySipServer: string | null
   sipProxy: string | null
   sipUsername: string
   sipDomain: string | null
@@ -44,12 +42,24 @@ export interface ExtensionSettings {
   publicAddress: string | null
   stunServer: string | null
   registerExpirySeconds: number
+  registerRetrySeconds: number
   keepAliveSeconds: number
+  /** 0 = lo elige el sistema. */
+  localPort: number
+  allowIpRewrite: boolean
+  useIce: boolean
+  mediaEncryption: MediaEncryption
+  /** Habilitados, en orden de preferencia. */
+  codecs: string[]
+  dtmfMode: DtmfMode
+  /** 0 = deshabilitado. */
+  sessionTimerSeconds: number
+  /** 0 = sin límite. */
+  maxConcurrentCalls: number
+  voicemailNumber: string | null
+  dialPrefix: string | null
+  hideCallerId: boolean
   answerMode: AnswerMode
-  /** Nulo = el proveedor por defecto del servidor. */
-  llmProvider: LlmProvider | null
-  llmModel: string | null
-  systemPrompt: string | null
   enabled: boolean
 }
 
@@ -62,4 +72,29 @@ export interface Extension extends ExtensionSettings {
 export interface ExtensionInput extends ExtensionSettings {
   /** En edición, vacío conserva la contraseña actual. */
   sipPassword: string
+}
+
+/** Proveedor del LLM del bot; ElevenLabs sigue haciendo la voz. */
+export type LlmProvider = 'OpenAi' | 'Gemini' | 'Anthropic'
+
+export interface LlmProviderSettings {
+  provider: LlmProvider
+  /** Nulo = el modelo por defecto del servidor. */
+  model: string | null
+  defaultModel: string
+  hasApiKey: boolean
+}
+
+/** Configuración general de la IA, igual para todas las cuentas. */
+export interface LlmSettings {
+  activeProvider: LlmProvider
+  systemPrompt: string | null
+  providers: LlmProviderSettings[]
+}
+
+export interface SaveLlmSettings {
+  activeProvider: LlmProvider
+  systemPrompt: string | null
+  /** apiKey vacía conserva la guardada; clearApiKey la borra. */
+  providers: { provider: LlmProvider; model: string | null; apiKey: string | null; clearApiKey: boolean }[]
 }

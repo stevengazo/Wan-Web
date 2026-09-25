@@ -10,14 +10,15 @@ import { Avatar } from '../ui/Avatar'
 import { Logo } from '../ui/Logo'
 import { useSidebarCollapsed } from './useSidebarCollapsed'
 
-const nav: { to: string; label: string; icon: ReactNode; end?: boolean }[] = [
+const allNav: { to: string; label: string; icon: ReactNode; end?: boolean; admin?: boolean }[] = [
   { to: '/', label: 'Inicio', icon: <HomeIcon />, end: true },
   { to: '/extensiones', label: 'Extensiones', icon: <PhoneIcon /> },
-  { to: '/configuracion', label: 'Configuración', icon: <SettingsIcon /> },
+  { to: '/configuracion', label: 'Configuración', icon: <SettingsIcon />, admin: true },
 ]
 
 export function AppLayout() {
-  const { user, logout } = useAuth()
+  const { user, isAdmin, logout } = useAuth()
+  const nav = allNav.filter((item) => !item.admin || isAdmin)
   const queryClient = useQueryClient()
   const location = useLocation()
   // useOutlet y no <Outlet />: el elemento queda fijo en la página que sale y la animación de salida
@@ -88,14 +89,25 @@ export function AppLayout() {
           <div className={`mb-2 ${collapsed ? 'flex justify-center' : 'px-3'}`}>
             <RealtimeIndicator status={realtime} compact={collapsed} />
           </div>
-          <div className={`flex items-center gap-3 ${collapsed ? 'flex-col' : 'px-1'}`}>
-            <Avatar name={user?.displayName ?? ''} />
-            {!collapsed && (
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium">{user?.displayName}</p>
-                <p className="truncate text-xs text-slate-500 dark:text-slate-400">{user?.email}</p>
-              </div>
-            )}
+          <div className={`flex items-center gap-1 ${collapsed ? 'flex-col' : ''}`}>
+            <NavLink
+              to="/perfil"
+              aria-label={collapsed ? 'Mi perfil' : undefined}
+              title={collapsed ? 'Mi perfil' : undefined}
+              className={({ isActive }) =>
+                `flex min-w-0 items-center gap-3 rounded-lg p-1.5 transition-colors ${collapsed ? '' : 'flex-1'} ${
+                  isActive ? 'bg-slate-200/60 dark:bg-white/10' : 'hover:bg-slate-200/50 dark:hover:bg-white/5'
+                }`
+              }
+            >
+              <Avatar name={user?.displayName ?? ''} />
+              {!collapsed && (
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-sm font-medium">{user?.displayName}</span>
+                  <span className="block truncate text-xs text-slate-500 dark:text-slate-400">{user?.email}</span>
+                </span>
+              )}
+            </NavLink>
             <button
               type="button"
               onClick={handleLogout}
@@ -114,6 +126,9 @@ export function AppLayout() {
           <Logo />
           <div className="flex items-center gap-2">
             <RealtimeIndicator status={realtime} />
+            <Link to="/perfil" aria-label="Mi perfil" className="flex size-11 items-center justify-center rounded-full">
+              <Avatar name={user?.displayName ?? ''} />
+            </Link>
             <button
               type="button"
               onClick={handleLogout}

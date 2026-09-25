@@ -3,11 +3,20 @@ import { useState, type FormEvent } from 'react'
 import { createPortal } from 'react-dom'
 import { Link, useNavigate, useParams } from 'react-router'
 import { ApiError } from '../api/client'
-import { useDeleteExtension, useExtension, useLlmProviders, useSaveExtension } from '../api/queries'
-import type { AnswerMode, Extension, ExtensionInput, LlmProvider, SipTransport } from '../api/types'
+import { useDeleteExtension, useExtension, useSaveExtension } from '../api/queries'
+import {
+  supportedCodecs,
+  type AnswerMode,
+  type DtmfMode,
+  type Extension,
+  type ExtensionInput,
+  type MediaEncryption,
+  type SipTransport,
+} from '../api/types'
 import { Button } from '../ui/Button'
-import { SelectField, TextAreaField, TextField } from '../ui/Field'
-import { ChevronLeftIcon, ChevronRightIcon } from '../ui/icons'
+import { SelectField, TextField } from '../ui/Field'
+import { FormSection, FormSections } from '../ui/FormSection'
+import { ChevronLeftIcon } from '../ui/icons'
 import { Switch } from '../ui/Switch'
 
 export function ExtensionFormPage() {
@@ -15,24 +24,31 @@ export function ExtensionFormPage() {
   const { data: extension, isPending, error } = useExtension(id)
 
   return (
-    <div className="mx-auto max-w-xl space-y-6">
+    <div>
       <div className="flex items-center gap-2">
         <Link
           to="/extensiones"
           aria-label="Volver a extensiones"
-          className="-ml-3 flex size-11 items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+          className="-ml-3 flex size-11 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-white/10"
         >
           <ChevronLeftIcon />
         </Link>
         <h1 className="font-display text-4xl md:text-5xl">{id ? 'Editar extensión' : 'Nueva extensión'}</h1>
       </div>
+      <p className="mt-2 text-slate-500 dark:text-slate-400">
+        Los mismos datos que pide un softphone. Solo son obligatorios el servidor, el usuario y la contraseña.
+      </p>
 
-      {id && isPending && <p className="text-slate-500">Cargando…</p>}
-      {id && error && <p className="text-red-600 dark:text-red-400">{error.message}</p>}
-      {(!id || extension) && <ExtensionForm key={extension?.id ?? 'new'} extension={extension} />}
+      <div className="mt-10">
+        {id && isPending && <p className="text-slate-500">Cargando…</p>}
+        {id && error && <p className="text-red-600 dark:text-red-400">{error.message}</p>}
+        {(!id || extension) && <ExtensionForm key={extension?.id ?? 'new'} extension={extension} />}
+      </div>
     </div>
   )
 }
+
+const hostInput = { autoCapitalize: 'off', autoComplete: 'off', spellCheck: false } as const
 
 function ExtensionForm({ extension }: { extension?: Extension }) {
   const navigate = useNavigate()
@@ -40,19 +56,25 @@ function ExtensionForm({ extension }: { extension?: Extension }) {
   const remove = useDeleteExtension()
   const [confirmingDelete, setConfirmingDelete] = useState(false)
   const [form, setForm] = useState<ExtensionInput>(() => toInput(extension))
-  const [showAdvanced, setShowAdvanced] = useState(() => hasAdvancedValues(extension))
-
-  const llmProviders = useLlmProviders()
-  const providerInfo = (provider: LlmProvider) => llmProviders.data?.find((p) => p.provider === provider)
-  const defaultProvider = llmProviders.data?.find((p) => p.isDefault)
-  const selectedProvider = form.llmProvider ? providerInfo(form.llmProvider) : defaultProvider
 
   const fieldErrors = save.error instanceof ApiError ? save.error.fieldErrors : {}
-  const advancedOpen = showAdvanced || advancedFields.some((field) => fieldErrors[field])
   const generalError = save.error && Object.keys(fieldErrors).length === 0 ? save.error.message : null
+  const error = (field: keyof ExtensionInput) => fieldErrors[field]?.[0]
 
   const set = <K extends keyof ExtensionInput>(key: K, value: ExtensionInput[K]) =>
     setForm((current) => ({ ...current, [key]: value }))
+  const text = (key: { [K in keyof ExtensionInput]: ExtensionInput[K] extends string | null ? K : never }[keyof ExtensionInput]) => ({
+    value: form[key] ?? '',
+    onChange: (e: { target: { value: string } }) => set(key, e.target.value),
+    error: error(key),
+  })
+  const number = (key: { [K in keyof ExtensionInput]: ExtensionInput[K] extends number ? K : never }[keyof ExtensionInput]) => ({
+    type: 'number',
+    inputMode: 'numeric' as const,
+    value: form[key],
+    onChange: (e: { target: { valueAsNumber: number } }) => set(key, Number.isNaN(e.target.valueAsNumber) ? 0 : e.target.valueAsNumber),
+    error: error(key),
+  })
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
@@ -65,239 +87,156 @@ function ExtensionForm({ extension }: { extension?: Extension }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-      <TextField
-        label="Nombre"
-        placeholder="Recepción"
-        required
-        value={form.name}
-        onChange={(e) => set('name', e.target.value)}
-        error={fieldErrors.name?.[0]}
-      />
-
-      <TextField
-        label="Servidor SIP"
-        placeholder="sip.ejemplo.com"
-        autoComplete="off"
-        autoCapitalize="off"
-        spellCheck={false}
-        required
-        value={form.sipServer}
-        onChange={(e) => set('sipServer', e.target.value)}
-        hint="Dominio o IP del registrar. Admite puerto: sip.ejemplo.com:5080"
-        error={fieldErrors.sipServer?.[0]}
-      />
-
-      <TextField
-        label="Usuario"
-        placeholder="100"
-        autoComplete="off"
-        autoCapitalize="off"
-        spellCheck={false}
-        required
-        value={form.sipUsername}
-        onChange={(e) => set('sipUsername', e.target.value)}
-        error={fieldErrors.sipUsername?.[0]}
-      />
-
-      <TextField
-        label="Contraseña"
-        type="password"
-        autoComplete="new-password"
-        required={!extension}
-        value={form.sipPassword}
-        onChange={(e) => set('sipPassword', e.target.value)}
-        hint={extension ? 'Déjala vacía para conservar la actual. Se guarda cifrada.' : 'Se guarda cifrada y no se vuelve a mostrar.'}
-        error={fieldErrors.sipPassword?.[0]}
-      />
-
-      <TextField
-        label="Nombre para mostrar"
-        placeholder="Mapache"
-        value={form.displayName ?? ''}
-        onChange={(e) => set('displayName', e.target.value)}
-        hint="Lo que ve el otro extremo en las llamadas salientes."
-        error={fieldErrors.displayName?.[0]}
-      />
-
-      <SelectField
-        label="Quién contesta"
-        value={form.answerMode}
-        onChange={(e) => set('answerMode', e.target.value as AnswerMode)}
-        error={fieldErrors.answerMode?.[0]}
-      >
-        {Object.entries(answerModeLabels).map(([value, label]) => (
-          <option key={value} value={value}>
-            {label}
-          </option>
-        ))}
-      </SelectField>
-
-      {form.answerMode !== 'Human' && (
-        <fieldset className="space-y-5 rounded-2xl border border-slate-200 p-4 dark:border-slate-800">
-          <legend className="px-1 text-sm font-medium text-slate-700 dark:text-slate-300">Inteligencia artificial</legend>
+    <form onSubmit={handleSubmit} noValidate>
+      <FormSections>
+        <FormSection title="General" description="Cómo se llama la cuenta en el panel y quién atiende sus llamadas.">
+          <TextField label="Nombre" placeholder="Recepción" required {...text('name')} />
           <SelectField
-            label="Proveedor"
-            value={form.llmProvider ?? ''}
-            onChange={(e) => set('llmProvider', (e.target.value || null) as LlmProvider | null)}
-            error={fieldErrors.llmProvider?.[0]}
+            label="Quién contesta"
+            value={form.answerMode}
+            onChange={(e) => set('answerMode', e.target.value as AnswerMode)}
+            error={error('answerMode')}
           >
-            <option value="">Por defecto{defaultProvider ? ` (${llmProviderLabels[defaultProvider.provider]})` : ''}</option>
-            {(Object.keys(llmProviderLabels) as LlmProvider[]).map((provider) => (
-              <option key={provider} value={provider}>
-                {llmProviderLabels[provider]}
-                {providerInfo(provider)?.configured === false ? ' — sin API key' : ''}
+            {Object.entries(answerModeLabels).map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
               </option>
             ))}
           </SelectField>
-          {selectedProvider?.configured === false && (
-            <p className="-mt-3 text-sm text-amber-700 dark:text-amber-400">
-              El servidor no tiene API key de {llmProviderLabels[selectedProvider.provider]}: las llamadas de esta cuenta fallarán.
-            </p>
-          )}
+          <Switch
+            label="Habilitada"
+            description="Mapache registra la cuenta en el servidor SIP."
+            checked={form.enabled}
+            onChange={(value) => set('enabled', value)}
+          />
+        </FormSection>
+
+        <FormSection title="Servidor" description="Dónde se registra la cuenta. El secundario se usa si el principal no responde.">
           <TextField
-            label="Modelo"
-            placeholder={selectedProvider?.defaultModel || 'Modelo por defecto'}
-            autoCapitalize="off"
-            spellCheck={false}
-            value={form.llmModel ?? ''}
-            onChange={(e) => set('llmModel', e.target.value)}
-            hint="Vacío usa el modelo por defecto del proveedor."
-            error={fieldErrors.llmModel?.[0]}
+            label="Servidor SIP"
+            placeholder="sip.ejemplo.com"
+            required
+            hint="Dominio o IP del registrar. Admite puerto: sip.ejemplo.com:5080"
+            {...hostInput}
+            {...text('sipServer')}
           />
-          <TextAreaField
-            label="Instrucciones"
-            rows={5}
-            placeholder="Eres la recepcionista de…"
-            value={form.systemPrompt ?? ''}
-            onChange={(e) => set('systemPrompt', e.target.value)}
-            hint="Cómo debe comportarse el bot en esta cuenta. Vacío usa las del agente de ElevenLabs."
-            error={fieldErrors.systemPrompt?.[0]}
-          />
-        </fieldset>
-      )}
+          <TextField label="Servidor SIP secundario" placeholder="Sin respaldo" {...hostInput} {...text('secondarySipServer')} />
+          <TextField label="Proxy SIP" placeholder="Sin proxy" {...hostInput} {...text('sipProxy')} />
+          <TextField label="Dominio" placeholder="Igual que el servidor" {...hostInput} {...text('sipDomain')} />
+        </FormSection>
 
-      <div className="rounded-2xl border border-slate-200 dark:border-slate-800">
-        <button
-          type="button"
-          aria-expanded={advancedOpen}
-          onClick={() => setShowAdvanced(!advancedOpen)}
-          className="flex min-h-12 w-full items-center justify-between gap-3 px-4 text-left text-sm font-medium text-slate-700 dark:text-slate-300"
-        >
-          Avanzado
-          <motion.span animate={{ rotate: advancedOpen ? 90 : 0 }} transition={{ duration: 0.2 }} className="text-slate-400">
-            <ChevronRightIcon />
-          </motion.span>
-        </button>
-        <AnimatePresence initial={false}>
-          {advancedOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: -4 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -4 }}
-              transition={{ duration: 0.15 }}
-              className="space-y-5 border-t border-slate-200 p-4 dark:border-slate-800"
+        <FormSection title="Credenciales" description="La contraseña se guarda cifrada y no se vuelve a mostrar.">
+          <TextField label="Usuario" placeholder="100" required {...hostInput} {...text('sipUsername')} />
+          <TextField
+            label="Login"
+            placeholder="Igual que el usuario"
+            hint="Usuario de autenticación, si el servidor pide uno distinto."
+            {...hostInput}
+            {...text('authUsername')}
+          />
+          <TextField
+            label="Contraseña"
+            type="password"
+            autoComplete="new-password"
+            required={!extension}
+            hint={extension ? 'Déjala vacía para conservar la actual.' : undefined}
+            {...text('sipPassword')}
+          />
+          <TextField
+            label="Nombre para mostrar"
+            placeholder="Mapache"
+            hint="Lo que ve el otro extremo en las llamadas salientes."
+            {...text('displayName')}
+          />
+        </FormSection>
+
+        <FormSection title="Red y NAT" description="Solo hace falta tocarlo si el servidor o Mapache están detrás de NAT.">
+          <div className="grid grid-cols-2 gap-4">
+            <SelectField
+              label="Transporte"
+              value={form.transport}
+              onChange={(e) => set('transport', e.target.value as SipTransport)}
+              error={error('transport')}
             >
-              <TextField
-                label="Dominio"
-                placeholder="Igual que el servidor"
-                autoCapitalize="off"
-                spellCheck={false}
-                value={form.sipDomain ?? ''}
-                onChange={(e) => set('sipDomain', e.target.value)}
-                error={fieldErrors.sipDomain?.[0]}
-              />
-              <TextField
-                label="Login"
-                placeholder="Igual que el usuario"
-                autoComplete="off"
-                autoCapitalize="off"
-                spellCheck={false}
-                value={form.authUsername ?? ''}
-                onChange={(e) => set('authUsername', e.target.value)}
-                hint="Usuario de autenticación, si el servidor pide uno distinto."
-                error={fieldErrors.authUsername?.[0]}
-              />
-              <TextField
-                label="Proxy SIP"
-                placeholder="Sin proxy"
-                autoCapitalize="off"
-                spellCheck={false}
-                value={form.sipProxy ?? ''}
-                onChange={(e) => set('sipProxy', e.target.value)}
-                error={fieldErrors.sipProxy?.[0]}
-              />
-              <SelectField
-                label="Transporte"
-                value={form.transport}
-                onChange={(e) => set('transport', e.target.value as SipTransport)}
-                error={fieldErrors.transport?.[0]}
-              >
-                <option value="Udp">UDP</option>
-                <option value="Tcp">TCP</option>
-                <option value="Tls">TLS</option>
-              </SelectField>
-              <TextField
-                label="IP pública"
-                placeholder="Automática"
-                inputMode="decimal"
-                spellCheck={false}
-                value={form.publicAddress ?? ''}
-                onChange={(e) => set('publicAddress', e.target.value)}
-                hint="Solo si el servidor está detrás de NAT y no se usa STUN."
-                error={fieldErrors.publicAddress?.[0]}
-              />
-              <TextField
-                label="Servidor STUN"
-                placeholder="stun.l.google.com:19302"
-                autoCapitalize="off"
-                spellCheck={false}
-                value={form.stunServer ?? ''}
-                onChange={(e) => set('stunServer', e.target.value)}
-                error={fieldErrors.stunServer?.[0]}
-              />
-              <div className="grid grid-cols-2 gap-4">
-                <TextField
-                  label="Registro (s)"
-                  type="number"
-                  inputMode="numeric"
-                  min={60}
-                  max={3600}
-                  value={form.registerExpirySeconds}
-                  onChange={(e) => set('registerExpirySeconds', e.target.valueAsNumber || 0)}
-                  error={fieldErrors.registerExpirySeconds?.[0]}
-                />
-                <TextField
-                  label="Keepalive (s)"
-                  type="number"
-                  inputMode="numeric"
-                  min={0}
-                  max={300}
-                  value={form.keepAliveSeconds}
-                  onChange={(e) => set('keepAliveSeconds', e.target.valueAsNumber || 0)}
-                  hint="0 lo desactiva."
-                  error={fieldErrors.keepAliveSeconds?.[0]}
-                />
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+              <option value="Udp">UDP</option>
+              <option value="Tcp">TCP</option>
+              <option value="Tls">TLS</option>
+            </SelectField>
+            <TextField label="Puerto local" min={0} max={65535} hint="0 = automático" {...number('localPort')} />
+          </div>
+          <TextField label="IP pública" placeholder="Automática" inputMode="decimal" {...hostInput} {...text('publicAddress')} />
+          <TextField label="Servidor STUN" placeholder="stun.l.google.com:19302" {...hostInput} {...text('stunServer')} />
+          <TextField label="Keepalive (s)" min={0} max={300} hint="Mantiene abierto el NAT. 0 lo desactiva." {...number('keepAliveSeconds')} />
+          <Switch
+            label="Reescribir IP (rport)"
+            description="Usa la IP y el puerto con que el servidor ve a Mapache."
+            checked={form.allowIpRewrite}
+            onChange={(value) => set('allowIpRewrite', value)}
+          />
+          <Switch
+            label="ICE"
+            description="Negocia la mejor ruta para el audio a través de NAT."
+            checked={form.useIce}
+            onChange={(value) => set('useIce', value)}
+          />
+        </FormSection>
 
-      <Switch
-        label="Habilitada"
-        description="Mapache registra la cuenta en el servidor SIP."
-        checked={form.enabled}
-        onChange={(value) => set('enabled', value)}
-      />
+        <FormSection title="Registro" description="Cada cuánto se renueva el registro y cuánto esperar si falla.">
+          <div className="grid grid-cols-2 gap-4">
+            <TextField label="Expiración (s)" min={60} max={3600} {...number('registerExpirySeconds')} />
+            <TextField label="Reintento (s)" min={5} max={3600} {...number('registerRetrySeconds')} />
+          </div>
+        </FormSection>
+
+        <FormSection title="Audio" description="PCMU primero evita transcodificar el audio hacia ElevenLabs.">
+          <CodecPicker value={form.codecs} onChange={(codecs) => set('codecs', codecs)} error={error('codecs')} />
+          <SelectField
+            label="Cifrado (SRTP)"
+            value={form.mediaEncryption}
+            onChange={(e) => set('mediaEncryption', e.target.value as MediaEncryption)}
+            error={error('mediaEncryption')}
+          >
+            <option value="Disabled">Desactivado</option>
+            <option value="Optional">Opcional</option>
+            <option value="Mandatory">Obligatorio</option>
+          </SelectField>
+          <SelectField
+            label="DTMF"
+            value={form.dtmfMode}
+            onChange={(e) => set('dtmfMode', e.target.value as DtmfMode)}
+            error={error('dtmfMode')}
+          >
+            <option value="Rfc2833">RFC 2833 (recomendado)</option>
+            <option value="SipInfo">SIP INFO</option>
+            <option value="Inband">En banda</option>
+          </SelectField>
+        </FormSection>
+
+        <FormSection title="Llamadas" description="Límites y opciones para las llamadas de la cuenta.">
+          <div className="grid grid-cols-2 gap-4">
+            <TextField label="Simultáneas" min={0} max={100} hint="0 = sin límite" {...number('maxConcurrentCalls')} />
+            <TextField label="Refresco de sesión (s)" min={0} max={7200} hint="0 lo desactiva" {...number('sessionTimerSeconds')} />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <TextField label="Buzón de voz" placeholder="*97" inputMode="tel" {...text('voicemailNumber')} />
+            <TextField label="Prefijo de marcado" placeholder="Ninguno" inputMode="tel" {...text('dialPrefix')} />
+          </div>
+          <Switch
+            label="Ocultar mi número"
+            description="Las llamadas salientes salen como anónimas."
+            checked={form.hideCallerId}
+            onChange={(value) => set('hideCallerId', value)}
+          />
+        </FormSection>
+      </FormSections>
 
       {generalError && (
-        <p role="alert" className="rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700 dark:bg-red-500/10 dark:text-red-300">
+        <p role="alert" className="mt-6 border-l-2 border-red-500 py-1 pl-3 text-sm text-red-600 dark:text-red-400">
           {generalError}
         </p>
       )}
 
-      <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-between">
+      <div className="flex flex-col-reverse gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:justify-between dark:border-white/10">
         {extension ? (
           <Button variant="secondary" onClick={() => setConfirmingDelete(true)} className="text-red-600 dark:text-red-400">
             Eliminar
@@ -312,24 +251,65 @@ function ExtensionForm({ extension }: { extension?: Extension }) {
 
       {/* Portal: la animación de página aplica transform y rompería el position: fixed. */}
       {createPortal(
-      <AnimatePresence>
-        {confirmingDelete && extension && (
-          <ConfirmSheet
-            title={`¿Eliminar "${extension.name}"?`}
-            description="Mapache dejará de registrar esta cuenta. Esta acción no se puede deshacer."
-            error={remove.error?.message}
-            loading={remove.isPending}
-            onConfirm={handleDelete}
-            onCancel={() => {
-              remove.reset()
-              setConfirmingDelete(false)
-            }}
-          />
-        )}
-      </AnimatePresence>,
+        <AnimatePresence>
+          {confirmingDelete && extension && (
+            <ConfirmSheet
+              title={`¿Eliminar "${extension.name}"?`}
+              description="Mapache dejará de registrar esta cuenta. Esta acción no se puede deshacer."
+              error={remove.error?.message}
+              loading={remove.isPending}
+              onConfirm={handleDelete}
+              onCancel={() => {
+                remove.reset()
+                setConfirmingDelete(false)
+              }}
+            />
+          )}
+        </AnimatePresence>,
         document.body,
       )}
     </form>
+  )
+}
+
+/** Códecs como chips: el orden en que se activan es la preferencia. */
+function CodecPicker({ value, onChange, error }: { value: string[]; onChange: (codecs: string[]) => void; error?: string }) {
+  const toggle = (codec: string) =>
+    onChange(value.includes(codec) ? value.filter((c) => c !== codec) : [...value, codec])
+
+  return (
+    <fieldset>
+      <legend className="text-sm font-medium text-slate-700 dark:text-slate-300">Códecs</legend>
+      <div className="mt-1.5 flex flex-wrap gap-2">
+        {supportedCodecs.map((codec) => {
+          const position = value.indexOf(codec)
+          const active = position >= 0
+          return (
+            <button
+              key={codec}
+              type="button"
+              aria-pressed={active}
+              onClick={() => toggle(codec)}
+              className={`inline-flex min-h-11 items-center gap-2 rounded-lg border px-3 text-sm font-medium transition-colors ${
+                active
+                  ? 'border-slate-900 bg-slate-900 text-white dark:border-white dark:bg-white dark:text-slate-900'
+                  : 'border-slate-300 text-slate-600 hover:border-slate-400 dark:border-white/15 dark:text-slate-300 dark:hover:border-white/30'
+              }`}
+            >
+              {active && (
+                <span className="flex size-5 items-center justify-center rounded-full bg-white/20 text-xs tabular-nums dark:bg-slate-900/15">
+                  {position + 1}
+                </span>
+              )}
+              {codec}
+            </button>
+          )
+        })}
+      </div>
+      <p className={`mt-1.5 text-sm ${error ? 'text-red-600 dark:text-red-400' : 'text-slate-500 dark:text-slate-400'}`}>
+        {error ?? 'El orden en que los activas es el orden de preferencia.'}
+      </p>
+    </fieldset>
   )
 }
 
@@ -339,27 +319,11 @@ const answerModeLabels: Record<AnswerMode, string> = {
   BotWithHandoff: 'El bot, con paso a una persona',
 }
 
-const llmProviderLabels: Record<LlmProvider, string> = {
-  OpenAi: 'OpenAI',
-  Gemini: 'Gemini',
-  Anthropic: 'Claude',
-}
-
-const advancedFields = [
-  'sipDomain',
-  'authUsername',
-  'sipProxy',
-  'transport',
-  'publicAddress',
-  'stunServer',
-  'registerExpirySeconds',
-  'keepAliveSeconds',
-] as const
-
 function toInput(extension?: Extension): ExtensionInput {
   return {
     name: extension?.name ?? '',
     sipServer: extension?.sipServer ?? '',
+    secondarySipServer: extension?.secondarySipServer ?? null,
     sipProxy: extension?.sipProxy ?? null,
     sipUsername: extension?.sipUsername ?? '',
     sipDomain: extension?.sipDomain ?? null,
@@ -370,20 +334,22 @@ function toInput(extension?: Extension): ExtensionInput {
     publicAddress: extension?.publicAddress ?? null,
     stunServer: extension?.stunServer ?? null,
     registerExpirySeconds: extension?.registerExpirySeconds ?? 300,
+    registerRetrySeconds: extension?.registerRetrySeconds ?? 30,
     keepAliveSeconds: extension?.keepAliveSeconds ?? 15,
+    localPort: extension?.localPort ?? 0,
+    allowIpRewrite: extension?.allowIpRewrite ?? true,
+    useIce: extension?.useIce ?? false,
+    mediaEncryption: extension?.mediaEncryption ?? 'Disabled',
+    codecs: extension?.codecs ?? ['PCMU', 'PCMA'],
+    dtmfMode: extension?.dtmfMode ?? 'Rfc2833',
+    sessionTimerSeconds: extension?.sessionTimerSeconds ?? 1800,
+    maxConcurrentCalls: extension?.maxConcurrentCalls ?? 0,
+    voicemailNumber: extension?.voicemailNumber ?? null,
+    dialPrefix: extension?.dialPrefix ?? null,
+    hideCallerId: extension?.hideCallerId ?? false,
     answerMode: extension?.answerMode ?? 'Bot',
-    llmProvider: extension?.llmProvider ?? null,
-    llmModel: extension?.llmModel ?? null,
-    systemPrompt: extension?.systemPrompt ?? null,
     enabled: extension?.enabled ?? true,
   }
-}
-
-/** Abre "Avanzado" al editar una cuenta que ya se sale de los valores por defecto. */
-function hasAdvancedValues(extension?: Extension) {
-  if (!extension) return false
-  const defaults = toInput()
-  return advancedFields.some((field) => extension[field] !== defaults[field])
 }
 
 /** Hoja inferior en móvil, diálogo centrado desde sm:. */

@@ -1,194 +1,29 @@
-import { AnimatePresence, motion } from 'motion/react'
-import { useState, type FormEvent, type ReactNode } from 'react'
+import { useState, type FormEvent } from 'react'
 import { ApiError } from '../api/client'
-import { useLlmProviders } from '../api/queries'
-import type { LlmProvider } from '../api/types'
+import { useLlmSettings, useSaveLlmSettings } from '../api/queries'
+import type { LlmProvider, LlmSettings } from '../api/types'
 import { PasswordField } from '../auth/PasswordField'
-import { useAuth } from '../auth/useAuth'
-import { ThemeToggle } from '../theme/ThemeToggle'
-import { Avatar } from '../ui/Avatar'
 import { Button } from '../ui/Button'
-import { TextField } from '../ui/Field'
+import { TextAreaField, TextField } from '../ui/Field'
+import { FormSection, FormSections } from '../ui/FormSection'
 import { CopyIcon } from '../ui/icons'
+import { Saved } from '../ui/Saved'
+import { useFlash } from '../ui/useFlash'
 
 export function SettingsPage() {
-  const { isAdmin } = useAuth()
+  const { data: settings, isPending, error } = useLlmSettings()
 
   return (
     <div>
       <h1 className="font-display text-4xl md:text-5xl">Configuración</h1>
-      <p className="mt-2 text-slate-500 dark:text-slate-400">Tu cuenta, la apariencia del panel y la conexión con la IA.</p>
+      <p className="mt-2 text-slate-500 dark:text-slate-400">Ajustes generales del sistema, iguales para todas las cuentas.</p>
 
-      <div className="mt-10 divide-y divide-slate-200 border-t border-slate-200 dark:divide-white/10 dark:border-white/10">
-        <Section title="Perfil" description="Cómo te ven los demás en el panel.">
-          <ProfileForm />
-        </Section>
-        <Section title="Contraseña" description="Usa al menos 8 caracteres.">
-          <PasswordForm />
-        </Section>
-        <Section title="Apariencia" description="Se guarda en este navegador.">
-          <div className="space-y-4">
-            <ThemeToggle />
-            <p className="text-sm text-slate-500 dark:text-slate-400">
-              Colapsa o expande el menú lateral con{' '}
-              <kbd className="rounded border border-slate-300 px-1.5 py-0.5 font-sans text-xs dark:border-white/20">Ctrl</kbd>{' '}
-              <kbd className="rounded border border-slate-300 px-1.5 py-0.5 font-sans text-xs dark:border-white/20">B</kbd>.
-            </p>
-          </div>
-        </Section>
-        {isAdmin && (
-          <Section title="Inteligencia artificial" description="Proveedores del bot. Las API keys se configuran en el servidor.">
-            <AiSettings />
-          </Section>
-        )}
+      <div className="mt-10">
+        {isPending && <p className="text-slate-500">Cargando…</p>}
+        {error && <p className="text-red-600 dark:text-red-400">{error.message}</p>}
+        {settings && <AiSettingsForm settings={settings} />}
       </div>
     </div>
-  )
-}
-
-/** Fila de configuración: título y descripción a la izquierda desde md:, contenido a la derecha. */
-function Section({ title, description, children }: { title: string; description: string; children: ReactNode }) {
-  return (
-    <section className="grid gap-6 py-8 md:grid-cols-[220px_1fr] md:gap-10">
-      <div>
-        <h2 className="font-medium">{title}</h2>
-        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{description}</p>
-      </div>
-      <div className="max-w-md">{children}</div>
-    </section>
-  )
-}
-
-/** Confirmación breve que desaparece sola tras guardar. */
-function Saved({ show }: { show: boolean }) {
-  return (
-    <AnimatePresence>
-      {show && (
-        <motion.span
-          role="status"
-          initial={{ opacity: 0, x: -4 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0 }}
-          className="text-sm text-emerald-600 dark:text-emerald-400"
-        >
-          Guardado
-        </motion.span>
-      )}
-    </AnimatePresence>
-  )
-}
-
-function useFlash() {
-  const [visible, setVisible] = useState(false)
-  const flash = () => {
-    setVisible(true)
-    window.setTimeout(() => setVisible(false), 2000)
-  }
-  return [visible, flash] as const
-}
-
-function ProfileForm() {
-  const { user, updateProfile } = useAuth()
-  const [displayName, setDisplayName] = useState(user?.displayName ?? '')
-  const [error, setError] = useState<ApiError | null>(null)
-  const [saving, setSaving] = useState(false)
-  const [saved, flash] = useFlash()
-
-  const changed = displayName.trim() !== (user?.displayName ?? '') && displayName.trim().length > 0
-
-  const handleSubmit = async (event: FormEvent) => {
-    event.preventDefault()
-    setError(null)
-    setSaving(true)
-    try {
-      await updateProfile(displayName.trim())
-      flash()
-    } catch (e) {
-      setError(e instanceof ApiError ? e : new ApiError(0, 'No se pudo guardar'))
-    } finally {
-      setSaving(false)
-    }
-  }
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-      <div className="flex items-center gap-4">
-        <Avatar name={displayName || user?.displayName || ''} size="lg" />
-        <div className="min-w-0">
-          <p className="truncate text-sm text-slate-500 dark:text-slate-400">{user?.email}</p>
-          <span className="mt-1 inline-block rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600 dark:bg-white/10 dark:text-slate-300">
-            {user?.role === 'Admin' ? 'Administrador' : 'Operador'}
-          </span>
-        </div>
-      </div>
-      <TextField
-        label="Nombre"
-        autoComplete="name"
-        value={displayName}
-        onChange={(e) => setDisplayName(e.target.value)}
-        error={error?.fieldErrors.displayName?.[0] ?? (error && !Object.keys(error.fieldErrors).length ? error.message : undefined)}
-      />
-      <div className="flex items-center gap-3">
-        <Button type="submit" loading={saving} disabled={!changed}>
-          Guardar
-        </Button>
-        <Saved show={saved} />
-      </div>
-    </form>
-  )
-}
-
-function PasswordForm() {
-  const { changePassword } = useAuth()
-  const [current, setCurrent] = useState('')
-  const [next, setNext] = useState('')
-  const [error, setError] = useState<ApiError | null>(null)
-  const [saving, setSaving] = useState(false)
-  const [saved, flash] = useFlash()
-
-  const handleSubmit = async (event: FormEvent) => {
-    event.preventDefault()
-    setError(null)
-    setSaving(true)
-    try {
-      await changePassword(current, next)
-      setCurrent('')
-      setNext('')
-      flash()
-    } catch (e) {
-      setError(e instanceof ApiError ? e : new ApiError(0, 'No se pudo cambiar la contraseña'))
-    } finally {
-      setSaving(false)
-    }
-  }
-
-  const fieldErrors = error?.fieldErrors ?? {}
-  const generalError = error && Object.keys(fieldErrors).length === 0 ? error.message : null
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-      <PasswordField
-        label="Contraseña actual"
-        autoComplete="current-password"
-        value={current}
-        onChange={(e) => setCurrent(e.target.value)}
-        error={fieldErrors.currentPassword?.[0]}
-      />
-      <PasswordField
-        label="Contraseña nueva"
-        autoComplete="new-password"
-        value={next}
-        onChange={(e) => setNext(e.target.value)}
-        error={fieldErrors.newPassword?.[0]}
-      />
-      {generalError && <p className="text-sm text-red-600 dark:text-red-400">{generalError}</p>}
-      <div className="flex items-center gap-3">
-        <Button type="submit" loading={saving} disabled={!current || next.length < 8}>
-          Cambiar contraseña
-        </Button>
-        <Saved show={saved} />
-      </div>
-    </form>
   )
 }
 
@@ -198,47 +33,179 @@ const providerLabels: Record<LlmProvider, string> = {
   Anthropic: 'Claude',
 }
 
-function AiSettings() {
-  const { data: providers, isPending } = useLlmProviders()
-  const customLlmUrl = `${window.location.origin}/api/llm/v1`
+interface ProviderDraft {
+  model: string
+  apiKey: string
+  clearApiKey: boolean
+}
+
+function AiSettingsForm({ settings }: { settings: LlmSettings }) {
+  const save = useSaveLlmSettings()
+  const [saved, flash] = useFlash()
+  const [activeProvider, setActiveProvider] = useState(settings.activeProvider)
+  const [systemPrompt, setSystemPrompt] = useState(settings.systemPrompt ?? '')
+  const [drafts, setDrafts] = useState<Record<LlmProvider, ProviderDraft>>(
+    () =>
+      Object.fromEntries(
+        settings.providers.map((p) => [p.provider, { model: p.model ?? '', apiKey: '', clearApiKey: false }]),
+      ) as Record<LlmProvider, ProviderDraft>,
+  )
+
+  const setDraft = (provider: LlmProvider, patch: Partial<ProviderDraft>) =>
+    setDrafts((current) => ({ ...current, [provider]: { ...current[provider], ...patch } }))
+
+  const hasKey = (provider: LlmProvider) => {
+    const stored = settings.providers.find((p) => p.provider === provider)?.hasApiKey ?? false
+    const draft = drafts[provider]
+    return draft.apiKey.trim().length > 0 || (stored && !draft.clearApiKey)
+  }
+
+  const handleSubmit = (event: FormEvent) => {
+    event.preventDefault()
+    save.mutate(
+      {
+        activeProvider,
+        systemPrompt: systemPrompt.trim() || null,
+        providers: settings.providers.map((p) => ({
+          provider: p.provider,
+          model: drafts[p.provider].model.trim() || null,
+          apiKey: drafts[p.provider].apiKey.trim() || null,
+          clearApiKey: drafts[p.provider].clearApiKey,
+        })),
+      },
+      {
+        onSuccess: (updated) => {
+          // Las keys recién guardadas no se vuelven a mostrar: se limpian los campos.
+          setDrafts(
+            Object.fromEntries(
+              updated.providers.map((p) => [p.provider, { model: p.model ?? '', apiKey: '', clearApiKey: false }]),
+            ) as Record<LlmProvider, ProviderDraft>,
+          )
+          flash()
+        },
+      },
+    )
+  }
+
+  const generalError = save.error instanceof ApiError && Object.keys(save.error.fieldErrors).length === 0 ? save.error.message : null
 
   return (
-    <div className="space-y-6">
-      <ul className="divide-y divide-slate-200 rounded-xl border border-slate-200 dark:divide-white/10 dark:border-white/10">
-        {isPending && <li className="px-4 py-3 text-sm text-slate-500">Cargando…</li>}
-        {providers?.map((p) => (
-          <li key={p.provider} className="flex items-center gap-3 px-4 py-3">
-            <div className="min-w-0 flex-1">
-              <p className="flex items-center gap-2 text-sm font-medium">
-                {providerLabels[p.provider]}
-                {p.isDefault && (
-                  <span className="rounded-full bg-slate-900 px-2 py-0.5 text-[11px] font-medium text-white dark:bg-white dark:text-slate-900">
-                    Por defecto
+    <form onSubmit={handleSubmit} noValidate>
+      <FormSections>
+        <FormSection title="Proveedor activo" description="El LLM que responde en todas las llamadas. ElevenLabs sigue haciendo la voz.">
+          <div role="radiogroup" aria-label="Proveedor activo" className="grid gap-2">
+            {settings.providers.map((p) => {
+              const active = activeProvider === p.provider
+              const ready = hasKey(p.provider)
+              return (
+                <button
+                  key={p.provider}
+                  type="button"
+                  role="radio"
+                  aria-checked={active}
+                  onClick={() => setActiveProvider(p.provider)}
+                  className={`flex min-h-14 items-center gap-3 rounded-lg border px-4 text-left transition-colors ${
+                    active
+                      ? 'border-slate-900 ring-1 ring-slate-900 dark:border-white dark:ring-white'
+                      : 'border-slate-200 hover:border-slate-400 dark:border-white/10 dark:hover:border-white/30'
+                  }`}
+                >
+                  <span
+                    className={`flex size-4 items-center justify-center rounded-full border ${
+                      active ? 'border-slate-900 dark:border-white' : 'border-slate-300 dark:border-white/30'
+                    }`}
+                  >
+                    {active && <span className="size-2 rounded-full bg-slate-900 dark:bg-white" />}
                   </span>
-                )}
-              </p>
-              <p className="truncate font-mono text-xs text-slate-500 dark:text-slate-400">{p.defaultModel || '—'}</p>
-            </div>
-            <span
-              className={`inline-flex items-center gap-1.5 text-xs ${
-                p.configured ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400 dark:text-slate-500'
-              }`}
-            >
-              <span className={`size-1.5 rounded-full ${p.configured ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-600'}`} />
-              {p.configured ? 'Configurado' : 'Sin API key'}
-            </span>
-          </li>
-        ))}
-      </ul>
+                  <span className="flex-1">
+                    <span className="block text-sm font-medium">{providerLabels[p.provider]}</span>
+                    <span className="block font-mono text-xs text-slate-500 dark:text-slate-400">
+                      {drafts[p.provider].model || p.defaultModel}
+                    </span>
+                  </span>
+                  <span className={`inline-flex items-center gap-1.5 text-xs ${ready ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
+                    <span className={`size-1.5 rounded-full ${ready ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-600'}`} />
+                    {ready ? 'Con API key' : 'Sin API key'}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+          {!hasKey(activeProvider) && (
+            <p className="text-sm text-amber-700 dark:text-amber-400">
+              {providerLabels[activeProvider]} no tiene API key: las llamadas fallarán hasta que cargues una.
+            </p>
+          )}
+        </FormSection>
 
-      <div>
-        <p className="text-sm font-medium">URL del Custom LLM</p>
-        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-          Pégala en el agente de ElevenLabs (LLM → Custom LLM), con el token de tools como API key.
+        {settings.providers.map((p) => (
+          <FormSection
+            key={p.provider}
+            title={providerLabels[p.provider]}
+            description={p.provider === activeProvider ? 'Proveedor activo.' : 'Se guarda aunque no esté activo.'}
+          >
+            <TextField
+              label="Modelo"
+              placeholder={p.defaultModel}
+              autoCapitalize="off"
+              spellCheck={false}
+              value={drafts[p.provider].model}
+              onChange={(e) => setDraft(p.provider, { model: e.target.value })}
+              hint="Vacío usa el modelo por defecto."
+            />
+            <PasswordField
+              label="API key"
+              autoComplete="off"
+              placeholder={p.hasApiKey && !drafts[p.provider].clearApiKey ? '•••••••• guardada' : 'Pega la API key'}
+              value={drafts[p.provider].apiKey}
+              onChange={(e) => setDraft(p.provider, { apiKey: e.target.value, clearApiKey: false })}
+              hint={p.hasApiKey ? 'Déjala vacía para conservar la guardada. Se guarda cifrada.' : 'Se guarda cifrada y no se vuelve a mostrar.'}
+            />
+            {p.hasApiKey && (
+              <button
+                type="button"
+                onClick={() => setDraft(p.provider, { clearApiKey: !drafts[p.provider].clearApiKey, apiKey: '' })}
+                className="text-sm text-red-600 underline-offset-4 hover:underline dark:text-red-400"
+              >
+                {drafts[p.provider].clearApiKey ? 'Conservar la API key guardada' : 'Quitar la API key guardada'}
+              </button>
+            )}
+          </FormSection>
+        ))}
+
+        <FormSection title="Instrucciones" description="Cómo debe comportarse el bot. Vacío usa las del agente de ElevenLabs.">
+          <TextAreaField
+            label="Instrucciones del bot"
+            rows={8}
+            placeholder="Eres la recepcionista de…"
+            value={systemPrompt}
+            onChange={(e) => setSystemPrompt(e.target.value)}
+            error={save.error instanceof ApiError ? save.error.fieldErrors.systemPrompt?.[0] : undefined}
+          />
+        </FormSection>
+
+        <FormSection title="Conexión con ElevenLabs" description="Datos para configurar el agente como Custom LLM.">
+          <div>
+            <p className="text-sm font-medium text-slate-700 dark:text-slate-300">URL del Custom LLM</p>
+            <CopyField value={`${window.location.origin}/api/llm/v1`} />
+            <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">Como API key, el token de tools del servidor.</p>
+          </div>
+        </FormSection>
+      </FormSections>
+
+      {generalError && (
+        <p role="alert" className="mt-6 border-l-2 border-red-500 py-1 pl-3 text-sm text-red-600 dark:text-red-400">
+          {generalError}
         </p>
-        <CopyField value={customLlmUrl} />
+      )}
+
+      <div className="flex items-center justify-end gap-3 border-t border-slate-200 pt-6 dark:border-white/10">
+        <Saved show={saved} />
+        <Button type="submit" loading={save.isPending} className="sm:min-w-32">
+          Guardar
+        </Button>
       </div>
-    </div>
+    </form>
   )
 }
 
@@ -256,7 +223,7 @@ function CopyField({ value }: { value: string }) {
   }
 
   return (
-    <div className="mt-3 flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 py-1 pl-3 pr-1 dark:border-white/10 dark:bg-white/5">
+    <div className="mt-1.5 flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 py-1 pl-3 pr-1 dark:border-white/10 dark:bg-white/5">
       <code className="min-w-0 flex-1 truncate text-sm">{value}</code>
       <button
         type="button"

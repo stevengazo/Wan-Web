@@ -1,11 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from './client'
-import type { Extension, ExtensionInput, LlmProviderInfo } from './types'
+import type { Extension, ExtensionInput, LlmSettings, SaveLlmSettings } from './types'
 
 const keys = {
   extensions: ['extensions'] as const,
   extension: (id: string) => ['extensions', id] as const,
-  llmProviders: ['llm-providers'] as const,
+  llmSettings: ['llm-settings'] as const,
 }
 
 export const useExtensions = () =>
@@ -18,12 +18,16 @@ export const useExtension = (id: string | undefined) =>
     enabled: !!id,
   })
 
-export const useLlmProviders = () =>
-  useQuery({
-    queryKey: keys.llmProviders,
-    queryFn: () => api<LlmProviderInfo[]>('/llm/providers'),
-    staleTime: 5 * 60_000,
+export const useLlmSettings = () =>
+  useQuery({ queryKey: keys.llmSettings, queryFn: () => api<LlmSettings>('/llm/settings') })
+
+export function useSaveLlmSettings() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (input: SaveLlmSettings) => api<LlmSettings>('/llm/settings', { method: 'PUT', body: input }),
+    onSuccess: (settings) => queryClient.setQueryData(keys.llmSettings, settings),
   })
+}
 
 export function useSaveExtension(id: string | undefined) {
   const queryClient = useQueryClient()
