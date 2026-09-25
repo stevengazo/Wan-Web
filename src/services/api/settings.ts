@@ -20,6 +20,10 @@ export interface SaveSmtpSettings extends Omit<SmtpSettings, 'hasPassword'> {
 export interface CallSettings {
   recordCalls: boolean
   recordingNotice: string | null
+  /** Días que se guardan las grabaciones; null = sin borrado automático. */
+  recordingRetentionDays: number | null
+  /** Días que se guardan las transcripciones; null = sin borrado automático. */
+  transcriptRetentionDays: number | null
 }
 
 export const useCallSettings = () => useQuery({ queryKey: keys.callSettings, queryFn: () => api<CallSettings>('/settings/calls') })
@@ -125,6 +129,7 @@ export interface StorageSettings {
   hasAzureConnectionString: boolean
   azureContainer: string | null
   prefix: string | null
+  encryptRecordings: boolean
 }
 
 /** Secretos vacíos conservan los guardados. */
@@ -138,6 +143,7 @@ export interface SaveStorageSettings {
   azureConnectionString: string | null
   azureContainer: string | null
   prefix: string | null
+  encryptRecordings: boolean
 }
 
 export const useStorageSettings = () => useQuery({ queryKey: keys.storageSettings, queryFn: () => api<StorageSettings>('/settings/storage') })
@@ -157,5 +163,14 @@ export function useTestStorage() {
     meta: { silentError: true },
     mutationFn: (input: SaveStorageSettings) =>
       api<{ ok: boolean; message: string }>('/settings/storage/test', { method: 'POST', body: input }),
+  })
+}
+
+/** Aplica la retención en el momento (el trabajo diario corre a las 3:00 UTC). */
+export function useRunRetention() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: () => api<{ recordings: number; transcriptLines: number }>('/settings/calls/retention/run', { method: 'POST' }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.recordings }),
   })
 }

@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { Button } from '@/components/atoms/Button'
+import { Switch } from '@/components/atoms/Switch'
 import { TextField } from '@/components/molecules/Field'
 import { PasswordField } from '@/components/molecules/PasswordField'
 import { FormSection, FormSections } from '@/components/organisms/FormSection'
@@ -26,6 +27,7 @@ export function StorageSettingsForm({ settings }: { settings: StorageSettings })
     azureConnectionString: null,
     azureContainer: settings.azureContainer,
     prefix: settings.prefix,
+    encryptRecordings: settings.encryptRecordings,
   })
   const set = <K extends keyof SaveStorageSettings>(key: K, value: SaveStorageSettings[K]) => {
     setForm((f) => ({ ...f, [key]: value }))
@@ -97,6 +99,15 @@ export function StorageSettingsForm({ settings }: { settings: StorageSettings })
             <TextField label="Contenedor" placeholder="grabaciones" hint="Se crea si no existe." {...text('azureContainer')} />
           </FormSection>
         )}
+
+        <FormSection title="Cifrado" description="Las grabaciones se cifran (AES-256) antes de guardarse, también en la nube. La API las descifra al escucharlas.">
+          <Switch
+            label="Cifrar grabaciones"
+            description="Aplica a las nuevas; las anteriores quedan como estaban."
+            checked={form.encryptRecordings}
+            onChange={(value) => set('encryptRecordings', value)}
+          />
+        </FormSection>
 
         {form.provider !== 'Local' && (
           <FormSection title="Carpeta" description="Opcional: prefijo dentro del bucket o contenedor.">

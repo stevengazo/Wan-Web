@@ -1,9 +1,10 @@
 import { useState, type FormEvent } from 'react'
 import { ApiError } from '@/services/api/client'
-import { useSaveCallSettings } from '@/services/api'
+import toast from 'react-hot-toast'
+import { useRunRetention, useSaveCallSettings } from '@/services/api'
 import type { CallSettings } from '@/services/api'
 import { Button } from '@/components/atoms/Button'
-import { TextAreaField } from '@/components/molecules/Field'
+import { TextAreaField, TextField } from '@/components/molecules/Field'
 import { FormSection, FormSections } from '@/components/organisms/FormSection'
 import { Switch } from '@/components/atoms/Switch'
 
@@ -12,12 +13,21 @@ const defaultNotice = 'Esta llamada puede ser grabada para mejorar la calidad de
 /** Grabación de llamadas y aviso de consentimiento. */
 export function CallSettingsForm({ settings }: { settings: CallSettings }) {
   const save = useSaveCallSettings()
+  const retention = useRunRetention()
   const [recordCalls, setRecordCalls] = useState(settings.recordCalls)
   const [notice, setNotice] = useState(settings.recordingNotice ?? defaultNotice)
+  const [recordingDays, setRecordingDays] = useState(settings.recordingRetentionDays?.toString() ?? '')
+  const [transcriptDays, setTranscriptDays] = useState(settings.transcriptRetentionDays?.toString() ?? '')
+  const days = (value: string) => (value.trim() ? Number(value) : null)
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
-    save.mutate({ recordCalls, recordingNotice: notice.trim() || null })
+    save.mutate({
+      recordCalls,
+      recordingNotice: notice.trim() || null,
+      recordingRetentionDays: days(recordingDays),
+      transcriptRetentionDays: days(transcriptDays),
+    })
   }
 
   const noticeError = save.error instanceof ApiError ? save.error.fieldErrors.recordingNotice?.[0] : undefined
@@ -39,6 +49,44 @@ export function CallSettingsForm({ settings }: { settings: CallSettings }) {
             hint="Informar la grabación suele ser obligatorio. Inclúyelo también en el primer mensaje del agente."
             error={noticeError}
           />
+        </FormSection>
+        <FormSection
+          title="Retención"
+          description="Borrado automático, una vez por día. Vacío = se guardan sin límite. Cada borrado queda en la auditoría."
+        >
+          <div className="grid gap-4 sm:grid-cols-2">
+            <TextField
+              label="Grabaciones (días)"
+              type="number"
+              inputMode="numeric"
+              min={1}
+              placeholder="Sin límite"
+              value={recordingDays}
+              onChange={(e) => setRecordingDays(e.target.value)}
+              error={save.error instanceof ApiError ? save.error.fieldErrors.recordingRetentionDays?.[0] : undefined}
+            />
+            <TextField
+              label="Transcripciones (días)"
+              type="number"
+              inputMode="numeric"
+              min={1}
+              placeholder="Sin límite"
+              value={transcriptDays}
+              onChange={(e) => setTranscriptDays(e.target.value)}
+              error={save.error instanceof ApiError ? save.error.fieldErrors.transcriptRetentionDays?.[0] : undefined}
+            />
+          </div>
+          <Button
+            variant="secondary"
+            loading={retention.isPending}
+            onClick={() =>
+              retention.mutate(undefined, {
+                onSuccess: (r) => toast.success(`Retención aplicada: ${r.recordings} grabaciones y ${r.transcriptLines} líneas de transcripción borradas`),
+              })
+            }
+          >
+            Aplicar ahora
+          </Button>
         </FormSection>
       </FormSections>
       <div className="flex items-center justify-end gap-3 border-t border-zinc-200 pt-6 dark:border-white/10">
