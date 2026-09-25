@@ -74,6 +74,8 @@ export function useRealtime(handlers: RealtimeHandlers = {}) {
       handlersRef.current.onTranscript?.(callId, speaker, text),
     )
 
+    connection.on('CampaignsChanged', () => queryClient.invalidateQueries({ queryKey: keys.campaigns }))
+
     // Recados, respuestas y grabaciones llegan desde las llamadas: se refrescan solos.
     connection.on('MessagesChanged', () => queryClient.invalidateQueries({ queryKey: ['messages'] }))
     connection.on('FormSubmissionsChanged', () => queryClient.invalidateQueries({ queryKey: ['forms'] }))

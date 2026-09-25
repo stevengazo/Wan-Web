@@ -24,6 +24,9 @@ const KnowledgePage = lazy(() => import('@/pages/KnowledgePage').then((m) => ({ 
 const KnowledgeBasePage = lazy(() => import('@/pages/KnowledgeBasePage').then((m) => ({ default: m.KnowledgeBasePage })))
 const ToolsPage = lazy(() => import('@/pages/ToolsPage').then((m) => ({ default: m.ToolsPage })))
 const PublicMessagePage = lazy(() => import('@/pages/PublicMessagePage').then((m) => ({ default: m.PublicMessagePage })))
+const CampaignsPage = lazy(() => import('@/pages/CampaignsPage').then((m) => ({ default: m.CampaignsPage })))
+const CampaignEditorPage = lazy(() => import('@/pages/CampaignEditorPage').then((m) => ({ default: m.CampaignEditorPage })))
+const CampaignDetailPage = lazy(() => import('@/pages/CampaignDetailPage').then((m) => ({ default: m.CampaignDetailPage })))
 const PhonePage = lazy(() => import('@/pages/PhonePage').then((m) => ({ default: m.PhonePage })))
 const UsersPage = lazy(() => import('@/pages/UsersPage').then((m) => ({ default: m.UsersPage })))
 const RecordingsPage = lazy(() => import('@/pages/RecordingsPage').then((m) => ({ default: m.RecordingsPage })))
@@ -85,6 +88,24 @@ const router = createBrowserRouter([
         ),
       },
       { path: 'telefono', element: <PhonePage /> },
+      { path: 'campanas', element: <CampaignsPage /> },
+      {
+        path: 'campanas/nueva',
+        element: (
+          <RequireAuth admin>
+            <CampaignEditorPage />
+          </RequireAuth>
+        ),
+      },
+      { path: 'campanas/:id', element: <CampaignDetailPage /> },
+      {
+        path: 'campanas/:id/editar',
+        element: (
+          <RequireAuth admin>
+            <CampaignEditorPage />
+          </RequireAuth>
+        ),
+      },
       { path: 'recados', element: <MessagesPage /> },
       { path: 'grabaciones', element: <RecordingsPage /> },
       { path: 'conocimiento', element: <KnowledgePage /> },

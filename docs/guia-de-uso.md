@@ -126,6 +126,15 @@ Desactivar una base la saca del bot sin borrarla.
 - **Peticiones a sistemas externos:** el bot consulta tu ERP o CRM. Defines la URL con `{{parametros}}`, los headers (cifrados) y qué datos debe pedir. **Probar** ejecuta la petición con valores de ejemplo.
 - **Servidores MCP:** pega la URL de un servidor MCP. Mapache lee sus herramientas y eliges con toggles cuáles puede usar el bot.
 
+## 📣 Campañas
+
+El bot llama a una lista de contactos con un guion.
+
+1. **Nueva campaña:** extensión, guion (con `{{nombre}}` y las columnas del CSV), frase inicial, resultados posibles, simultáneas y reintentos.
+2. **Importar CSV:** archivo o datos pegados de Excel / Google Sheets, con una columna de teléfono.
+3. **Iniciar:** el bot empieza a llamar en unos segundos. Se puede **pausar** y **reanudar**.
+4. En el detalle se ve el avance, cuántos contestaron, los resultados que registró el bot y sus notas por contacto. **Volver a llamar** pone un contacto otra vez en la cola.
+
 ## 📋 Formularios
 
 - **Nuevo formulario:** nombre, instrucciones para el bot y campos (texto, número, teléfono, correo, fecha, sí/no, opciones).

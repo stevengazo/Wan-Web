@@ -36,6 +36,12 @@ import {
   PhoneMissed,
   PhoneOutgoing,
   User,
+  Megaphone,
+  Pause,
+  Play,
+  Upload,
+  RotateCcw,
+  ChartColumn,
   type LucideProps,
 } from 'lucide-react'
 
@@ -82,3 +88,9 @@ export const PhoneMissedIcon = (props: LucideProps) => <PhoneMissed {...base} {.
 export const PhoneOutgoingIcon = (props: LucideProps) => <PhoneOutgoing {...base} {...props} />
 export const UserIcon = (props: LucideProps) => <User {...base} {...props} />
 export const PhoneCallIcon = (props: LucideProps) => <PhoneCall {...base} {...props} />
+export const MegaphoneIcon = (props: LucideProps) => <Megaphone {...base} {...props} />
+export const PauseIcon = (props: LucideProps) => <Pause {...base} {...props} />
+export const PlayIcon = (props: LucideProps) => <Play {...base} {...props} />
+export const UploadIcon = (props: LucideProps) => <Upload {...base} {...props} />
+export const RetryIcon = (props: LucideProps) => <RotateCcw {...base} {...props} />
+export const ChartIcon = (props: LucideProps) => <ChartColumn {...base} {...props} />
