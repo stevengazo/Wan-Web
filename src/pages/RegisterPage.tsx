@@ -1,10 +1,9 @@
 import { useState, type FormEvent } from 'react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router'
 import { ApiError } from '../api/client'
-import { AuthLayout, FormAlert } from '../auth/AuthLayout'
+import { AuthLayout, FormAlert, SubmitButton } from '../auth/AuthLayout'
 import { PasswordField } from '../auth/PasswordField'
 import { useAuth } from '../auth/useAuth'
-import { Button } from '../ui/Button'
 import { TextField } from '../ui/Field'
 import { MailIcon, UserIcon } from '../ui/icons'
 
@@ -47,7 +46,7 @@ export function RegisterPage() {
   return (
     <AuthLayout
       title="Crea tu cuenta"
-      subtitle="Entra al panel en menos de un minuto."
+      subtitle="Empieza a atender llamadas con IA en minutos."
       footer={
         <>
           ¿Ya tienes cuenta?{' '}
@@ -93,14 +92,9 @@ export function RegisterPage() {
 
         {generalError && <FormAlert message={generalError} />}
 
-        <Button
-          type="submit"
-          loading={submitting}
-          disabled={!displayName.trim() || !email || password.length < minPasswordLength}
-          className="w-full shadow-sm shadow-indigo-600/20"
-        >
+        <SubmitButton loading={submitting} disabled={!displayName.trim() || !email || password.length < minPasswordLength}>
           Crear cuenta
-        </Button>
+        </SubmitButton>
 
         <p className="text-center text-xs text-slate-500 dark:text-slate-400">
           Las cuentas nuevas pueden ver el panel; un administrador puede darte permisos para editar.

@@ -1,10 +1,9 @@
 import { useState, type FormEvent } from 'react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router'
 import { ApiError } from '../api/client'
-import { AuthLayout, FormAlert } from '../auth/AuthLayout'
+import { AuthLayout, FormAlert, SubmitButton } from '../auth/AuthLayout'
 import { PasswordField } from '../auth/PasswordField'
 import { useAuth } from '../auth/useAuth'
-import { Button } from '../ui/Button'
 import { TextField } from '../ui/Field'
 import { MailIcon } from '../ui/icons'
 
@@ -39,8 +38,8 @@ export function LoginPage() {
 
   return (
     <AuthLayout
-      title="Bienvenido de nuevo"
-      subtitle="Inicia sesión para administrar el bot."
+      title="Hola de nuevo"
+      subtitle="Inicia sesión para administrar tu central."
       footer={
         <>
           ¿No tienes cuenta?{' '}
@@ -72,9 +71,9 @@ export function LoginPage() {
 
         {error && <FormAlert message={error} />}
 
-        <Button type="submit" loading={submitting} disabled={!email || !password} className="w-full shadow-sm shadow-indigo-600/20">
+        <SubmitButton loading={submitting} disabled={!email || !password}>
           Entrar
-        </Button>
+        </SubmitButton>
       </form>
     </AuthLayout>
   )

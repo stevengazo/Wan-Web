@@ -3,6 +3,12 @@
 /* Dark mode por clase en <html> para poder forzar light/dark además de seguir al sistema. */
 @custom-variant dark (&:where(.dark, .dark *));
 
+@theme {
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  /* Serif de display: solo para titulares puntuales, nunca para texto corrido. */
+  --font-display: 'Instrument Serif', ui-serif, Georgia, serif;
+}
+
 @layer base {
   html {
     -webkit-tap-highlight-color: transparent;
