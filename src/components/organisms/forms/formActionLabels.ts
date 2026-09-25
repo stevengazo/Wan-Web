@@ -6,4 +6,5 @@ export const actionTypeLabels: Record<FormActionType, string> = {
   GoogleChat: 'Google Chat',
   Slack: 'Slack',
   Email: 'Correo',
+  HttpRequest: 'API (CRM, ERP…)',
 }

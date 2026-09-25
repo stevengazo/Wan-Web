@@ -2,10 +2,11 @@ import { AnimatePresence, motion } from 'motion/react'
 import { useState, type FormEvent } from 'react'
 import { ApiError } from '@/services/api/client'
 import { useDeleteFormAction, useFormActions, useSaveFormAction, useTestFormAction } from '@/services/api'
-import type { FormAction, FormActionType } from '@/services/api'
+import type { FormAction, FormActionType, HttpActionMethod } from '@/services/api'
 import { PasswordField } from '@/components/molecules/PasswordField'
 import { Button } from '@/components/atoms/Button'
-import { TextField } from '@/components/molecules/Field'
+import { SelectField, TextAreaField, TextField } from '@/components/molecules/Field'
+import { HeadersEditor } from '@/components/molecules/HeadersEditor'
 import { PlusIcon } from '@/components/atoms/icons'
 import { Switch } from '@/components/atoms/Switch'
 import { actionTypeLabels } from '@/components/organisms/forms/formActionLabels'
@@ -36,10 +37,26 @@ const targetHelp: Record<FormActionType, { label: string; placeholder: string; h
     placeholder: 'ventas@empresa.com, ana@empresa.com',
     hint: 'Separados por coma. Usa el correo saliente de Configuración.',
   },
+  HttpRequest: {
+    label: 'URL de la API',
+    placeholder: 'https://crm.miempresa.com/api/leads',
+    hint: 'Puede llevar marcadores: https://erp.com/api/clientes/{{cedula}}/casos',
+  },
 }
 
+const methods: HttpActionMethod[] = ['POST', 'PUT', 'PATCH', 'GET', 'DELETE']
+
+/** Datos del sistema disponibles como marcador además de los campos del formulario. */
+const systemPlaceholders = ['caller_number', 'summary', 'values', 'form_name', 'submission_id', 'conversation_id', 'created_at']
+
+const bodyExample = `{
+  "subject": "Llamada de {{caller_number}}",
+  "description": {{summary}},
+  "source": "mapache"
+}`
+
 /** Acciones que se disparan con cada respuesta del formulario. */
-export function FormActionsPanel({ formId }: { formId: string }) {
+export function FormActionsPanel({ formId, fieldKeys }: { formId: string; fieldKeys: string[] }) {
   const { data: actions, isPending, error } = useFormActions(formId)
   const [editing, setEditing] = useState<string | 'new' | null>(null)
 
@@ -56,7 +73,7 @@ export function FormActionsPanel({ formId }: { formId: string }) {
           {actions?.map((action) => (
             <motion.div key={action.id} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               {editing === action.id ? (
-                <ActionEditor formId={formId} action={action} onDone={() => setEditing(null)} />
+                <ActionEditor formId={formId} fieldKeys={fieldKeys} action={action} onDone={() => setEditing(null)} />
               ) : (
                 <ActionRow action={action} onEdit={() => setEditing(action.id)} />
               )}
@@ -65,7 +82,7 @@ export function FormActionsPanel({ formId }: { formId: string }) {
         </AnimatePresence>
 
         {editing === 'new' ? (
-          <ActionEditor formId={formId} onDone={() => setEditing(null)} />
+          <ActionEditor formId={formId} fieldKeys={fieldKeys} onDone={() => setEditing(null)} />
         ) : (
           <button
             type="button"
@@ -95,7 +112,10 @@ function ActionRow({ action, onEdit }: { action: FormAction; onEdit: () => void 
             </span>
             {!action.enabled && <span className="text-xs text-zinc-500">Inactiva</span>}
           </p>
-          <p className="mt-0.5 truncate font-mono text-xs text-zinc-500 dark:text-zinc-400">{action.target}</p>
+          <p className="mt-0.5 truncate font-mono text-xs text-zinc-500 dark:text-zinc-400">
+            {action.type === 'HttpRequest' && `${action.method ?? 'POST'} `}
+            {action.target}
+          </p>
         </div>
         <div className="flex items-center gap-1">
           <button
@@ -121,7 +141,7 @@ function ActionRow({ action, onEdit }: { action: FormAction; onEdit: () => void 
   )
 }
 
-function ActionEditor({ formId, action, onDone }: { formId: string; action?: FormAction; onDone: () => void }) {
+function ActionEditor({ formId, fieldKeys, action, onDone }: { formId: string; fieldKeys: string[]; action?: FormAction; onDone: () => void }) {
   const save = useSaveFormAction(formId, action?.id)
   const remove = useDeleteFormAction(formId)
   const [type, setType] = useState<FormActionType>(action?.type ?? 'Teams')
@@ -130,6 +150,11 @@ function ActionEditor({ formId, action, onDone }: { formId: string; action?: For
   const [secret, setSecret] = useState('')
   const [clearSecret, setClearSecret] = useState(false)
   const [enabled, setEnabled] = useState(action?.enabled ?? true)
+  const [method, setMethod] = useState<HttpActionMethod>(action?.method ?? 'POST')
+  const [bodyTemplate, setBodyTemplate] = useState(action?.bodyTemplate ?? '')
+  const [headers, setHeaders] = useState<Record<string, string> | null>(null)
+  const isHttp = type === 'HttpRequest'
+  const signed = type === 'Webhook' || isHttp
 
   const fieldErrors = save.error instanceof ApiError ? save.error.fieldErrors : {}
   const help = targetHelp[type]
@@ -137,7 +162,15 @@ function ActionEditor({ formId, action, onDone }: { formId: string; action?: For
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
     save.mutate(
-      { type, name: name.trim() || actionTypeLabels[type], target, secret: secret || null, clearSecret, enabled },
+      {
+        type,
+        name: name.trim() || actionTypeLabels[type],
+        target,
+        secret: secret || null,
+        clearSecret,
+        enabled,
+        ...(isHttp && { method, bodyTemplate: bodyTemplate.trim() || null, headers }),
+      },
       { onSuccess: onDone },
     )
   }
@@ -180,7 +213,54 @@ function ActionEditor({ formId, action, onDone }: { formId: string; action?: For
         />
       </div>
 
-      {type === 'Webhook' && (
+      {isHttp && (
+        <div className="space-y-5">
+          <SelectField label="Método" value={method} onChange={(e) => setMethod(e.target.value as HttpActionMethod)}>
+            {methods.map((m) => (
+              <option key={m} value={m}>
+                {m}
+              </option>
+            ))}
+          </SelectField>
+          <div className="space-y-1">
+            <HeadersEditor savedNames={action?.headerNames ?? []} onChange={setHeaders} />
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">Por ejemplo Authorization: Bearer … o X-Api-Key. Se guardan cifrados.</p>
+          </div>
+          {method !== 'GET' && method !== 'DELETE' && (
+            <div className="space-y-2">
+              <TextAreaField
+                label="Cuerpo (JSON)"
+                rows={7}
+                spellCheck={false}
+                placeholder={bodyExample}
+                value={bodyTemplate}
+                onChange={(e) => setBodyTemplate(e.target.value)}
+                hint="Vacío = el JSON estándar del webhook. Cada marcador se reemplaza por su valor ya en JSON (el texto con comillas): no le agregues comillas."
+                error={fieldErrors.bodyTemplate?.[0]}
+              />
+              <div className="flex flex-wrap items-center gap-1.5" aria-label="Insertar marcador">
+                <span className="eyebrow mr-1 text-zinc-500 dark:text-zinc-400">Insertar</span>
+                {[...fieldKeys, ...systemPlaceholders].map((key) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => setBodyTemplate((value) => `${value}{{${key}}}`)}
+                    className={`min-h-8 border px-2 font-mono text-xs transition-colors hover:border-brand-500 hover:text-brand-600 dark:hover:text-brand-300 ${
+                      fieldKeys.includes(key)
+                        ? 'border-brand-200 text-brand-700 dark:border-brand-500/40 dark:text-brand-300'
+                        : 'border-zinc-300 text-zinc-600 dark:border-white/15 dark:text-zinc-300'
+                    }`}
+                  >
+                    {`{{${key}}}`}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {signed && (
         <div className="space-y-2">
           <PasswordField
             label="Secreto de firma (opcional)"

@@ -57,7 +57,7 @@ export function FormDetailPage() {
 
       {filter === 'Actions' && (
         <div className="mt-6">
-          <FormActionsPanel formId={id} />
+          <FormActionsPanel formId={id} fieldKeys={form?.fields.map((f) => f.key) ?? []} />
         </div>
       )}
 

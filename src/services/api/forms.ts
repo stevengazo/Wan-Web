@@ -51,7 +51,9 @@ export interface FormSubmission {
   actions: ActionExecution[]
 }
 
-export type FormActionType = 'Webhook' | 'Teams' | 'GoogleChat' | 'Slack' | 'Email'
+export type FormActionType = 'Webhook' | 'Teams' | 'GoogleChat' | 'Slack' | 'Email' | 'HttpRequest'
+
+export type HttpActionMethod = 'POST' | 'PUT' | 'PATCH' | 'GET' | 'DELETE'
 
 export interface FormActionInput {
   type: FormActionType
@@ -62,6 +64,12 @@ export interface FormActionInput {
   secret: string | null
   clearSecret: boolean
   enabled: boolean
+  /** Solo petición HTTP. */
+  method?: HttpActionMethod
+  /** Solo petición HTTP; vacío = el JSON estándar del webhook. */
+  bodyTemplate?: string | null
+  /** Solo petición HTTP; null conserva los guardados. */
+  headers?: Record<string, string> | null
 }
 
 export interface FormAction {
@@ -72,6 +80,10 @@ export interface FormAction {
   target: string
   hasSecret: boolean
   enabled: boolean
+  method: HttpActionMethod | null
+  bodyTemplate: string | null
+  /** Nombres de los headers guardados (los valores no salen de la API). */
+  headerNames: string[]
 }
 
 export type ActionExecutionStatus = 'Pending' | 'Succeeded' | 'Failed'
