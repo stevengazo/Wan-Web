@@ -5,7 +5,6 @@ import { AuthLayout, FormAlert, SubmitButton } from '../auth/AuthLayout'
 import { PasswordField } from '../auth/PasswordField'
 import { useAuth } from '../auth/useAuth'
 import { TextField } from '../ui/Field'
-import { MailIcon } from '../ui/icons'
 
 export function LoginPage() {
   const { user, login } = useAuth()
@@ -24,6 +23,10 @@ export function LoginPage() {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
+    if (!email.trim() || !password) {
+      setError('Escribe tu correo y tu contraseña.')
+      return
+    }
     setError(null)
     setSubmitting(true)
     try {
@@ -43,7 +46,7 @@ export function LoginPage() {
       footer={
         <>
           ¿No tienes cuenta?{' '}
-          <Link to="/registro" state={location.state} className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
+          <Link to="/registro" state={location.state} className="font-medium text-slate-900 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-900 dark:text-slate-100 dark:decoration-slate-600 dark:hover:decoration-slate-100">
             Regístrate
           </Link>
         </>
@@ -56,7 +59,6 @@ export function LoginPage() {
           autoComplete="username"
           inputMode="email"
           placeholder="tu@empresa.com"
-          icon={<MailIcon />}
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -71,7 +73,7 @@ export function LoginPage() {
 
         {error && <FormAlert message={error} />}
 
-        <SubmitButton loading={submitting} disabled={!email || !password}>
+        <SubmitButton loading={submitting}>
           Entrar
         </SubmitButton>
       </form>

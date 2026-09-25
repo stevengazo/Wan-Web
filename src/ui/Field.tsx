@@ -39,19 +39,16 @@ export function TextField({
   label,
   error,
   hint,
-  icon,
   trailing,
   ...props
 }: {
   label: string
   error?: string
   hint?: string
-  /** Ícono decorativo al inicio del input. */
-  icon?: ReactNode
   /** Acción al final del input (p. ej. mostrar contraseña). */
   trailing?: ReactNode
 } & InputHTMLAttributes<HTMLInputElement>) {
-  if (!icon && !trailing) {
+  if (!trailing) {
     return (
       <Field label={label} error={error} hint={hint}>
         {(control) => <input {...props} {...control} />}
@@ -63,13 +60,8 @@ export function TextField({
     <Field label={label} error={error} hint={hint}>
       {({ className, ...control }) => (
         <div className="relative">
-          {icon && (
-            <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-400 dark:text-slate-500">
-              {icon}
-            </span>
-          )}
-          <input {...props} {...control} className={`${className} ${icon ? 'pl-10' : ''} ${trailing ? 'pr-12' : ''}`} />
-          {trailing && <span className="absolute inset-y-0 right-0 flex items-center">{trailing}</span>}
+          <input {...props} {...control} className={`${className} pr-12`} />
+          <span className="absolute inset-y-0 right-0 flex items-center">{trailing}</span>
         </div>
       )}
     </Field>

@@ -77,27 +77,6 @@ export const ChevronRightIcon = () => (
   </Icon>
 )
 
-export const MailIcon = () => (
-  <Icon>
-    <rect x="3" y="5" width="18" height="14" rx="2" />
-    <path d="m3 7 9 6 9-6" />
-  </Icon>
-)
-
-export const LockIcon = () => (
-  <Icon>
-    <rect x="4" y="11" width="16" height="10" rx="2" />
-    <path d="M8 11V7a4 4 0 0 1 8 0v4" />
-  </Icon>
-)
-
-export const UserIcon = () => (
-  <Icon>
-    <circle cx="12" cy="8" r="4" />
-    <path d="M4 21a8 8 0 0 1 16 0" />
-  </Icon>
-)
-
 export const EyeIcon = () => (
   <Icon>
     <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
@@ -113,8 +92,3 @@ export const EyeOffIcon = () => (
   </Icon>
 )
 
-export const CheckIcon = () => (
-  <Icon>
-    <path d="m5 12 5 5L20 7" />
-  </Icon>
-)

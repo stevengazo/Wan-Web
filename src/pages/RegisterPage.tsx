@@ -5,7 +5,6 @@ import { AuthLayout, FormAlert, SubmitButton } from '../auth/AuthLayout'
 import { PasswordField } from '../auth/PasswordField'
 import { useAuth } from '../auth/useAuth'
 import { TextField } from '../ui/Field'
-import { MailIcon, UserIcon } from '../ui/icons'
 
 const minPasswordLength = 8
 
@@ -31,6 +30,16 @@ export function RegisterPage() {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
+    if (!displayName.trim() || !email.trim() || password.length < minPasswordLength) {
+      setError(
+        new ApiError(0, '', {
+          ...(displayName.trim() ? {} : { displayName: ['Campo obligatorio'] }),
+          ...(email.trim() ? {} : { email: ['Campo obligatorio'] }),
+          ...(password.length >= minPasswordLength ? {} : { password: [`Mínimo ${minPasswordLength} caracteres`] }),
+        }),
+      )
+      return
+    }
     setError(null)
     setSubmitting(true)
     try {
@@ -50,7 +59,7 @@ export function RegisterPage() {
       footer={
         <>
           ¿Ya tienes cuenta?{' '}
-          <Link to="/login" state={location.state} className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
+          <Link to="/login" state={location.state} className="font-medium text-slate-900 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-900 dark:text-slate-100 dark:decoration-slate-600 dark:hover:decoration-slate-100">
             Inicia sesión
           </Link>
         </>
@@ -61,7 +70,6 @@ export function RegisterPage() {
           label="Nombre"
           autoComplete="name"
           placeholder="Ana Rodríguez"
-          icon={<UserIcon />}
           required
           value={displayName}
           onChange={(e) => setDisplayName(e.target.value)}
@@ -73,7 +81,6 @@ export function RegisterPage() {
           autoComplete="email"
           inputMode="email"
           placeholder="tu@empresa.com"
-          icon={<MailIcon />}
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -92,11 +99,11 @@ export function RegisterPage() {
 
         {generalError && <FormAlert message={generalError} />}
 
-        <SubmitButton loading={submitting} disabled={!displayName.trim() || !email || password.length < minPasswordLength}>
+        <SubmitButton loading={submitting}>
           Crear cuenta
         </SubmitButton>
 
-        <p className="text-center text-xs text-slate-500 dark:text-slate-400">
+        <p className="text-xs text-slate-400 dark:text-slate-500">
           Las cuentas nuevas pueden ver el panel; un administrador puede darte permisos para editar.
         </p>
       </form>
