@@ -103,9 +103,6 @@ export function RegisterPage() {
           Crear cuenta
         </SubmitButton>
 
-        <p className="text-xs text-slate-400 dark:text-slate-500">
-          Las cuentas nuevas pueden ver el panel; un administrador puede darte permisos para editar.
-        </p>
       </form>
     </AuthLayout>
   )
