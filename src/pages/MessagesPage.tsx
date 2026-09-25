@@ -1,10 +1,12 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useState } from 'react'
-import { useDeleteMessage, useMessages, useUpdateMessage } from '@/services/api'
+import { createPortal } from 'react-dom'
+import { useDeleteMessage, useMessages, usePublicUrl, useShareMessage, useUpdateMessage } from '@/services/api'
 import type { CallMessage, CallMessageStatus } from '@/services/api'
 import { useAuth } from '@/hooks/useAuth'
 import { formatDateTime, formatWhen } from '@/lib/format'
 import { EmptyState, PageHeader } from '@/components/organisms/PageHeader'
+import { ShareMessageSheet } from '@/components/organisms/messages/ShareMessageSheet'
 
 type Filter = 'Pending' | 'Done' | 'All'
 
@@ -75,6 +77,9 @@ function matches(message: CallMessage, filter: Filter) {
 function MessageCard({ message, canDelete }: { message: CallMessage; canDelete: boolean }) {
   const update = useUpdateMessage()
   const remove = useDeleteMessage()
+  const share = useShareMessage()
+  const baseUrl = usePublicUrl()
+  const [sharing, setSharing] = useState(false)
   const setStatus = (status: CallMessageStatus) => update.mutate({ id: message.id, status })
   const unread = message.status === 'New'
 
@@ -129,6 +134,9 @@ function MessageCard({ message, canDelete }: { message: CallMessage; canDelete: 
             Marcar como no leído
           </ActionButton>
         )}
+        <ActionButton onClick={() => setSharing(true)} disabled={false}>
+          Compartir
+        </ActionButton>
         {canDelete && (
           <button
             type="button"
@@ -140,6 +148,26 @@ function MessageCard({ message, canDelete }: { message: CallMessage; canDelete: 
           </button>
         )}
       </footer>
+
+      {/* Portal: la animación de la página aplica transform y rompería el position: fixed. */}
+      {createPortal(
+        <AnimatePresence>
+          {sharing && (
+            <ShareMessageSheet
+              message={message}
+              baseUrl={baseUrl}
+              share={share.data}
+              generating={share.isPending}
+              onGenerate={(expiresInHours) => share.mutate({ id: message.id, expiresInHours })}
+              onClose={() => {
+                setSharing(false)
+                share.reset()
+              }}
+            />
+          )}
+        </AnimatePresence>,
+        document.body,
+      )}
     </article>
   )
 }

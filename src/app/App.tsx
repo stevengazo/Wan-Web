@@ -23,6 +23,7 @@ const MessagesPage = lazy(() => import('@/pages/MessagesPage').then((m) => ({ de
 const KnowledgePage = lazy(() => import('@/pages/KnowledgePage').then((m) => ({ default: m.KnowledgePage })))
 const KnowledgeBasePage = lazy(() => import('@/pages/KnowledgeBasePage').then((m) => ({ default: m.KnowledgeBasePage })))
 const ToolsPage = lazy(() => import('@/pages/ToolsPage').then((m) => ({ default: m.ToolsPage })))
+const PublicMessagePage = lazy(() => import('@/pages/PublicMessagePage').then((m) => ({ default: m.PublicMessagePage })))
 const PhonePage = lazy(() => import('@/pages/PhonePage').then((m) => ({ default: m.PhonePage })))
 const UsersPage = lazy(() => import('@/pages/UsersPage').then((m) => ({ default: m.UsersPage })))
 const RecordingsPage = lazy(() => import('@/pages/RecordingsPage').then((m) => ({ default: m.RecordingsPage })))
@@ -30,6 +31,15 @@ const RecordingsPage = lazy(() => import('@/pages/RecordingsPage').then((m) => (
 const router = createBrowserRouter([
   { path: '/login', element: <LoginPage /> },
   { path: '/registro', element: <RegisterPage /> },
+  {
+    // Enlace público de un recado (WhatsApp): sin sesión.
+    path: '/r/:token',
+    element: (
+      <Suspense fallback={<div className="min-h-dvh" />}>
+        <PublicMessagePage />
+      </Suspense>
+    ),
+  },
   {
     element: (
       <RequireAuth>

@@ -38,3 +38,32 @@ export function useDeleteMessage() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: keys.messages }),
   })
 }
+
+export interface MessageShare {
+  /** Va en la ruta pública /r/{token}. */
+  token: string
+  expiresAt: string
+}
+
+/** Genera un enlace público con vencimiento para leer y escuchar el recado sin iniciar sesión. */
+export function useShareMessage() {
+  return useMutation({
+    mutationFn: ({ id, expiresInHours }: { id: string; expiresInHours: number }) =>
+      api<MessageShare>(`/messages/${id}/share`, { method: 'POST', body: { expiresInHours } }),
+  })
+}
+
+/** Recado tal como lo ve quien abre el enlace público. */
+export interface PublicMessage {
+  recipient: string
+  callerName: string | null
+  callbackNumber: string | null
+  body: string
+  urgent: boolean
+  createdAt: string
+  expiresAt: string
+  hasAudio: boolean
+}
+
+export const usePublicMessage = (token: string) =>
+  useQuery({ queryKey: ['public-message', token], queryFn: () => api<PublicMessage>(`/public/messages/${encodeURIComponent(token)}`) })
