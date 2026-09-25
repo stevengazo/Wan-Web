@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { useCreateMcpToken, useMcpTokens, useRevokeMcpToken } from '@/services/api/queries'
+import { useCreateMcpToken, useMcpTokens, useRevokeMcpToken } from '@/services/api'
 import { Button } from '@/components/atoms/Button'
 import { TextField } from '@/components/molecules/Field'
 import { FormSection, FormSections } from '@/components/organisms/FormSection'

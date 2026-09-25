@@ -1,7 +1,7 @@
 import { motion } from 'motion/react'
 import { createPortal } from 'react-dom'
 import { Link } from 'react-router'
-import { useExtensions } from '@/services/api/queries'
+import { useExtensions } from '@/services/api'
 import { useAuth } from '@/hooks/useAuth'
 import { ChevronRightIcon, PlusIcon } from '@/components/atoms/icons'
 

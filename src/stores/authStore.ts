@@ -1,4 +1,4 @@
-import type { User } from '@/services/api/types'
+import type { User } from '@/services/api'
 
 export interface Session {
   accessToken: string

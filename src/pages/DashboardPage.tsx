@@ -1,5 +1,5 @@
 import { Link } from 'react-router'
-import { useExtensions } from '@/services/api/queries'
+import { useExtensions } from '@/services/api'
 import { useAuth } from '@/hooks/useAuth'
 
 export function DashboardPage() {

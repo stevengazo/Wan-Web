@@ -1,0 +1,13 @@
+// Punto de entrada de la API: tipos y hooks de TanStack Query por dominio.
+// Los tipos reflejan los DTOs de backend/src/Mapache.Api/Controllers: mantenerlos sincronizados.
+export * from '@/services/api/auth'
+export * from '@/services/api/extensions'
+export * from '@/services/api/ai'
+export * from '@/services/api/directory'
+export * from '@/services/api/forms'
+export * from '@/services/api/messages'
+export * from '@/services/api/recordings'
+export * from '@/services/api/settings'
+export * from '@/services/api/knowledge'
+export * from '@/services/api/tools'
+export { ApiError, api } from '@/services/api/client'

@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react'
 import { api } from '@/services/api/client'
-import type { LoginResponse, User } from '@/services/api/types'
+import type { LoginResponse, User } from '@/services/api'
 import { authStore } from '@/stores/authStore'
 
 export function useAuth() {

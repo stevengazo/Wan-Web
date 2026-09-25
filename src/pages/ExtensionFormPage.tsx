@@ -3,7 +3,7 @@ import { useState, type FormEvent } from 'react'
 import { createPortal } from 'react-dom'
 import { Link, useNavigate, useParams } from 'react-router'
 import { ApiError } from '@/services/api/client'
-import { useDeleteExtension, useExtension, useSaveExtension } from '@/services/api/queries'
+import { useDeleteExtension, useExtension, useSaveExtension } from '@/services/api'
 import {
   supportedCodecs,
   type AnswerMode,
@@ -12,7 +12,7 @@ import {
   type ExtensionInput,
   type MediaEncryption,
   type SipTransport,
-} from '@/services/api/types'
+} from '@/services/api'
 import { Button } from '@/components/atoms/Button'
 import { ConfirmSheet } from '@/components/molecules/ConfirmSheet'
 import { SelectField, TextField } from '@/components/molecules/Field'

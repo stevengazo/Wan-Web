@@ -1,0 +1,22 @@
+/** Claves de TanStack Query de todos los dominios: un solo lugar para invalidar sin chocar. */
+export const keys = {
+  extensions: ['extensions'] as const,
+  extension: (id: string) => ['extensions', id] as const,
+  llmSettings: ['llm-settings'] as const,
+  directory: ['directory'] as const,
+  forms: ['forms'] as const,
+  form: (id: string) => ['forms', id] as const,
+  submissions: (formId: string) => ['forms', formId, 'submissions'] as const,
+  messages: ['messages'] as const,
+  recordings: ['recordings'] as const,
+  callSettings: ['call-settings'] as const,
+  formActions: (formId: string) => ['forms', formId, 'actions'] as const,
+  smtp: ['smtp'] as const,
+  knowledge: ['knowledge'] as const,
+  httpTools: ['http-tools'] as const,
+  mcpServers: ['mcp-servers'] as const,
+  mcpTokens: ['mcp-tokens'] as const,
+  knowledgeBase: (id: string) => ['knowledge', id] as const,
+  knowledgeDocuments: (id: string) => ['knowledge', id, 'documents'] as const,
+  directoryEntry: (id: string) => ['directory', id] as const,
+}

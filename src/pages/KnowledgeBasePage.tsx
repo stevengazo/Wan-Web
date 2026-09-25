@@ -10,8 +10,8 @@ import {
   useKnowledgeDocuments,
   useSaveKnowledgeBase,
   useUploadDocuments,
-} from '@/services/api/queries'
-import type { KnowledgeBase } from '@/services/api/types'
+} from '@/services/api'
+import type { KnowledgeBase } from '@/services/api'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/atoms/Button'
 import { ConfirmSheet } from '@/components/molecules/ConfirmSheet'

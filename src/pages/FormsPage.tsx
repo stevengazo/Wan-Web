@@ -1,6 +1,6 @@
 import { motion } from 'motion/react'
 import { Link } from 'react-router'
-import { useForms } from '@/services/api/queries'
+import { useForms } from '@/services/api'
 import { useAuth } from '@/hooks/useAuth'
 import { ChevronRightIcon, SparklesIcon } from '@/components/atoms/icons'
 import { CreateButton, EmptyState, PageHeader } from '@/components/organisms/PageHeader'

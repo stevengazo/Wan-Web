@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { useSearchKnowledge } from '@/services/api/queries'
+import { useSearchKnowledge } from '@/services/api'
 import { Button } from '@/components/atoms/Button'
 import { SearchIcon } from '@/components/atoms/icons'
 

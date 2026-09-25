@@ -1,4 +1,4 @@
-import type { FormActionType } from '@/services/api/types'
+import type { FormActionType } from '@/services/api'
 
 export const actionTypeLabels: Record<FormActionType, string> = {
   Webhook: 'Webhook',
