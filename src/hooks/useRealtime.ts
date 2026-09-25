@@ -2,7 +2,7 @@ import { HubConnectionBuilder, HubConnectionState, LogLevel } from '@microsoft/s
 import { useQueryClient } from '@tanstack/react-query'
 import { useEffect, useRef, useState } from 'react'
 import { keys } from '@/services/api/keys'
-import { authStore } from '@/stores/authStore'
+import { clientHeader } from '@/services/api/client'
 
 export type RealtimeStatus = 'connecting' | 'connected' | 'reconnecting' | 'disconnected'
 
@@ -50,7 +50,8 @@ export function useRealtime(handlers: RealtimeHandlers = {}) {
 
   useEffect(() => {
     const connection = new HubConnectionBuilder()
-      .withUrl('/hubs/events', { accessTokenFactory: () => authStore.get()?.accessToken ?? '' })
+      // La cookie de sesión va sola; el header es para el negotiate (POST).
+      .withUrl('/hubs/events', { headers: clientHeader })
       .withAutomaticReconnect()
       .configureLogging(LogLevel.Warning)
       .build()

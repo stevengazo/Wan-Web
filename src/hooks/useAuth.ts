@@ -8,8 +8,8 @@ export type LoginResult = { mfaToken: string } | null
 
 function storeSession(response: LoginResponse): LoginResult {
   if (response.mfaRequired && response.mfaToken) return { mfaToken: response.mfaToken }
-  if (!response.accessToken || !response.expiresAt || !response.user) throw new ApiError(0, 'Respuesta inesperada del servidor')
-  authStore.set({ accessToken: response.accessToken, expiresAt: response.expiresAt, user: response.user })
+  if (!response.expiresAt || !response.user) throw new ApiError(0, 'Respuesta inesperada del servidor')
+  authStore.set({ expiresAt: response.expiresAt, user: response.user })
   return null
 }
 
@@ -33,11 +33,9 @@ export function useAuth() {
       const { url } = await startExternalLogin(provider, mode)
       window.location.assign(url)
     },
-    /** Token que dejó la API en el fragmento de /login/sso. */
-    async acceptExternalToken(accessToken: string, expiresAt: string) {
-      const response = await fetch('/api/auth/me', { headers: { Accept: 'application/json', Authorization: `Bearer ${accessToken}` } })
-      if (!response.ok) throw new ApiError(response.status, 'No se pudo completar el inicio de sesión')
-      authStore.set({ accessToken, expiresAt, user: (await response.json()) as User })
+    /** Vuelta de /login/sso: la API ya dejó la cookie de sesión; falta saber quién es. */
+    async acceptExternalLogin() {
+      storeSession(await api<LoginResponse>('/auth/session'))
     },
     /** Relee el usuario (p. ej. al activar el doble factor o definir la contraseña). */
     async refreshUser() {
@@ -52,6 +50,9 @@ export function useAuth() {
     },
     changePassword: (currentPassword: string | null, newPassword: string) =>
       api<void>('/auth/password', { method: 'POST', body: { currentPassword, newPassword } }),
-    logout: () => authStore.set(null),
+    logout() {
+      authStore.set(null)
+      void api<void>('/auth/logout', { method: 'POST' }).catch(() => undefined)
+    },
   }
 }

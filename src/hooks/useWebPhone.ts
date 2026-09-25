@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { authStore } from '@/stores/authStore'
 
 export type PhoneState = 'idle' | 'connecting' | 'calling' | 'ringing' | 'answered' | 'ended'
 
@@ -96,7 +95,8 @@ export function useWebPhone(): WebPhone {
         return
       }
 
-      const params = new URLSearchParams({ ...query, access_token: authStore.get()?.accessToken ?? '' })
+      // El navegador manda la cookie de sesión en el handshake.
+      const params = new URLSearchParams(query)
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
       const socket = new WebSocket(`${protocol}//${window.location.host}/hubs/phone?${params}`)
       socket.binaryType = 'arraybuffer'

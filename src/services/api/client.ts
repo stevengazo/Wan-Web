@@ -18,12 +18,14 @@ interface ProblemDetails {
   errors?: Record<string, string[]>
 }
 
+/** Anti-CSRF: sin él, la API ignora la cookie de sesión en POST, PUT y DELETE. */
+export const clientHeader = { 'X-Mapache-Client': '1' }
+
 export async function api<T>(path: string, init: { method?: string; body?: unknown } = {}): Promise<T> {
   // FormData va tal cual: el navegador pone el Content-Type multipart con su boundary.
   const isForm = init.body instanceof FormData
-  const headers: Record<string, string> = { Accept: 'application/json' }
-  const token = authStore.get()?.accessToken
-  if (token) headers.Authorization = `Bearer ${token}`
+  // La sesión viaja en la cookie HttpOnly; este header es el anti-CSRF que la API exige para usarla al escribir.
+  const headers: Record<string, string> = { Accept: 'application/json', ...clientHeader }
   if (init.body !== undefined && !isForm) headers['Content-Type'] = 'application/json'
 
   let response: Response
@@ -37,7 +39,7 @@ export async function api<T>(path: string, init: { method?: string; body?: unkno
     throw new ApiError(0, 'No se pudo conectar con el servidor')
   }
 
-  if (response.status === 401 && token) {
+  if (response.status === 401 && authStore.get()) {
     // Token vencido o revocado: cerrar sesión lleva al login vía RequireAuth.
     authStore.set(null)
   }

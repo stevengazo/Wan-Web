@@ -6,7 +6,7 @@
 flowchart LR
     P["📄 Página"] -- "useUsers()<br/>useCreateUser()" --> H["🪝 services/api/users.ts"]
     H -- "api('/users')" --> C["client.ts"]
-    C -- "fetch + Bearer JWT" --> API["🦝 /api"]
+    C -- "fetch + cookie de sesión" --> API["🦝 /api"]
     C -- "401" --> S["authStore.set(null)<br/>→ login"]
     H <--> Q[("Caché<br/>TanStack Query")]
 ```
@@ -15,7 +15,7 @@ flowchart LR
 
 `api<T>(path, { method, body })`:
 
-- Antepone `/api` y agrega `Authorization: Bearer <jwt>` si hay sesión.
+- Antepone `/api` y agrega el header `X-Mapache-Client: 1` (anti-CSRF). La sesión va sola en la cookie HttpOnly `mapache_session`.
 - Serializa el body a JSON; un `FormData` se envía tal cual (multipart).
 - **401 con sesión:** cierra la sesión y `RequireAuth` lleva al login.
 - **Errores:** lanza `ApiError` con `status`, `message` (el `title` del ProblemDetails) y `fieldErrors` por campo en camelCase.
@@ -94,6 +94,8 @@ declare module '@tanstack/react-query' {
 
 ## Sesión (`stores/authStore.ts`)
 
-- Guarda `{accessToken, expiresAt, user}` en `localStorage` (`mapache.session`).
+- Guarda `{expiresAt, user}` en `localStorage` (`mapache.user`) para pintar el panel sin esperar a la API. **No guarda el JWT**: vive en una cookie HttpOnly que JavaScript no puede leer.
+- Si la cookie venció, la primera llamada devuelve 401 y el store se limpia (vuelve al login).
+- Al cargar borra `mapache.session`, donde versiones anteriores guardaban el JWT.
 - Al leer, descarta una sesión vencida.
-- `useAuth()` expone el usuario, `isAdmin`, `login` y `logout`, y se suscribe a los cambios del store.
+- `useAuth()` expone el usuario, `isAdmin`, `login` y `logout` (que también borra la cookie con `POST /auth/logout`), y se suscribe a los cambios del store.

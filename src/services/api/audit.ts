@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { api } from '@/services/api/client'
 import { keys } from '@/services/api/keys'
-import { authStore } from '@/stores/authStore'
 
 export interface AuditEvent {
   id: string
@@ -38,11 +37,9 @@ export const useAuditEvents = (filter: AuditFilter) =>
     placeholderData: (previous) => previous,
   })
 
-/** Descarga el CSV con el mismo filtro (con el JWT: un enlace directo no lo mandaría). */
+/** Descarga el CSV con el mismo filtro (la cookie de sesión va sola). */
 export async function downloadAuditCsv(filter: AuditFilter) {
-  const response = await fetch(`/api/audit?${query(filter, 'csv')}`, {
-    headers: { Authorization: `Bearer ${authStore.get()?.accessToken ?? ''}` },
-  })
+  const response = await fetch(`/api/audit?${query(filter, 'csv')}`)
   if (!response.ok) throw new Error('No se pudo exportar')
   const url = URL.createObjectURL(await response.blob())
   const link = document.createElement('a')

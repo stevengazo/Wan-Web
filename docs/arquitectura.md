@@ -78,7 +78,7 @@ src/
 │   └── theme.ts             # Preferencia claro/oscuro/sistema
 ├── pages/                   # Una por ruta
 ├── services/api/            # Un archivo por dominio + client.ts + keys.ts
-└── stores/authStore.ts      # Sesión en localStorage
+└── stores/authStore.ts      # Usuario logueado (el JWT vive en una cookie HttpOnly)
 ```
 
 ## Rutas

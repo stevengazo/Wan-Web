@@ -1,7 +1,6 @@
 import { AnimatePresence, motion } from 'motion/react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router'
-import { authStore } from '@/stores/authStore'
 import { api } from '@/services/api/client'
 import { useCallSettings, useDeleteRecording, useRecordings } from '@/services/api'
 import type { Recording } from '@/services/api'
@@ -61,8 +60,8 @@ function RecordingRow({ recording, canDelete }: { recording: Recording; canDelet
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // El <audio> no puede mandar el JWT: en la nube se usa el enlace firmado; en disco, el archivo se baja con
-  // fetch y se reproduce desde un blob local.
+  // En la nube sin cifrado se usa el enlace firmado; si no, la API sirve el audio (con rangos) y la cookie de
+  // sesión viaja sola.
   const load = async () => {
     setLoading(true)
     setError(null)
@@ -73,21 +72,13 @@ function RecordingRow({ recording, canDelete }: { recording: Recording; canDelet
         return
       }
 
-      const response = await fetch(`/api/recordings/${recording.id}/audio`, {
-        headers: { Authorization: `Bearer ${authStore.get()?.accessToken ?? ''}` },
-      })
-      if (!response.ok) throw new Error()
-      setSrc(URL.createObjectURL(await response.blob()))
+      setSrc(`/api/recordings/${recording.id}/audio`)
     } catch {
       setError('No se pudo cargar el audio')
     } finally {
       setLoading(false)
     }
   }
-
-  useEffect(() => () => {
-    if (src?.startsWith('blob:')) URL.revokeObjectURL(src)
-  }, [src])
 
   return (
     <div className="px-4 py-4">
@@ -134,7 +125,7 @@ function RecordingRow({ recording, canDelete }: { recording: Recording; canDelet
         </div>
       </div>
       {error && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{error}</p>}
-      {src && <audio controls autoPlay src={src} className="mt-3 w-full" />}
+      {src && <audio controls autoPlay src={src} onError={() => setError('No se pudo cargar el audio')} className="mt-3 w-full" />}
     </div>
   )
 }

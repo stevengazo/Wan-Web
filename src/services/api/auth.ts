@@ -10,9 +10,8 @@ export interface User {
   hasPassword: boolean
 }
 
-/** Con doble factor, el primer paso trae solo `mfaToken` para canjearlo con el código. */
+/** El JWT llega en una cookie HttpOnly. Con doble factor, el primer paso trae solo `mfaToken` para canjearlo con el código. */
 export interface LoginResponse {
-  accessToken: string | null
   expiresAt: string | null
   user: User | null
   mfaRequired: boolean
