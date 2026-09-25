@@ -1,4 +1,4 @@
-import { useId, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes } from 'react'
+import { useId, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from 'react'
 
 const controlClass =
   'block min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-base text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:outline-2 focus:outline-indigo-500/30 aria-invalid:border-red-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500'
@@ -61,6 +61,19 @@ export function SelectField({
           {children}
         </select>
       )}
+    </Field>
+  )
+}
+
+export function TextAreaField({
+  label,
+  error,
+  hint,
+  ...props
+}: { label: string; error?: string; hint?: string } & TextareaHTMLAttributes<HTMLTextAreaElement>) {
+  return (
+    <Field label={label} error={error} hint={hint}>
+      {({ className, ...control }) => <textarea {...props} {...control} className={`${className} py-2.5`} />}
     </Field>
   )
 }

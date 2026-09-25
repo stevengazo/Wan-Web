@@ -3,10 +3,10 @@ import { useState, type FormEvent } from 'react'
 import { createPortal } from 'react-dom'
 import { Link, useNavigate, useParams } from 'react-router'
 import { ApiError } from '../api/client'
-import { useDeleteExtension, useExtension, useSaveExtension } from '../api/queries'
-import type { AnswerMode, Extension, ExtensionInput, SipTransport } from '../api/types'
+import { useDeleteExtension, useExtension, useLlmProviders, useSaveExtension } from '../api/queries'
+import type { AnswerMode, Extension, ExtensionInput, LlmProvider, SipTransport } from '../api/types'
 import { Button } from '../ui/Button'
-import { SelectField, TextField } from '../ui/Field'
+import { SelectField, TextAreaField, TextField } from '../ui/Field'
 import { ChevronLeftIcon, ChevronRightIcon } from '../ui/icons'
 import { Switch } from '../ui/Switch'
 
@@ -41,6 +41,11 @@ function ExtensionForm({ extension }: { extension?: Extension }) {
   const [confirmingDelete, setConfirmingDelete] = useState(false)
   const [form, setForm] = useState<ExtensionInput>(() => toInput(extension))
   const [showAdvanced, setShowAdvanced] = useState(() => hasAdvancedValues(extension))
+
+  const llmProviders = useLlmProviders()
+  const providerInfo = (provider: LlmProvider) => llmProviders.data?.find((p) => p.provider === provider)
+  const defaultProvider = llmProviders.data?.find((p) => p.isDefault)
+  const selectedProvider = form.llmProvider ? providerInfo(form.llmProvider) : defaultProvider
 
   const fieldErrors = save.error instanceof ApiError ? save.error.fieldErrors : {}
   const advancedOpen = showAdvanced || advancedFields.some((field) => fieldErrors[field])
@@ -127,6 +132,50 @@ function ExtensionForm({ extension }: { extension?: Extension }) {
           </option>
         ))}
       </SelectField>
+
+      {form.answerMode !== 'Human' && (
+        <fieldset className="space-y-5 rounded-2xl border border-slate-200 p-4 dark:border-slate-800">
+          <legend className="px-1 text-sm font-medium text-slate-700 dark:text-slate-300">Inteligencia artificial</legend>
+          <SelectField
+            label="Proveedor"
+            value={form.llmProvider ?? ''}
+            onChange={(e) => set('llmProvider', (e.target.value || null) as LlmProvider | null)}
+            error={fieldErrors.llmProvider?.[0]}
+          >
+            <option value="">Por defecto{defaultProvider ? ` (${llmProviderLabels[defaultProvider.provider]})` : ''}</option>
+            {(Object.keys(llmProviderLabels) as LlmProvider[]).map((provider) => (
+              <option key={provider} value={provider}>
+                {llmProviderLabels[provider]}
+                {providerInfo(provider)?.configured === false ? ' — sin API key' : ''}
+              </option>
+            ))}
+          </SelectField>
+          {selectedProvider?.configured === false && (
+            <p className="-mt-3 text-sm text-amber-700 dark:text-amber-400">
+              El servidor no tiene API key de {llmProviderLabels[selectedProvider.provider]}: las llamadas de esta cuenta fallarán.
+            </p>
+          )}
+          <TextField
+            label="Modelo"
+            placeholder={selectedProvider?.defaultModel || 'Modelo por defecto'}
+            autoCapitalize="off"
+            spellCheck={false}
+            value={form.llmModel ?? ''}
+            onChange={(e) => set('llmModel', e.target.value)}
+            hint="Vacío usa el modelo por defecto del proveedor."
+            error={fieldErrors.llmModel?.[0]}
+          />
+          <TextAreaField
+            label="Instrucciones"
+            rows={5}
+            placeholder="Eres la recepcionista de…"
+            value={form.systemPrompt ?? ''}
+            onChange={(e) => set('systemPrompt', e.target.value)}
+            hint="Cómo debe comportarse el bot en esta cuenta. Vacío usa las del agente de ElevenLabs."
+            error={fieldErrors.systemPrompt?.[0]}
+          />
+        </fieldset>
+      )}
 
       <div className="rounded-2xl border border-slate-200 dark:border-slate-800">
         <button
@@ -290,6 +339,12 @@ const answerModeLabels: Record<AnswerMode, string> = {
   BotWithHandoff: 'El bot, con paso a una persona',
 }
 
+const llmProviderLabels: Record<LlmProvider, string> = {
+  OpenAi: 'OpenAI',
+  Gemini: 'Gemini',
+  Anthropic: 'Claude',
+}
+
 const advancedFields = [
   'sipDomain',
   'authUsername',
@@ -317,6 +372,9 @@ function toInput(extension?: Extension): ExtensionInput {
     registerExpirySeconds: extension?.registerExpirySeconds ?? 300,
     keepAliveSeconds: extension?.keepAliveSeconds ?? 15,
     answerMode: extension?.answerMode ?? 'Bot',
+    llmProvider: extension?.llmProvider ?? null,
+    llmModel: extension?.llmModel ?? null,
+    systemPrompt: extension?.systemPrompt ?? null,
     enabled: extension?.enabled ?? true,
   }
 }
