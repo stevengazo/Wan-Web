@@ -5,6 +5,7 @@ export const keys = {
   extensionStatuses: ['extension-status'] as const,
   calls: ['calls'] as const,
   campaigns: ['campaigns'] as const,
+  analytics: ['analytics'] as const,
   campaign: (id: string) => ['campaigns', id] as const,
   campaignContacts: (id: string) => ['campaigns', id, 'contacts'] as const,
   llmSettings: ['llm-settings'] as const,

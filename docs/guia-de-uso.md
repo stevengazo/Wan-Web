@@ -126,6 +126,16 @@ Desactivar una base la saca del bot sin borrarla.
 - **Peticiones a sistemas externos:** el bot consulta tu ERP o CRM. Defines la URL con `{{parametros}}`, los headers (cifrados) y qué datos debe pedir. **Probar** ejecuta la petición con valores de ejemplo.
 - **Servidores MCP:** pega la URL de un servidor MCP. Mapache lee sus herramientas y eliges con toggles cuáles puede usar el bot.
 
+## 📊 Analítica
+
+Elige el período (7, 30 o 90 días) y, si quieres, una extensión:
+
+- **Indicadores:** llamadas (entrantes y salientes), porcentaje atendido, duración promedio y minutos hablados, derivadas a una persona, recados, formularios, fallidas y **resueltas por el bot** (atendidas sin pasar a una persona).
+- **Llamadas por día** y **cuándo llaman**: mapa de calor por día de la semana y hora, útil para decidir el horario de atención.
+- **Por extensión**, **cómo terminan** las llamadas y **resultados de campañas**.
+
+Todo se calcula en la zona horaria del navegador y se actualiza solo con cada llamada.
+
 ## 📣 Campañas
 
 El bot llama a una lista de contactos con un guion.

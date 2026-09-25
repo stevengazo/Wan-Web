@@ -9,6 +9,7 @@ import { RealtimeIndicator } from '@/components/molecules/RealtimeIndicator'
 import { useRealtime } from '@/hooks/useRealtime'
 import {
   BookIcon,
+  ChartIcon,
   ClipboardIcon,
   DatabaseIcon,
   HomeIcon,
@@ -48,6 +49,7 @@ const allNav: NavItem[] = [
   { to: '/', label: 'Inicio', icon: <HomeIcon />, end: true, primary: true },
   { to: '/recados', label: 'Recados', icon: <InboxIcon />, primary: true },
   { to: '/formularios', label: 'Formularios', icon: <ClipboardIcon />, primary: true },
+  { to: '/analitica', label: 'Analítica', icon: <ChartIcon /> },
   { to: '/campanas', label: 'Campañas', icon: <MegaphoneIcon /> },
   { to: '/grabaciones', label: 'Grabaciones', icon: <MicIcon /> },
   { to: '/conocimiento', label: 'Conocimiento', icon: <DatabaseIcon /> },

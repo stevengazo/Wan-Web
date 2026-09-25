@@ -66,6 +66,7 @@ export function useRealtime(handlers: RealtimeHandlers = {}) {
     connection.on('CallsChanged', () => {
       queryClient.invalidateQueries({ queryKey: keys.extensionStatuses })
       queryClient.invalidateQueries({ queryKey: keys.calls })
+      queryClient.invalidateQueries({ queryKey: keys.analytics })
     })
 
     connection.on('Notify', (n: PanelNotification) => handlersRef.current.onNotify?.(n))
