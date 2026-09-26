@@ -1,10 +1,10 @@
 # 📚 Documentación del panel
 
-Documentación del frontend de Mapache. Para una vista general, empieza por el [README](../README.md).
+Documentación del frontend de Wan. Para una vista general, empieza por el [README](../README.md).
 
 | Guía | Para quién | Contenido |
 |------|------------|-----------|
-| [Guía de uso](guia-de-uso.md) | Quien administra Mapache | Cada pantalla, qué hace y cómo se configura |
+| [Guía de uso](guia-de-uso.md) | Quien administra Wan | Cada pantalla, qué hace y cómo se configura |
 | [Arquitectura](arquitectura.md) | Quien desarrolla | Atomic design, principios SOLID, carpetas y rutas |
 | [Datos y API](datos.md) | Quien desarrolla | Cliente HTTP, hooks de TanStack Query, errores y alertas |
 | [Tiempo real](tiempo-real.md) | Quien desarrolla | SignalR y refresco automático de datos |

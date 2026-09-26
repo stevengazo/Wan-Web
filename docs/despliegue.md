@@ -41,7 +41,7 @@ flowchart LR
     L --> X["🏗️ Buildx<br/>amd64 + arm64"]
     X --> Q{"¿PR?"}
     Q -- "sí" --> N["Solo compila"]
-    Q -- "no" --> G["📦 ghcr.io/&lt;usuario&gt;/mapache-frontend"]
+    Q -- "no" --> G["📦 ghcr.io/&lt;usuario&gt;/wan-frontend"]
     Q -- "no + secretos" --> H["📦 Docker Hub"]
 ```
 
@@ -64,8 +64,8 @@ git tag v1.0.0 && git push origin v1.0.0
 ## Correr la imagen
 
 ```bash
-docker run -d --name mapache-frontend --network <red-de-la-api> -p 8080:80 \
-  ghcr.io/<usuario>/mapache-frontend:latest
+docker run -d --name wan-frontend --network <red-de-la-api> -p 8080:80 \
+  ghcr.io/<usuario>/wan-frontend:latest
 ```
 
 El `docker-compose.yml` completo con la API y Postgres está en la [guía de despliegue del backend](../../backend/docs/despliegue.md#docker-compose-con-imágenes-publicadas).

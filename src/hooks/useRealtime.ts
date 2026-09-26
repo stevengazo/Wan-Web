@@ -36,7 +36,7 @@ export interface RealtimeHandlers {
 }
 
 /**
- * Conexión al hub de eventos (backend/src/Mapache.Api/Realtime/EventsHub.cs). Cada evento invalida
+ * Conexión al hub de eventos (backend/src/Wan.Api/Realtime/EventsHub.cs). Cada evento invalida
  * las queries afectadas para que TanStack Query las vuelva a pedir.
  */
 export function useRealtime(handlers: RealtimeHandlers = {}) {

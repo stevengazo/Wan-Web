@@ -26,7 +26,7 @@ Sigue el lenguaje de [savegresoft.com](https://savegresoft.com), con violeta en 
 | Esquinas | Rectas: `--radius-*` vale 0, así `rounded-lg` o `rounded-xl` no redondean. Solo `rounded-full` para puntos, avatares y switches. |
 | Botones | Mayúsculas, `text-xs font-semibold tracking-[0.2em]`. Principal violeta sólido; secundario con borde fino. |
 | Etiquetas de sección | Utilidad `eyebrow` (10 px, mayúsculas, espaciado 0,25em) con una línea `h-px w-6 bg-brand-500` delante. |
-| Logo | Onda en un cuadrado violeta y "Mapache" en serif con punto violeta. |
+| Logo | Onda en un cuadrado violeta y "Wan" en serif con punto violeta. |
 
 | Token | Valor |
 |-------|-------|
@@ -48,14 +48,14 @@ Las fuentes se empaquetan con la app: no se piden a Google Fonts en tiempo de ej
 
 ```mermaid
 flowchart LR
-    I["index.html<br/>script inline"] -- "antes del primer pintado" --> C{"mapache.theme"}
+    I["index.html<br/>script inline"] -- "antes del primer pintado" --> C{"wan.theme"}
     C -- "light" --> L["sin .dark"]
     C -- "dark" --> D["html.dark"]
     C -- "vacío" --> S["prefers-color-scheme"]
 ```
 
 - El modo oscuro es por clase: `.dark` en `<html>`.
-- `lib/theme.ts` guarda la preferencia (`light`, `dark` o ninguna = sistema) en `localStorage` bajo `mapache.theme`.
+- `lib/theme.ts` guarda la preferencia (`light`, `dark` o ninguna = sistema) en `localStorage` bajo `wan.theme`.
 - El script inline de `index.html` aplica el tema **antes** de que React cargue, así no hay parpadeo. Si cambia la clave de storage, cámbiala en los dos lugares.
 - Con "sistema", el tema sigue los cambios del sistema operativo en vivo.
 

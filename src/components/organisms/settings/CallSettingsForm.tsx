@@ -37,7 +37,7 @@ export function CallSettingsForm({ settings }: { settings: CallSettings }) {
       <FormSections>
         <FormSection
           title="Grabación"
-          description="Con OpenAI y Deepgram graba Mapache (voz de quien llama, del bot y del operador). Con ElevenLabs se guarda el audio que envía al terminar (webhook con audio)."
+          description="Con OpenAI y Deepgram graba Wan (voz de quien llama, del bot y del operador). Con ElevenLabs se guarda el audio que envía al terminar (webhook con audio)."
         >
           <Switch label="Grabar llamadas" description="Aplica a todas las cuentas." checked={recordCalls} onChange={setRecordCalls} />
           <TextAreaField

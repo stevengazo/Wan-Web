@@ -7,7 +7,7 @@ export function ToolsPage() {
     <div>
       <PageHeader
         title="Herramientas"
-        subtitle="Lo que el bot puede consultar o hacer durante la llamada. Mapache las ejecuta y le devuelve el resultado al instante."
+        subtitle="Lo que el bot puede consultar o hacer durante la llamada. Wan las ejecuta y le devuelve el resultado al instante."
       />
 
       <section className="mt-10">

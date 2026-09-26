@@ -7,7 +7,7 @@ import { usePhone } from '@/hooks/usePhone'
 import { usePhoneLines } from '@/hooks/usePhoneLines'
 import { useCalls, useDirectory } from '@/services/api'
 
-const LINE_KEY = 'mapache.phone-line'
+const LINE_KEY = 'wan.phone-line'
 
 /** Contenedor: marcador a la izquierda, historial y contactos a la derecha. */
 export function PhonePage() {

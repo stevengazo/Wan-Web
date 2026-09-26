@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
-const STORAGE_KEY = 'mapache.sidebar-collapsed'
+const STORAGE_KEY = 'wan.sidebar-collapsed'
 
 function read() {
   try {

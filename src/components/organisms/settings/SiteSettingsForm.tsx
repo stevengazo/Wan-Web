@@ -25,13 +25,13 @@ export function SiteSettingsForm({ settings }: { settings: SiteSettings }) {
       <FormSections>
         <FormSection
           title="URL pública"
-          description="Con la que se llega a Mapache desde internet. Se usa en las URLs que se copian para ElevenLabs (Custom LLM, tools, webhook) y para los clientes MCP."
+          description="Con la que se llega a Wan desde internet. Se usa en las URLs que se copian para ElevenLabs (Custom LLM, tools, webhook) y para los clientes MCP."
         >
           <TextField
             label="URL"
             type="url"
             inputMode="url"
-            placeholder={settings.environmentUrl ?? 'https://mapache.miempresa.com'}
+            placeholder={settings.environmentUrl ?? 'https://wan.miempresa.com'}
             value={publicUrl}
             onChange={(e) => setPublicUrl(e.target.value)}
             hint={hint}

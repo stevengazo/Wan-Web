@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🦝 Mapache — Panel
+# 🦝 Wan — Panel
 
 **El panel web del bot telefónico con IA.**
 Configura extensiones SIP, el modelo de IA y la voz, y revisa en vivo las llamadas, los recados y los formularios.
@@ -18,7 +18,7 @@ Configura extensiones SIP, el modelo de IA y la voz, y revisa en vivo las llamad
 
 <br />
 
-<img src="docs/img/login.png" alt="Pantalla de inicio de sesión de Mapache" width="860" />
+<img src="docs/img/login.png" alt="Pantalla de inicio de sesión de Wan" width="860" />
 
 </div>
 
@@ -163,11 +163,11 @@ El workflow de [GitHub Actions](.github/workflows/docker.yml) corre lint y build
 | tag `v1.2.3` | `1.2.3`, `1.2`, `1`, `latest` |
 | pull request | se compila, no se publica |
 
-La imagen se publica en `ghcr.io/<usuario>/mapache-frontend`, y en Docker Hub si el repositorio tiene los secretos `DOCKERHUB_USERNAME` y `DOCKERHUB_TOKEN`. nginx hace proxy a `http://api:8080`, así que el servicio de la API debe llamarse `api`.
+La imagen se publica en `ghcr.io/<usuario>/wan-frontend`, y en Docker Hub si el repositorio tiene los secretos `DOCKERHUB_USERNAME` y `DOCKERHUB_TOKEN`. nginx hace proxy a `http://api:8080`, así que el servicio de la API debe llamarse `api`.
 
 ## 🤝 Contribuir
 
-Mapache es **open source**. Los issues y pull requests son bienvenidos:
+Wan es **open source**. Los issues y pull requests son bienvenidos:
 
 1. Haz un fork y crea una rama.
 2. Respeta atomic design, mobile first y el tema oscuro ([docs/desarrollo.md](docs/desarrollo.md)).

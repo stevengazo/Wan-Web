@@ -166,9 +166,9 @@ function EnabledMfa({ recoveryCodesLeft, onCodes, onDisabled }: { recoveryCodesL
 
 function RecoveryCodes({ codes, onDone }: { codes: string[]; onDone: () => void }) {
   const download = () => {
-    const blob = new Blob([`Códigos de recuperación de Mapache\nCada uno sirve una sola vez.\n\n${codes.join('\n')}\n`], { type: 'text/plain' })
+    const blob = new Blob([`Códigos de recuperación de Wan\nCada uno sirve una sola vez.\n\n${codes.join('\n')}\n`], { type: 'text/plain' })
     const url = URL.createObjectURL(blob)
-    const link = Object.assign(document.createElement('a'), { href: url, download: 'mapache-codigos-de-recuperacion.txt' })
+    const link = Object.assign(document.createElement('a'), { href: url, download: 'wan-codigos-de-recuperacion.txt' })
     link.click()
     URL.revokeObjectURL(url)
   }

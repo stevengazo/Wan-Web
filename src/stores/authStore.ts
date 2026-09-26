@@ -10,9 +10,9 @@ export interface Session {
   user: User
 }
 
-const STORAGE_KEY = 'mapache.user'
+const STORAGE_KEY = 'wan.user'
 // Versión anterior: guardaba el JWT en localStorage. Se borra para que no quede un token a la vista.
-const LEGACY_KEY = 'mapache.session'
+const LEGACY_KEY = 'wan.session'
 const listeners = new Set<() => void>()
 
 let session: Session | null = read()

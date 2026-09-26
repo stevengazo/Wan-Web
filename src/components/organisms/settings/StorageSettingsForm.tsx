@@ -8,7 +8,7 @@ import { ApiError } from '@/services/api/client'
 import { useSaveStorageSettings, useTestStorage, type SaveStorageSettings, type StorageProvider, type StorageSettings } from '@/services/api'
 
 const providers: { value: StorageProvider; label: string; description: string }[] = [
-  { value: 'Local', label: 'En el servidor', description: 'En el disco de Mapache (volumen «recordings» en Docker). Sin costo extra.' },
+  { value: 'Local', label: 'En el servidor', description: 'En el disco de Wan (volumen «recordings» en Docker). Sin costo extra.' },
   { value: 'S3', label: 'Amazon S3 o compatible', description: 'AWS S3, Cloudflare R2, MinIO o DigitalOcean Spaces.' },
   { value: 'AzureBlob', label: 'Azure Blob Storage', description: 'Un contenedor de una cuenta de almacenamiento de Azure.' },
 ]
@@ -70,7 +70,7 @@ export function StorageSettingsForm({ settings }: { settings: StorageSettings })
         {form.provider === 'S3' && (
           <FormSection title="S3" description="Con AWS basta la región. Para R2, MinIO o Spaces, la URL del servicio.">
             <div className="grid gap-4 sm:grid-cols-2">
-              <TextField label="Bucket" placeholder="mapache-grabaciones" {...text('s3Bucket')} />
+              <TextField label="Bucket" placeholder="wan-grabaciones" {...text('s3Bucket')} />
               <TextField label="Región" placeholder="us-east-1" {...text('s3Region')} />
             </div>
             <TextField label="URL del servicio (opcional)" placeholder="https://<cuenta>.r2.cloudflarestorage.com" {...text('s3ServiceUrl')} />
@@ -111,7 +111,7 @@ export function StorageSettingsForm({ settings }: { settings: StorageSettings })
 
         {form.provider !== 'Local' && (
           <FormSection title="Carpeta" description="Opcional: prefijo dentro del bucket o contenedor.">
-            <TextField label="Prefijo" placeholder="mapache/grabaciones" {...text('prefix')} />
+            <TextField label="Prefijo" placeholder="wan/grabaciones" {...text('prefix')} />
           </FormSection>
         )}
       </FormSections>

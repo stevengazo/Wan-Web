@@ -108,7 +108,7 @@ function ExtensionForm({ extension }: { extension?: Extension }) {
           </SelectField>
           <Switch
             label="Habilitada"
-            description="Mapache registra la cuenta en el servidor SIP."
+            description="Wan registra la cuenta en el servidor SIP."
             checked={form.enabled}
             onChange={(value) => set('enabled', value)}
           />
@@ -154,13 +154,13 @@ function ExtensionForm({ extension }: { extension?: Extension }) {
           />
           <TextField
             label="Nombre para mostrar"
-            placeholder="Mapache"
+            placeholder="Wan"
             hint="Lo que ve el otro extremo en las llamadas salientes."
             {...text('displayName')}
           />
         </FormSection>
 
-        <FormSection title="Red y NAT" description="Solo hace falta tocarlo si el servidor o Mapache están detrás de NAT.">
+        <FormSection title="Red y NAT" description="Solo hace falta tocarlo si el servidor o Wan están detrás de NAT.">
           <div className="grid grid-cols-2 gap-4">
             <SelectField
               label="Transporte"
@@ -179,7 +179,7 @@ function ExtensionForm({ extension }: { extension?: Extension }) {
           <TextField label="Keepalive (s)" min={0} max={300} hint="Mantiene abierto el NAT. 0 lo desactiva." {...number('keepAliveSeconds')} />
           <Switch
             label="Reescribir IP (rport)"
-            description="Usa la IP y el puerto con que el servidor ve a Mapache."
+            description="Usa la IP y el puerto con que el servidor ve a Wan."
             checked={form.allowIpRewrite}
             onChange={(value) => set('allowIpRewrite', value)}
           />
@@ -265,7 +265,7 @@ function ExtensionForm({ extension }: { extension?: Extension }) {
           {confirmingDelete && extension && (
             <ConfirmSheet
               title={`¿Eliminar "${extension.name}"?`}
-              description="Mapache dejará de registrar esta cuenta. Esta acción no se puede deshacer."
+              description="Wan dejará de registrar esta cuenta. Esta acción no se puede deshacer."
               error={remove.error?.message}
               loading={remove.isPending}
               onConfirm={handleDelete}

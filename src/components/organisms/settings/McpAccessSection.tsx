@@ -16,7 +16,7 @@ import { McpPermissionsPicker } from './McpPermissionsPicker'
 import { McpSetupGuide } from './McpSetupGuide'
 import { McpTokenList } from './McpTokenList'
 
-/** Servidor MCP de Mapache: cómo conectarlo, tokens y qué puede hacer cada uno. */
+/** Servidor MCP de Wan: cómo conectarlo, tokens y qué puede hacer cada uno. */
 export function McpAccessSection() {
   const { data: tokens } = useMcpTokens()
   const { data: tools = [] } = useMcpServerTools()
@@ -35,8 +35,8 @@ export function McpAccessSection() {
   return (
     <FormSections>
       <FormSection
-        title="Servidor MCP de Mapache"
-        description="Para que Claude, Cursor u otro agente consulten y operen Mapache: recados, formularios, directorio y conocimiento."
+        title="Servidor MCP de Wan"
+        description="Para que Claude, Cursor u otro agente consulten y operen Wan: recados, formularios, directorio y conocimiento."
       >
         <CopyField label="URL" value={url} />
         <McpSetupGuide url={url} token={create.data?.value} />

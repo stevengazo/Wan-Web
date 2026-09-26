@@ -1,5 +1,5 @@
 // Punto de entrada de la API: tipos y hooks de TanStack Query por dominio.
-// Los tipos reflejan los DTOs de backend/src/Mapache.Api/Controllers: mantenerlos sincronizados.
+// Los tipos reflejan los DTOs de backend/src/Wan.Api/Controllers: mantenerlos sincronizados.
 export * from '@/services/api/auth'
 export * from '@/services/api/account'
 export * from '@/services/api/extensions'

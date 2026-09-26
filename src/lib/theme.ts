@@ -1,7 +1,7 @@
 export type ThemePreference = 'light' | 'dark' | 'system'
 
 // La misma clave la lee el script inline de index.html.
-const STORAGE_KEY = 'mapache.theme'
+const STORAGE_KEY = 'wan.theme'
 const darkQuery = window.matchMedia('(prefers-color-scheme: dark)')
 
 export function getThemePreference(): ThemePreference {

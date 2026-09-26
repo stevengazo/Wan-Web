@@ -4,7 +4,7 @@ Recorrido por cada pantalla del panel. Las marcadas con 🔒 solo las ven los ad
 
 ## ❔ Ayuda dentro del panel
 
-La sección **Ayuda** del menú explica cómo funciona Mapache con un diagrama, los primeros pasos, cada módulo, la solución de problemas frecuentes y un glosario. Tiene buscador, y las URLs para configurar ElevenLabs y MCP aparecen ya con la URL pública de tu instalación.
+La sección **Ayuda** del menú explica cómo funciona Wan con un diagrama, los primeros pasos, cada módulo, la solución de problemas frecuentes y un glosario. Tiene buscador, y las URLs para configurar ElevenLabs y MCP aparecen ya con la URL pública de tu instalación.
 
 ## Roles
 
@@ -70,12 +70,12 @@ El navegador pide permiso para el micrófono la primera vez. Fuera de `localhost
 
 | Sección | Qué se configura |
 |---------|------------------|
-| **General** | URL pública de Mapache, que se usa en las URLs para ElevenLabs y MCP. También se puede fijar con `App__PublicUrl` en el `.env`; la del panel tiene prioridad |
+| **General** | URL pública de Wan, que se usa en las URLs para ElevenLabs y MCP. También se puede fijar con `App__PublicUrl` en el `.env`; la del panel tiene prioridad |
 | **Llamadas** | Grabar llamadas y el aviso de grabación que dice el bot |
 | **IA** | Proveedor activo (OpenAI, Gemini o Claude), API key y modelo de cada uno, instrucciones del bot y la URL del Custom LLM para pegar en ElevenLabs |
 | **ElevenLabs** | API key y ID del agente de voz |
 | **Correo** | Servidor SMTP para las acciones de formularios |
-| **Acceso por MCP** | Tokens para que agentes externos operen Mapache |
+| **Acceso por MCP** | Tokens para que agentes externos operen Wan |
 
 Las API keys y contraseñas se guardan cifradas y nunca se vuelven a mostrar: el campo indica si hay una cargada. Déjalo vacío para conservarla.
 
@@ -128,7 +128,7 @@ Desactivar una base la saca del bot sin borrarla.
 <img src="img/herramientas.png" alt="Herramientas del bot" width="720" />
 
 - **Peticiones a sistemas externos:** el bot consulta tu ERP o CRM. Defines la URL con `{{parametros}}`, los headers (cifrados) y qué datos debe pedir. **Probar** ejecuta la petición con valores de ejemplo.
-- **Servidores MCP:** pega la URL de un servidor MCP. Mapache lee sus herramientas y eliges con toggles cuáles puede usar el bot.
+- **Servidores MCP:** pega la URL de un servidor MCP. Wan lee sus herramientas y eliges con toggles cuáles puede usar el bot.
 
 ## 📊 Analítica
 

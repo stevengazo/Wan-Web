@@ -32,14 +32,14 @@ function Step({ n, children }: { n: number; children: ReactNode }) {
   )
 }
 
-/** Cómo viaja una llamada: central → Mapache → proveedor de voz → IA, y las herramientas del bot. */
+/** Cómo viaja una llamada: central → Wan → proveedor de voz → IA, y las herramientas del bot. */
 export function HowItWorksDiagram() {
   return (
     <figure className="space-y-8">
       <div className="grid items-center gap-2 lg:grid-cols-[1fr_auto_1.2fr_auto_1fr_auto_1fr]">
         <Node title="☎️ Central o proveedor SIP" detail="Asterisk, FreePBX, 3CX, troncal en la nube" />
         <Arrow label="SIP + audio" />
-        <Node title="🦝 Mapache" detail="Motor SIP, puente de audio, contexto y herramientas del bot" accent />
+        <Node title="🦝 Wan" detail="Motor SIP, puente de audio, contexto y herramientas del bot" accent />
         <Arrow label="Audio en vivo" />
         <Node title="🗣️ Proveedor de voz" detail="ElevenLabs, OpenAI Realtime o Deepgram" />
         <Arrow label="¿Qué respondo?" />
@@ -59,9 +59,9 @@ export function HowItWorksDiagram() {
 
       <figcaption>
         <ol className="grid gap-3 md:grid-cols-2">
-          <Step n={1}>Alguien llama a una extensión que Mapache tiene registrada en la central, igual que un softphone.</Step>
-          <Step n={2}>Mapache contesta y pasa el audio al proveedor de voz, que escucha y habla con voz natural.</Step>
-          <Step n={3}>En cada turno, Mapache arma el contexto (instrucciones, directorio, horario, conocimiento) y consulta al modelo de IA.</Step>
+          <Step n={1}>Alguien llama a una extensión que Wan tiene registrada en la central, igual que un softphone.</Step>
+          <Step n={2}>Wan contesta y pasa el audio al proveedor de voz, que escucha y habla con voz natural.</Step>
+          <Step n={3}>En cada turno, Wan arma el contexto (instrucciones, directorio, horario, conocimiento) y consulta al modelo de IA.</Step>
           <Step n={4}>Si hace falta, el bot usa herramientas: busca en el conocimiento, consulta tu sistema, toma un recado, llena un formulario o transfiere.</Step>
           <Step n={5}>Todo queda en el panel en vivo: la transcripción, el historial, la grabación, los recados y las respuestas.</Step>
           <Step n={6}>En cualquier momento alguien del panel puede tomar la llamada y hablar desde el navegador.</Step>

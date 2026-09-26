@@ -76,7 +76,7 @@ export function SmtpSettingsForm({ settings }: { settings: SmtpSettings }) {
           />
           <TextField
             label="Remitente"
-            placeholder="Mapache <bot@empresa.com>"
+            placeholder="Wan <bot@empresa.com>"
             value={from}
             onChange={(e) => setFrom(e.target.value)}
             error={fieldErrors.from?.[0]}

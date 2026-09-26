@@ -38,7 +38,7 @@ export function FirstStepsTopic() {
       <p>Para que el bot atienda su primera llamada, sigue este orden. Todo se hace desde el panel.</p>
       <Steps>
         <li>
-          <Go to="/configuracion">Configuración → General</Go>: la <b>URL pública</b> con la que se llega a Mapache desde internet (la necesitan
+          <Go to="/configuracion">Configuración → General</Go>: la <b>URL pública</b> con la que se llega a Wan desde internet (la necesitan
           ElevenLabs, Deepgram y los clientes MCP).
         </li>
         <li>
@@ -71,14 +71,14 @@ export function ExtensionsTopic() {
   return (
     <>
       <p>
-        Una extensión es una cuenta SIP, igual que la de un softphone como MicroSIP. Mapache se registra en tu central (Asterisk, FreePBX, 3CX o un
+        Una extensión es una cuenta SIP, igual que la de un softphone como MicroSIP. Wan se registra en tu central (Asterisk, FreePBX, 3CX o un
         proveedor en la nube) y atiende las llamadas que llegan a esa cuenta.
       </p>
       <Table
         rows={[
           ['Obligatorio', 'Servidor SIP, usuario y contraseña. La contraseña se guarda cifrada.'],
           ['Quién contesta', 'El bot, el bot con paso a una persona, o una persona (desde el panel).'],
-          ['Red y NAT', 'IP pública o STUN y keepalive si Mapache está detrás de un router. Lo configura quien instala.'],
+          ['Red y NAT', 'IP pública o STUN y keepalive si Wan está detrás de un router. Lo configura quien instala.'],
           ['Llamadas simultáneas', 'Cuántas llamadas puede atender a la vez esa cuenta (0 = sin límite).'],
           ['Horario de atención', 'Días, horas y descanso. Fuera de horario el bot no transfiere y dice el mensaje configurado.'],
         ]}
@@ -290,7 +290,7 @@ export function VoiceTopic() {
   const publicUrl = usePublicUrl()
   return (
     <>
-      <p>Mapache no depende de un solo proveedor de voz. Se elige en Configuración → Voz y se puede cambiar cuando quieras.</p>
+      <p>Wan no depende de un solo proveedor de voz. Se elige en Configuración → Voz y se puede cambiar cuando quieras.</p>
       <Table
         rows={[
           ['OpenAI Realtime', 'Muy poca latencia. Usa la API key de OpenAI. Elige voz y modelo.'],
@@ -302,7 +302,7 @@ export function VoiceTopic() {
         <CopyField label="LLM del agente: Custom LLM (Server URL)" value={`${publicUrl}/api/llm/v1`} />
         <CopyField label="Webhook post-llamada (grabaciones)" value={`${publicUrl}/api/webhooks/elevenlabs/post-call`} />
       </div>
-      <Tip>En ElevenLabs, la API key del Custom LLM es el token de tools del servidor (lo tiene quien instaló Mapache).</Tip>
+      <Tip>En ElevenLabs, la API key del Custom LLM es el token de tools del servidor (lo tiene quien instaló Wan).</Tip>
     </>
   )
 }
@@ -350,7 +350,7 @@ export function McpTopic() {
   return (
     <>
       <p>
-        Mapache se puede conectar a Claude, Cursor u otros agentes de IA para consultar recados, formularios, directorio y conocimiento. En{' '}
+        Wan se puede conectar a Claude, Cursor u otros agentes de IA para consultar recados, formularios, directorio y conocimiento. En{' '}
         <Go to="/configuracion">Configuración → Acceso por MCP</Go> se crean tokens con acceso total o por herramienta.
       </p>
       <CopyField label="URL del servidor MCP" value={`${publicUrl}/api/mcp`} />
@@ -363,7 +363,7 @@ export function TroubleshootingTopic() {
     <Table
       rows={[
         ['La extensión no se registra', '401: usuario o contraseña. Sin respuesta: servidor, puerto o transporte (UDP/TCP/TLS) incorrectos.'],
-        ['Se registra pero no entran llamadas', 'La central no llega a Mapache: revisar NAT, IP pública o STUN y los puertos.'],
+        ['Se registra pero no entran llamadas', 'La central no llega a Wan: revisar NAT, IP pública o STUN y los puertos.'],
         ['La llamada entra y se corta', 'Falta configurar la voz (Configuración → Voz) o el proveedor no responde: el motivo queda en el historial.'],
         ['El bot saluda pero no responde', 'Revisa la API key de la IA; con Deepgram, la URL pública; con ElevenLabs, que el agente use el Custom LLM.'],
         ['El bot no conoce un dato', 'Súbelo a Conocimiento o agrégalo a las instrucciones del bot.'],
@@ -379,14 +379,14 @@ export function GlossaryTopic() {
   return (
     <Table
       rows={[
-        ['Extensión', 'Cuenta SIP que Mapache registra en tu central.'],
+        ['Extensión', 'Cuenta SIP que Wan registra en tu central.'],
         ['SIP', 'El protocolo con el que hablan las centrales telefónicas.'],
         ['Proveedor de voz', 'Quien escucha y habla: ElevenLabs, OpenAI Realtime o Deepgram.'],
-        ['Custom LLM', 'La dirección de Mapache a la que el proveedor de voz le pregunta qué responder.'],
+        ['Custom LLM', 'La dirección de Wan a la que el proveedor de voz le pregunta qué responder.'],
         ['Transferencia', 'Pasar la llamada a otra extensión o número del directorio.'],
         ['Tomar la llamada', 'Que una persona del panel reemplace al bot en una llamada en curso.'],
-        ['MCP', 'Estándar para conectar agentes de IA con sistemas: Mapache lo usa en ambos sentidos.'],
-        ['URL pública', 'Dirección con la que se llega a Mapache desde internet.'],
+        ['MCP', 'Estándar para conectar agentes de IA con sistemas: Wan lo usa en ambos sentidos.'],
+        ['URL pública', 'Dirección con la que se llega a Wan desde internet.'],
       ]}
     />
   )

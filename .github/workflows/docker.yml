@@ -1,7 +1,7 @@
 # Revisa el panel y publica su imagen (nginx) en GitHub Container Registry (y en Docker Hub si están
 # configurados los secretos DOCKERHUB_USERNAME y DOCKERHUB_TOKEN).
 #
-#   push a main   → ghcr.io/<owner>/mapache-frontend:main y :sha-<commit>
+#   push a main   → ghcr.io/<owner>/wan-frontend:main y :sha-<commit>
 #   tag v1.2.3    → :1.2.3, :1.2, :1 y :latest
 #   pull request  → solo revisa y compila la imagen, no publica
 name: Imagen Docker
@@ -23,7 +23,7 @@ permissions:
   packages: write
 
 env:
-  IMAGE_NAME: mapache-frontend
+  IMAGE_NAME: wan-frontend
 
 jobs:
   check:
@@ -88,8 +88,8 @@ jobs:
             type=semver,pattern={{major}}
             type=sha
           labels: |
-            org.opencontainers.image.title=Mapache Panel
-            org.opencontainers.image.description=Panel web de Mapache, bot telefónico con IA
+            org.opencontainers.image.title=Wan Panel
+            org.opencontainers.image.description=Panel web de Wan, bot telefónico con IA
             org.opencontainers.image.licenses=MIT
 
       - name: Compilar y publicar

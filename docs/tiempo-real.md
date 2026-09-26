@@ -32,7 +32,7 @@ El backend también emite `ExtensionStatusChanged`, `CallsChanged` y `CallTransc
 
 ## Conexión (`hooks/useRealtime.ts`)
 
-- La sesión viaja en la cookie HttpOnly (el navegador la manda también en el handshake del WebSocket). El header `X-Mapache-Client` se agrega para el `negotiate`, que es un POST.
+- La sesión viaja en la cookie HttpOnly (el navegador la manda también en el handshake del WebSocket). El header `X-Wan-Client` se agrega para el `negotiate`, que es un POST.
 - Reconexión automática. Al reconectar se invalida **todo**, porque pudo haber cambios mientras no había conexión.
 - El estado (`connecting`, `connected`, `reconnecting`, `disconnected`) se muestra con `RealtimeIndicator`: el punto **En vivo** del sidebar.
 - `useRealtime` se usa en `AppTemplate`, así la conexión vive mientras el usuario está dentro del panel.

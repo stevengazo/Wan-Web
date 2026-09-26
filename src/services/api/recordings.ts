@@ -11,7 +11,7 @@ export interface Recording {
   createdAt: string
   /** Dónde quedó guardada. */
   storage: StorageProvider
-  /** audio/mpeg (ElevenLabs) o audio/wav (grabación de Mapache). */
+  /** audio/mpeg (ElevenLabs) o audio/wav (grabación de Wan). */
   contentType: string
   callId: string | null
   durationSeconds: number | null

@@ -67,7 +67,7 @@ export interface SaveMcpServer {
   enabled: boolean
 }
 
-/** Herramienta del servidor MCP de Mapache que se puede permitir a un token. */
+/** Herramienta del servidor MCP de Wan que se puede permitir a un token. */
 export interface McpServerToolInfo {
   name: string
   description: string

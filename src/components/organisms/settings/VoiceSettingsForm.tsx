@@ -11,17 +11,17 @@ const providers: { value: VoiceProvider; label: string; description: string }[] 
   {
     value: 'ElevenLabs',
     label: 'ElevenLabs',
-    description: 'Voces muy naturales. El agente se crea en ElevenLabs y usa el Custom LLM de Mapache.',
+    description: 'Voces muy naturales. El agente se crea en ElevenLabs y usa el Custom LLM de Wan.',
   },
   {
     value: 'OpenAiRealtime',
     label: 'OpenAI Realtime',
-    description: 'Voz a voz de OpenAI, con muy poca latencia. Mapache le pasa las instrucciones y las herramientas.',
+    description: 'Voz a voz de OpenAI, con muy poca latencia. Wan le pasa las instrucciones y las herramientas.',
   },
   {
     value: 'Deepgram',
     label: 'Deepgram',
-    description: 'Reconocimiento y voz de Deepgram, a menor costo por minuto. Responde el Custom LLM de Mapache.',
+    description: 'Reconocimiento y voz de Deepgram, a menor costo por minuto. Responde el Custom LLM de Wan.',
   },
 ]
 
@@ -91,7 +91,7 @@ export function VoiceSettingsForm({ settings, publicUrl }: VoiceSettingsFormProp
         </FormSection>
 
         {form.provider === 'ElevenLabs' && (
-          <FormSection title="ElevenLabs" description="El agente se crea en ElevenLabs con LLM «Custom LLM» apuntando a Mapache.">
+          <FormSection title="ElevenLabs" description="El agente se crea en ElevenLabs con LLM «Custom LLM» apuntando a Wan.">
             <PasswordField
               label="API key"
               autoComplete="off"
@@ -138,7 +138,7 @@ export function VoiceSettingsForm({ settings, publicUrl }: VoiceSettingsFormProp
         {form.provider === 'Deepgram' && (
           <FormSection
             title="Deepgram"
-            description="Deepgram llama al Custom LLM de Mapache desde su nube: necesita la URL pública de la sección General."
+            description="Deepgram llama al Custom LLM de Wan desde su nube: necesita la URL pública de la sección General."
           >
             <PasswordField
               label="API key"

@@ -1,6 +1,6 @@
 import { WaveIcon } from './icons'
 
-/** Marca de Mapache: onda de voz en un cuadrado y el nombre en serif, como la marca de Savegre. */
+/** Marca de Wan: onda de voz en un cuadrado y el nombre en serif, como la marca de Savegre. */
 export function Logo() {
   return (
     <span className="inline-flex items-center gap-2.5">
@@ -8,7 +8,7 @@ export function Logo() {
         <WaveIcon className="size-4.5" strokeWidth={2.2} />
       </span>
       <span className="font-display text-2xl leading-none">
-        Mapache<span className="text-brand-500">.</span>
+        Wan<span className="text-brand-500">.</span>
       </span>
     </span>
   )

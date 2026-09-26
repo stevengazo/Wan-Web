@@ -30,7 +30,7 @@ export function AuthTemplate({ title, subtitle, footer, children }: Props) {
         </motion.main>
 
         <div className="flex items-center justify-between gap-4">
-          <p className="text-xs text-zinc-400 dark:text-zinc-500">© {new Date().getFullYear()} Mapache</p>
+          <p className="text-xs text-zinc-400 dark:text-zinc-500">© {new Date().getFullYear()} Wan</p>
           <ThemeToggle />
         </div>
       </aside>

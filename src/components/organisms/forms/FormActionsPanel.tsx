@@ -14,7 +14,7 @@ import { actionTypeLabels } from '@/components/organisms/forms/formActionLabels'
 const targetHelp: Record<FormActionType, { label: string; placeholder: string; hint: string }> = {
   Webhook: {
     label: 'URL',
-    placeholder: 'https://mi-sistema.com/webhooks/mapache',
+    placeholder: 'https://mi-sistema.com/webhooks/wan',
     hint: 'Recibe un POST con el JSON de la respuesta (evento form.submitted).',
   },
   Teams: {
@@ -52,7 +52,7 @@ const systemPlaceholders = ['caller_number', 'summary', 'values', 'form_name', '
 const bodyExample = `{
   "subject": "Llamada de {{caller_number}}",
   "description": {{summary}},
-  "source": "mapache"
+  "source": "wan"
 }`
 
 /** Acciones que se disparan con cada respuesta del formulario. */
@@ -271,7 +271,7 @@ function ActionEditor({ formId, fieldKeys, action, onDone }: { formId: string; f
               setSecret(e.target.value)
               setClearSecret(false)
             }}
-            hint="Con secreto, cada envío lleva X-Mapache-Signature: sha256=HMAC del cuerpo."
+            hint="Con secreto, cada envío lleva X-Wan-Signature: sha256=HMAC del cuerpo."
           />
           {action?.hasSecret && (
             <button

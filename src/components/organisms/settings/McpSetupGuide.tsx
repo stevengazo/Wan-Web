@@ -10,7 +10,7 @@ const clients: { id: Client; label: string }[] = [
 ]
 
 /**
- * Cómo conectar un cliente MCP al servidor de Mapache. Con un token recién creado los comandos ya lo
+ * Cómo conectar un cliente MCP al servidor de Wan. Con un token recién creado los comandos ya lo
  * incluyen; si no, muestran dónde va.
  */
 export function McpSetupGuide({ url, token }: { url: string; token?: string }) {
@@ -19,14 +19,14 @@ export function McpSetupGuide({ url, token }: { url: string; token?: string }) {
 
   const snippets: Record<Client, { steps: string[]; label: string; code: string }> = {
     'claude-code': {
-      steps: ['Crea un token abajo.', 'Ejecuta el comando en la terminal del proyecto donde lo quieras usar.', 'Abre Claude Code: las herramientas aparecen como mcp__mapache__…'],
+      steps: ['Crea un token abajo.', 'Ejecuta el comando en la terminal del proyecto donde lo quieras usar.', 'Abre Claude Code: las herramientas aparecen como mcp__wan__…'],
       label: 'Comando',
-      code: `claude mcp add --transport http mapache ${url} --header "Authorization: Bearer ${value}"`,
+      code: `claude mcp add --transport http wan ${url} --header "Authorization: Bearer ${value}"`,
     },
     cursor: {
       steps: ['Crea un token abajo.', 'Agrega esto al archivo de servidores MCP del cliente (en Cursor, .cursor/mcp.json).', 'Recarga el cliente.'],
       label: 'Configuración JSON',
-      code: JSON.stringify({ mcpServers: { mapache: { url, headers: { Authorization: `Bearer ${value}` } } } }, null, 2),
+      code: JSON.stringify({ mcpServers: { wan: { url, headers: { Authorization: `Bearer ${value}` } } } }, null, 2),
     },
     'claude-desktop': {
       steps: [
@@ -36,7 +36,7 @@ export function McpSetupGuide({ url, token }: { url: string; token?: string }) {
       ],
       label: 'claude_desktop_config.json',
       code: JSON.stringify(
-        { mcpServers: { mapache: { command: 'npx', args: ['-y', 'mcp-remote', url, '--header', `Authorization: Bearer ${value}`] } } },
+        { mcpServers: { wan: { command: 'npx', args: ['-y', 'mcp-remote', url, '--header', `Authorization: Bearer ${value}`] } } },
         null,
         2,
       ),

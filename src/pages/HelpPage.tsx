@@ -49,7 +49,7 @@ export function HelpPage() {
 
   return (
     <div>
-      <PageHeader title="Ayuda" subtitle="Cómo funciona Mapache y cómo sacarle provecho." />
+      <PageHeader title="Ayuda" subtitle="Cómo funciona Wan y cómo sacarle provecho." />
 
       <section className="mt-8 border border-zinc-200 p-5 sm:p-8 dark:border-white/10">
         <h2 className="eyebrow mb-6 flex items-center gap-3 text-zinc-500 dark:text-zinc-400">

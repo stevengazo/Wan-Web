@@ -19,7 +19,7 @@ interface ProblemDetails {
 }
 
 /** Anti-CSRF: sin él, la API ignora la cookie de sesión en POST, PUT y DELETE. */
-export const clientHeader = { 'X-Mapache-Client': '1' }
+export const clientHeader = { 'X-Wan-Client': '1' }
 
 export async function api<T>(path: string, init: { method?: string; body?: unknown } = {}): Promise<T> {
   // FormData va tal cual: el navegador pone el Content-Type multipart con su boundary.
