@@ -163,7 +163,7 @@ El workflow de [GitHub Actions](.github/workflows/docker.yml) corre lint y build
 | tag `v1.2.3` | `1.2.3`, `1.2`, `1`, `latest` |
 | pull request | se compila, no se publica |
 
-La imagen se publica en `ghcr.io/<usuario>/wan-frontend`, y en Docker Hub si el repositorio tiene los secretos `DOCKERHUB_USERNAME` y `DOCKERHUB_TOKEN`. nginx hace proxy a `http://api:8080`, así que el servicio de la API debe llamarse `api`.
+La imagen se publica en `ghcr.io/<usuario>/wan-web`, y en Docker Hub si el repositorio tiene los secretos `DOCKERHUB_USERNAME` y `DOCKERHUB_TOKEN`. nginx hace proxy a `http://api:8080`, así que el servicio de la API debe llamarse `api`.
 
 ## 🤝 Contribuir
 
